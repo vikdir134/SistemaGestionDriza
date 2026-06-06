@@ -1,0 +1,22 @@
+# Dependencias
+node_modules/
+**/node_modules/
+
+# Variables de entorno
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs/
+*.log
+
+# Sistema
+.DS_Store
+
+# Build frontend
+dist/
+build/
+
+# Archivos temporales
+.vscode/
