@@ -6,6 +6,9 @@ require('dotenv').config();
 const authRoutes = require('./modules/auth/auth.routes');
 const clienteRoutes = require('./modules/clientes/cliente.routes');
 const catalogoRoutes = require('./modules/catalogos/catalogo.routes');
+const productoRoutes = require('./modules/productos/producto.routes');
+const pedidoRoutes = require('./modules/pedidos/pedido.routes');
+const entregaRoutes = require('./modules/entregas/entrega.routes');
 
 const app = express();
 
@@ -25,6 +28,9 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/clientes', clienteRoutes);
 app.use('/api/catalogos', catalogoRoutes);
+app.use('/api/productos', productoRoutes);
+app.use('/api/pedidos', pedidoRoutes);
+app.use('/api/entregas', entregaRoutes);
 
 app.use((req, res) => {
   res.status(404).json({
