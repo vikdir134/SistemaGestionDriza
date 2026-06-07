@@ -12,7 +12,7 @@ function Sidebar() {
 
   return (
     <aside className="sidebar">
-      <h2>GoDriza</h2>
+      <h2>Sistema de Gestion</h2>
 
       <p className="usuario">
         {usuario?.nombre_completo}
@@ -22,12 +22,12 @@ function Sidebar() {
         <Link to="/gestion">Inicio</Link>
         <Link to="/gestion/clientes">Clientes</Link>
         <Link to="/gestion/catalogos">Catálogos</Link>
-        <Link to="/gestion/pedidos">Pedidos</Link>
-        <Link to="/gestion/entregas">Entregas</Link>
-        <Link to="/gestion/depositos">Depósitos</Link>
+        <Link to="/gestion/pedidos">Registro de Pedidos</Link>
+        <Link to="/gestion/entregas">Registro de Entregas</Link>
+        <Link to="/gestion/depositos">Registro de Depósitos</Link>
         <Link to="/gestion/proveedores">Proveedores</Link>
-        <Link to="/gestion/compras">Compras</Link>
-        <Link to="/gestion/gastos">Gastos</Link>
+        <Link to="/gestion/compras">Registro de Compras</Link>
+        <Link to="/gestion/gastos">Registro de Gastos</Link>
       </nav>
 
       <button onClick={handleLogout} className="btn-logout">
