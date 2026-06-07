@@ -26,6 +26,8 @@ function Sidebar() {
         <Link to="/gestion/entregas">Entregas</Link>
         <Link to="/gestion/depositos">Depósitos</Link>
         <Link to="/gestion/proveedores">Proveedores</Link>
+        <Link to="/gestion/compras">Compras</Link>
+        <Link to="/gestion/gastos">Gastos</Link>
       </nav>
 
       <button onClick={handleLogout} className="btn-logout">

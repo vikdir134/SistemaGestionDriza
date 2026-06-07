@@ -430,3 +430,18 @@ textarea {
   justify-content: space-between;
   margin-bottom: 10px;
 }
+.total-box {
+  background: #eff6ff;
+  color: #1e40af;
+  padding: 14px;
+  border-radius: 10px;
+  font-weight: bold;
+  margin: 16px 0;
+}
+.filtros-card {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.filtros-actions {
+  align-self: end;
+}

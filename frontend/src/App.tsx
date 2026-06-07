@@ -11,6 +11,8 @@ import EntregaPedidoDetalle from './pages/EntregaPedidoDetalle';
 import Depositos from './pages/Depositos';
 import DepositoPedidoDetalle from './pages/DepositoPedidoDetalle';
 import Proveedores from './pages/Proveedores';
+import Compras from './pages/Compras';
+import Gastos from './pages/Gastos';
 
 
 import ProtectedRoute from './components/ProtectedRoute';
@@ -41,6 +43,8 @@ function App() {
           <Route path="depositos" element={<Depositos />} />
           <Route path="depositos/:pedido_id" element={<DepositoPedidoDetalle />} />  
           <Route path="proveedores" element={<Proveedores />} />
+          <Route path="compras" element={<Compras />} />
+          <Route path="gastos" element={<Gastos />} />
         </Route>
       </Routes>
     </BrowserRouter>

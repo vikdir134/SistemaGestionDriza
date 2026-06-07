@@ -11,6 +11,8 @@ const pedidoRoutes = require('./modules/pedidos/pedido.routes');
 const entregaRoutes = require('./modules/entregas/entrega.routes');
 const depositoRoutes = require('./modules/depositos/deposito.routes');
 const proveedorRoutes = require('./modules/proveedores/proveedor.routes');
+const compraRoutes = require('./modules/compras/compra.routes');
+const gastoRoutes = require('./modules/gastos/gasto.routes');
 
 const app = express();
 
@@ -35,6 +37,9 @@ app.use('/api/pedidos', pedidoRoutes);
 app.use('/api/entregas', entregaRoutes);
 app.use('/api/depositos', depositoRoutes);
 app.use('/api/proveedores', proveedorRoutes);
+app.use('/api/compras', compraRoutes);
+app.use('/api/gastos', gastoRoutes);
+
 app.use((req, res) => {
   res.status(404).json({
     mensaje: 'Ruta no encontrada'
