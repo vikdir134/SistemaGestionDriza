@@ -8,6 +8,10 @@ import Productos from './pages/Productos';
 import Pedidos from './pages/Pedidos';
 import Entregas from './pages/Entregas';
 import EntregaPedidoDetalle from './pages/EntregaPedidoDetalle';
+import Depositos from './pages/Depositos';
+import DepositoPedidoDetalle from './pages/DepositoPedidoDetalle';
+import Proveedores from './pages/Proveedores';
+
 
 import ProtectedRoute from './components/ProtectedRoute';
 import GestionLayout from './layouts/GestionLayout';
@@ -34,6 +38,9 @@ function App() {
           <Route path="pedidos" element={<Pedidos />} />
           <Route path="entregas" element={<Entregas />} />
           <Route path="entregas/:pedido_id" element={<EntregaPedidoDetalle />} />
+          <Route path="depositos" element={<Depositos />} />
+          <Route path="depositos/:pedido_id" element={<DepositoPedidoDetalle />} />  
+          <Route path="proveedores" element={<Proveedores />} />
         </Route>
       </Routes>
     </BrowserRouter>
