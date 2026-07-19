@@ -55,8 +55,8 @@ function Login() {
   return (
     <div className="login-page">
       <form className="login-card" onSubmit={handleLogin}>
-        <h1>GoDriza</h1>
-        <p>Sistema de Gestión de Driza</p>
+        <h1>GestionDriza.v1</h1>
+        <p>Sistema de Gestión</p>
 
         {error && <div className="error">{error}</div>}
 
