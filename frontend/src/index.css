@@ -445,3 +445,28 @@ textarea {
 .filtros-actions {
   align-self: end;
 }
+.sidebar-group-button {
+  background: transparent;
+  color: white;
+  text-align: left;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.sidebar-group-button:hover {
+  background: #374151;
+}
+
+.sidebar-submenu {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-left: 12px;
+  margin-bottom: 8px;
+}
+
+.sidebar-submenu a {
+  font-size: 14px;
+  color: #dbeafe;
+}

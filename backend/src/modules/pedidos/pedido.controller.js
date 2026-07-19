@@ -1,20 +1,86 @@
 const {
   listarPedidos,
   obtenerPedidoPorId,
-  crearPedidoConDetalles
+  crearPedidoConDetalles,
+  actualizarPedidoYAgregarDetalles
 } = require('./pedido.model');
 
 const fechaActual = () => {
   return new Date().toISOString().slice(0, 10);
 };
 
+const normalizarDetalle = (item) => {
+  return {
+    ...item,
+    moneda_codigo: item.moneda_codigo
+      ? item.moneda_codigo.toUpperCase()
+      : null,
+    descripcion_item: item.descripcion_item
+      ? item.descripcion_item.trim().toUpperCase()
+      : null,
+    observacion: item.observacion
+      ? item.observacion.trim()
+      : null
+  };
+};
+
+const validarDetalles = (detalles, etiqueta = 'producto') => {
+  for (const [index, item] of detalles.entries()) {
+    if (
+      !item.tipo_producto_id ||
+      !item.medida_id ||
+      !item.color_id ||
+      !item.material_id
+    ) {
+      return `${etiqueta} ${index + 1} debe tener tipo, medida, color y material`;
+    }
+
+    if (!item.cantidad_pedida || Number(item.cantidad_pedida) <= 0) {
+      return `${etiqueta} ${index + 1} debe tener una cantidad mayor a 0`;
+    }
+
+    if (!item.unidad_medida_id) {
+      return `${etiqueta} ${index + 1} debe tener una unidad`;
+    }
+
+    if (!item.precio_unitario || Number(item.precio_unitario) < 0) {
+      return `${etiqueta} ${index + 1} debe tener precio ofrecido válido`;
+    }
+
+    if (!item.moneda_codigo) {
+      return `${etiqueta} ${index + 1} debe tener moneda`;
+    }
+
+    if (!['PEN', 'USD'].includes(item.moneda_codigo.toUpperCase())) {
+      return `${etiqueta} ${index + 1} debe tener moneda PEN o USD`;
+    }
+  }
+
+  return null;
+};
+
 const obtenerPedidos = async (req, res) => {
   try {
-    const pedidos = await listarPedidos();
+    const {
+      cliente_id,
+      estado_pedido,
+      q,
+      page = 1,
+      limit = 10
+    } = req.query;
+
+    const resultado = await listarPedidos({
+      cliente_id: cliente_id ? Number(cliente_id) : null,
+      estado_pedido: estado_pedido || null,
+      q: q || null,
+      page: Number(page),
+      limit: Number(limit)
+    });
 
     res.json({
       mensaje: 'Pedidos obtenidos correctamente',
-      pedidos
+      pedidos: resultado.pedidos,
+      paginacion: resultado.paginacion
     });
 
   } catch (error) {
@@ -77,59 +143,22 @@ const registrarPedido = async (req, res) => {
 
     fecha_pedido = fecha_pedido || fechaActual();
 
-    descripcion_pedido = descripcion_pedido
-      ? descripcion_pedido.trim()
-      : null;
-
     codigo_pedido = codigo_pedido
       ? codigo_pedido.trim().toUpperCase()
       : null;
 
-    for (const [index, item] of detalles.entries()) {
-      if (
-        !item.tipo_producto_id ||
-        !item.medida_id ||
-        !item.color_id ||
-        !item.material_id
-      ) {
-        return res.status(400).json({
-          mensaje: `El producto ${index + 1} debe tener tipo, medida, color y material`
-        });
-      }
+    descripcion_pedido = descripcion_pedido
+      ? descripcion_pedido.trim()
+      : null;
 
-      if (!item.cantidad_pedida || Number(item.cantidad_pedida) <= 0) {
-        return res.status(400).json({
-          mensaje: `El producto ${index + 1} debe tener una cantidad mayor a 0`
-        });
-      }
+    detalles = detalles.map(normalizarDetalle);
 
-      if (!item.unidad_medida_id) {
-        return res.status(400).json({
-          mensaje: `El producto ${index + 1} debe tener una unidad`
-        });
-      }
+    const errorValidacion = validarDetalles(detalles, 'El producto');
 
-      if (!item.precio_unitario || Number(item.precio_unitario) < 0) {
-        return res.status(400).json({
-          mensaje: `El producto ${index + 1} debe tener precio ofrecido válido`
-        });
-      }
-
-      if (!item.moneda_codigo) {
-        return res.status(400).json({
-          mensaje: `El producto ${index + 1} debe tener moneda`
-        });
-      }
-
-      item.moneda_codigo = item.moneda_codigo.toUpperCase();
-
-      item.descripcion_item = item.descripcion_item
-        ? item.descripcion_item.trim().toUpperCase()
-        : null;
-
-      item.observacion = item.observacion
-        ? item.observacion.trim()
-        : null;
+    if (errorValidacion) {
+      return res.status(400).json({
+        mensaje: errorValidacion
+      });
     }
 
     const resultado = await crearPedidoConDetalles({
@@ -157,8 +186,98 @@ const registrarPedido = async (req, res) => {
   }
 };
 
+const editarPedido = async (req, res) => {
+  try {
+    const { pedido_id } = req.params;
+
+    let {
+      cliente_id,
+      codigo_pedido,
+      descripcion_pedido,
+      fecha_pedido,
+      fecha_entrega_estimada,
+      motivo_cambio,
+      nuevos_detalles = []
+    } = req.body;
+
+    if (!cliente_id) {
+      return res.status(400).json({
+        mensaje: 'El cliente es obligatorio'
+      });
+    }
+
+    if (!fecha_pedido) {
+      return res.status(400).json({
+        mensaje: 'La fecha del pedido es obligatoria'
+      });
+    }
+
+    if (!motivo_cambio || motivo_cambio.trim() === '') {
+      return res.status(400).json({
+        mensaje: 'Debe ingresar el motivo del cambio'
+      });
+    }
+
+    codigo_pedido = codigo_pedido
+      ? codigo_pedido.trim().toUpperCase()
+      : null;
+
+    descripcion_pedido = descripcion_pedido
+      ? descripcion_pedido.trim()
+      : null;
+
+    motivo_cambio = motivo_cambio.trim();
+
+    nuevos_detalles = Array.isArray(nuevos_detalles)
+      ? nuevos_detalles.map(normalizarDetalle)
+      : [];
+
+    if (nuevos_detalles.length > 0) {
+      const errorValidacion = validarDetalles(nuevos_detalles, 'El nuevo producto');
+
+      if (errorValidacion) {
+        return res.status(400).json({
+          mensaje: errorValidacion
+        });
+      }
+    }
+
+    const resultado = await actualizarPedidoYAgregarDetalles({
+      pedido_id,
+      cliente_id,
+      codigo_pedido,
+      descripcion_pedido,
+      fecha_pedido,
+      fecha_entrega_estimada,
+      motivo_cambio,
+      nuevos_detalles,
+      updated_by_usuario_id: req.usuario.usuario_id
+    });
+
+    if (!resultado) {
+      return res.status(404).json({
+        mensaje: 'Pedido no encontrado o cancelado'
+      });
+    }
+
+    res.json({
+      mensaje: 'Pedido actualizado correctamente',
+      pedido: resultado.pedido,
+      detalles_agregados: resultado.detalles_agregados
+    });
+
+  } catch (error) {
+    console.error('Error editar pedido:', error.message);
+
+    res.status(500).json({
+      mensaje: 'Error interno al editar pedido'
+    });
+  }
+};
+
 module.exports = {
   obtenerPedidos,
   obtenerPedido,
-  registrarPedido
+  registrarPedido,
+  editarPedido
 };

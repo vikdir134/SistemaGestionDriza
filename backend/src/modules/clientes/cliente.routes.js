@@ -2,10 +2,13 @@ const express = require('express');
 
 const {
   obtenerClientes,
+  obtenerClientesSelect,
   obtenerCliente,
   registrarCliente,
   editarCliente,
-  darBajaCliente
+  darBajaCliente,
+  obtenerPreciosCliente,
+  registrarPrecioCliente
 } = require('./cliente.controller');
 
 const {
@@ -21,14 +24,35 @@ const router = express.Router();
 router.get(
   '/',
   verificarToken,
-  permitirRoles('ADMIN', 'VENTAS'),
+  permitirRoles('ADMIN', 'VENTAS', 'ALMACEN', 'FINANZAS'),
   obtenerClientes
+);
+
+router.get(
+  '/select',
+  verificarToken,
+  permitirRoles('ADMIN', 'VENTAS', 'ALMACEN', 'FINANZAS', 'COMPRAS'),
+  obtenerClientesSelect
+);
+
+router.get(
+  '/precios',
+  verificarToken,
+  permitirRoles('ADMIN', 'VENTAS', 'FINANZAS'),
+  obtenerPreciosCliente
+);
+
+router.post(
+  '/precios',
+  verificarToken,
+  permitirRoles('ADMIN', 'VENTAS'),
+  registrarPrecioCliente
 );
 
 router.get(
   '/:cliente_id',
   verificarToken,
-  permitirRoles('ADMIN', 'VENTAS'),
+  permitirRoles('ADMIN', 'VENTAS', 'ALMACEN', 'FINANZAS'),
   obtenerCliente
 );
 
