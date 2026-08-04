@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import type { FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { apiFetch } from '../../services/api';
 import FeedbackToast from '../../components/common/FeedbackToast';
@@ -25,7 +26,7 @@ function PedidosLista() {
   });
 
   const cargarClientes = async () => {
-    const data = await apiFetch('/clientes');
+    const data = await apiFetch('/clientes/select');
     setClientes(data.clientes);
   };
 
@@ -89,7 +90,7 @@ function PedidosLista() {
     cargar();
   }, [page, clienteId, estadoPedido]);
 
-  const aplicarBusqueda = async (e: React.FormEvent) => {
+  const aplicarBusqueda = async (e: FormEvent) => {
     e.preventDefault();
 
     setPage(1);
@@ -125,6 +126,33 @@ function PedidosLista() {
     if (estado === 'PARCIAL') return 'estado-pill estado-parcial';
     if (estado === 'CANCELADO') return 'estado-pill estado-cancelado';
     return 'estado-pill estado-registrado';
+  };
+
+  const obtenerCantidadesPedido = (resumen: string | null | undefined) => {
+    if (!resumen) return [];
+
+    return resumen
+      .split('|')
+      .filter((item) => item.trim() !== '')
+      .map((item) => {
+        const partes = item.trim().split(' ');
+        const cantidad = Number(partes[0]);
+        const unidad = partes.slice(1).join(' ');
+
+        return {
+          cantidad: Number.isNaN(cantidad) ? partes[0] : cantidad,
+          unidad
+        };
+      });
+  };
+
+  const formatearCantidad = (cantidad: number | string) => {
+    if (typeof cantidad === 'string') return cantidad;
+
+    return cantidad.toLocaleString('es-PE', {
+      minimumFractionDigits: cantidad % 1 === 0 ? 0 : 2,
+      maximumFractionDigits: 3
+    });
   };
 
   return (
@@ -195,7 +223,12 @@ function PedidosLista() {
 
         <div className="filtros-actions">
           <button type="submit">Buscar</button>
-          <button type="button" className="btn-secondary" onClick={limpiarFiltros}>
+
+          <button
+            type="button"
+            className="btn-secondary"
+            onClick={limpiarFiltros}
+          >
             Limpiar
           </button>
         </div>
@@ -214,6 +247,7 @@ function PedidosLista() {
               <th>Estado</th>
               <th>Items</th>
               <th>Total ref.</th>
+              <th>Cantidad / unidad</th>
               <th>Registrado por</th>
               <th>Acciones</th>
             </tr>
@@ -231,6 +265,7 @@ function PedidosLista() {
                 </td>
 
                 <td>{pedido.fecha_pedido?.slice(0, 10)}</td>
+
                 <td>{pedido.fecha_entrega_estimada?.slice(0, 10) || '-'}</td>
 
                 <td>
@@ -240,7 +275,28 @@ function PedidosLista() {
                 </td>
 
                 <td>{pedido.cantidad_items}</td>
-                <td>{Number(pedido.total_referencial || 0).toFixed(2)}</td>
+
+                <td>
+                  <strong>{Number(pedido.total_referencial || 0).toFixed(2)}</strong>
+                </td>
+
+                <td>
+                  <div className="cantidades-resumen">
+                    {obtenerCantidadesPedido(pedido.resumen_cantidades).map(
+                      (item, index) => (
+                        <span key={index} className="cantidad-pill">
+                          <strong>{formatearCantidad(item.cantidad)}</strong>
+                          <small>{item.unidad}</small>
+                        </span>
+                      )
+                    )}
+
+                    {!pedido.resumen_cantidades && (
+                      <span className="muted">-</span>
+                    )}
+                  </div>
+                </td>
+
                 <td>{pedido.registrado_por}</td>
 
                 <td>
@@ -265,7 +321,7 @@ function PedidosLista() {
 
             {pedidos.length === 0 && (
               <tr>
-                <td colSpan={9}>No hay pedidos registrados.</td>
+                <td colSpan={10}>No hay pedidos registrados.</td>
               </tr>
             )}
           </tbody>
@@ -297,4 +353,4 @@ function PedidosLista() {
   );
 }
 
-export default PedidosLista;
+export default PedidosLista;  

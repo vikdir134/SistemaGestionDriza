@@ -90,7 +90,10 @@ const listarPedidos = async ({
 
           COUNT(pd.pedido_detalle_id) AS cantidad_items,
 
-          ISNULL(SUM(pd.cantidad_pedida * pd.precio_unitario), 0) AS total_referencial
+          ISNULL(SUM(pd.cantidad_pedida * pd.precio_unitario), 0) AS total_referencial,
+
+          MAX(cant.resumen_cantidades) AS resumen_cantidades
+
         FROM ventas.Pedido p
         INNER JOIN crm.Cliente c
           ON p.cliente_id = c.cliente_id
@@ -99,6 +102,30 @@ const listarPedidos = async ({
         LEFT JOIN ventas.PedidoDetalle pd
           ON p.pedido_id = pd.pedido_id
           AND pd.activo = 1
+
+        OUTER APPLY (
+          SELECT
+            STRING_AGG(
+              CONCAT(
+                CONVERT(VARCHAR(30), CAST(x.cantidad_total AS DECIMAL(18,3))),
+                ' ',
+                x.unidad
+              ),
+              '|'
+            ) AS resumen_cantidades
+          FROM (
+            SELECT
+              SUM(pd2.cantidad_pedida) AS cantidad_total,
+              um2.codigo AS unidad
+            FROM ventas.PedidoDetalle pd2
+            INNER JOIN catalog.UnidadMedida um2
+              ON pd2.unidad_medida_id = um2.unidad_medida_id
+            WHERE pd2.pedido_id = p.pedido_id
+              AND pd2.activo = 1
+            GROUP BY um2.codigo
+          ) x
+        ) cant
+
         WHERE
           (@cliente_id IS NULL OR p.cliente_id = @cliente_id)
           AND (@estado_pedido IS NULL OR p.estado_pedido = @estado_pedido)
@@ -146,7 +173,7 @@ const listarPedidos = async ({
       totalPaginas: Math.ceil(total / limit)
     }
   };
-};
+};    
 
 const obtenerPedidoCabeceraPorId = async (pedido_id) => {
   const pool = await getConnection();

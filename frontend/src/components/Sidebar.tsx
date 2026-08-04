@@ -1,16 +1,31 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { cerrarSesion, getUsuario } from '../services/api';
 
 function Sidebar() {
   const navigate = useNavigate();
+  const location = useLocation();
   const usuario = getUsuario();
 
-  const [pedidosAbierto, setPedidosAbierto] = useState(true);
+  const pedidosActivo = location.pathname.startsWith('/gestion/pedidos');
+
+  const [pedidosAbierto, setPedidosAbierto] = useState(pedidosActivo);
+
+  useEffect(() => {
+    if (pedidosActivo) {
+      setPedidosAbierto(true);
+    }
+  }, [pedidosActivo]);
 
   const handleLogout = () => {
     cerrarSesion();
     navigate('/login');
+  };
+
+  const linkClass = ({ isActive }: { isActive: boolean }) => {
+    return isActive
+      ? 'sidebar-link sidebar-link-active'
+      : 'sidebar-link';
   };
 
   return (
@@ -22,13 +37,25 @@ function Sidebar() {
       </p>
 
       <nav>
-        <Link to="/gestion">Inicio</Link>
-        <Link to="/gestion/clientes">Clientes</Link>
-        <Link to="/gestion/catalogos">Catálogos</Link>
+        <NavLink end to="/gestion" className={linkClass}>
+          Inicio
+        </NavLink>
+
+        <NavLink to="/gestion/clientes" className={linkClass}>
+          Clientes
+        </NavLink>
+
+        <NavLink to="/gestion/catalogos" className={linkClass}>
+          Catálogos
+        </NavLink>
 
         <button
           type="button"
-          className="sidebar-group-button"
+          className={
+            pedidosActivo
+              ? 'sidebar-group-button sidebar-group-active'
+              : 'sidebar-group-button'
+          }
           onClick={() => setPedidosAbierto(!pedidosAbierto)}
         >
           Pedidos {pedidosAbierto ? '▾' : '▸'}
@@ -36,16 +63,35 @@ function Sidebar() {
 
         {pedidosAbierto && (
           <div className="sidebar-submenu">
-            <Link to="/gestion/pedidos">Pedidos totales</Link>
-            <Link to="/gestion/pedidos/registrar">Registrar pedido</Link>
+            <NavLink end to="/gestion/pedidos" className={linkClass}>
+              Pedidos totales
+            </NavLink>
+
+            <NavLink to="/gestion/pedidos/registrar" className={linkClass}>
+              Registrar pedido
+            </NavLink>
           </div>
         )}
 
-        <Link to="/gestion/entregas">Registro de Entregas</Link>
-        <Link to="/gestion/depositos">Registro de Depósitos</Link>
-        <Link to="/gestion/proveedores">Proveedores</Link>
-        <Link to="/gestion/compras">Registro de Compras</Link>
-        <Link to="/gestion/gastos">Registro de Gastos</Link>
+        <NavLink to="/gestion/entregas" className={linkClass}>
+          Registro de Entregas
+        </NavLink>
+
+        <NavLink to="/gestion/depositos" className={linkClass}>
+          Registro de Depósitos
+        </NavLink>
+
+        <NavLink to="/gestion/proveedores" className={linkClass}>
+          Proveedores
+        </NavLink>
+
+        <NavLink to="/gestion/compras" className={linkClass}>
+          Registro de Compras
+        </NavLink>
+
+        <NavLink to="/gestion/gastos" className={linkClass}>
+          Registro de Gastos
+        </NavLink>
       </nav>
 
       <button onClick={handleLogout} className="btn-logout">
