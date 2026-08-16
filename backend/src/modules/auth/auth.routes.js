@@ -2,6 +2,7 @@ const express = require('express');
 
 const {
   login,
+  obtenerRoles,
   crearUsuarioAdmin
 } = require('./auth.controller');
 
@@ -16,6 +17,13 @@ const {
 const router = express.Router();
 
 router.post('/login', login);
+
+router.get(
+  '/roles',
+  verificarToken,
+  permitirRoles('ADMIN'),
+  obtenerRoles
+);
 
 router.post(
   '/usuarios',

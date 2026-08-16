@@ -4,6 +4,7 @@ const generarToken = require('../../utils/generarToken');
 const {
   buscarUsuarioPorCorreo,
   obtenerRolesPorUsuario,
+  listarRolesActivos,
   crearUsuario
 } = require('./auth.model');
 
@@ -17,7 +18,7 @@ const login = async (req, res) => {
       });
     }
 
-    const usuario = await buscarUsuarioPorCorreo(correo);
+    const usuario = await buscarUsuarioPorCorreo(correo.trim().toLowerCase());
 
     if (!usuario) {
       return res.status(401).json({
@@ -61,15 +62,33 @@ const login = async (req, res) => {
     });
   } catch (error) {
     console.error('Error login:', error.message);
+
     res.status(500).json({
       mensaje: 'Error interno al iniciar sesión'
     });
   }
 };
 
+const obtenerRoles = async (req, res) => {
+  try {
+    const roles = await listarRolesActivos();
+
+    res.json({
+      mensaje: 'Roles obtenidos correctamente',
+      roles
+    });
+  } catch (error) {
+    console.error('Error obtener roles:', error.message);
+
+    res.status(500).json({
+      mensaje: 'Error interno al obtener roles'
+    });
+  }
+};
+
 const crearUsuarioAdmin = async (req, res) => {
   try {
-    const {
+    let {
       nombre_completo,
       correo,
       password,
@@ -79,6 +98,15 @@ const crearUsuarioAdmin = async (req, res) => {
     if (!nombre_completo || !correo || !password || !rol_id) {
       return res.status(400).json({
         mensaje: 'Nombre, correo, contraseña y rol son obligatorios'
+      });
+    }
+
+    nombre_completo = nombre_completo.trim();
+    correo = correo.trim().toLowerCase();
+
+    if (password.length < 8) {
+      return res.status(400).json({
+        mensaje: 'La contraseña debe tener mínimo 8 caracteres'
       });
     }
 
@@ -97,7 +125,7 @@ const crearUsuarioAdmin = async (req, res) => {
       nombre_completo,
       correo,
       password_hash,
-      rol_id,
+      rol_id: Number(rol_id),
       created_by_usuario_id: req.usuario.usuario_id
     });
 
@@ -107,6 +135,7 @@ const crearUsuarioAdmin = async (req, res) => {
     });
   } catch (error) {
     console.error('Error crear usuario:', error.message);
+
     res.status(500).json({
       mensaje: 'Error interno al crear usuario'
     });
@@ -115,5 +144,6 @@ const crearUsuarioAdmin = async (req, res) => {
 
 module.exports = {
   login,
+  obtenerRoles,
   crearUsuarioAdmin
 };

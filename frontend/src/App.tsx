@@ -19,6 +19,7 @@ import ClientesLista from './pages/clientes/ClientesLista';
 import RegistrarCliente from './pages/clientes/RegistrarCliente';
 import EditarCliente from './pages/clientes/EditarCliente';
 import HistorialPreciosCliente from './pages/clientes/HistorialPreciosCliente';
+import UsuariosAdmin from './pages/usuarios/UsuariosAdmin';
 
 import ProtectedRoute from './components/ProtectedRoute';
 import GestionLayout from './layouts/GestionLayout';
@@ -40,18 +41,33 @@ function App() {
           }
         >
           <Route index element={<Dashboard />} />
+
+          <Route
+            path="usuarios"
+            element={
+              <ProtectedRoute rolesPermitidos={['ADMIN']}>
+                <UsuariosAdmin />
+              </ProtectedRoute>
+            }
+          />
+
           <Route path="catalogos" element={<Catalogos />} />
+
           <Route path="pedidos" element={<PedidosLista />} />
           <Route path="pedidos/registrar" element={<RegistrarPedido />} />
           <Route path="pedidos/:pedido_id" element={<PedidoDetalle />} />
           <Route path="pedidos/:pedido_id/editar" element={<EditarPedido />} />
+
           <Route path="entregas" element={<Entregas />} />
           <Route path="entregas/:pedido_id" element={<EntregaPedidoDetalle />} />
+
           <Route path="depositos" element={<Depositos />} />
-          <Route path="depositos/:pedido_id" element={<DepositoPedidoDetalle />} />  
+          <Route path="depositos/:pedido_id" element={<DepositoPedidoDetalle />} />
+
           <Route path="proveedores" element={<Proveedores />} />
           <Route path="compras" element={<Compras />} />
           <Route path="gastos" element={<Gastos />} />
+
           <Route path="clientes" element={<ClientesLista />} />
           <Route path="clientes/registrar" element={<RegistrarCliente />} />
           <Route path="clientes/precios" element={<HistorialPreciosCliente />} />

@@ -27,12 +27,30 @@ const obtenerRolesPorUsuario = async (usuario_id) => {
     .query(`
       SELECT r.nombre
       FROM auth.UsuarioRol ur
-      INNER JOIN auth.Rol r ON ur.rol_id = r.rol_id
+      INNER JOIN auth.Rol r 
+        ON ur.rol_id = r.rol_id
       WHERE ur.usuario_id = @usuario_id
         AND r.activo = 1;
     `);
 
   return result.recordset.map((row) => row.nombre);
+};
+
+const listarRolesActivos = async () => {
+  const pool = await getConnection();
+
+  const result = await pool.request()
+    .query(`
+      SELECT
+        rol_id,
+        nombre,
+        descripcion
+      FROM auth.Rol
+      WHERE activo = 1
+      ORDER BY nombre ASC;
+    `);
+
+  return result.recordset;
 };
 
 const crearUsuario = async ({
@@ -63,7 +81,12 @@ const crearUsuario = async ({
           password_hash,
           created_by_usuario_id
         )
-        OUTPUT INSERTED.usuario_id, INSERTED.nombre_completo, INSERTED.correo
+        OUTPUT 
+          INSERTED.usuario_id, 
+          INSERTED.nombre_completo, 
+          INSERTED.correo,
+          INSERTED.activo,
+          INSERTED.created_at
         VALUES (
           @nombre_completo,
           @correo,
@@ -80,8 +103,14 @@ const crearUsuario = async ({
       .input('usuario_id', sql.Int, nuevoUsuario.usuario_id)
       .input('rol_id', sql.Int, rol_id)
       .query(`
-        INSERT INTO auth.UsuarioRol (usuario_id, rol_id)
-        VALUES (@usuario_id, @rol_id);
+        INSERT INTO auth.UsuarioRol (
+          usuario_id, 
+          rol_id
+        )
+        VALUES (
+          @usuario_id, 
+          @rol_id
+        );
       `);
 
     await transaction.commit();
@@ -96,5 +125,6 @@ const crearUsuario = async ({
 module.exports = {
   buscarUsuarioPorCorreo,
   obtenerRolesPorUsuario,
+  listarRolesActivos,
   crearUsuario
 };

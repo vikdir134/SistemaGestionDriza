@@ -7,6 +7,8 @@ function Sidebar() {
   const location = useLocation();
   const usuario = getUsuario();
 
+  const esAdmin = usuario?.roles?.includes('ADMIN');
+
   const pedidosActivo = location.pathname.startsWith('/gestion/pedidos');
 
   const [pedidosAbierto, setPedidosAbierto] = useState(pedidosActivo);
@@ -40,6 +42,12 @@ function Sidebar() {
         <NavLink end to="/gestion" className={linkClass}>
           Inicio
         </NavLink>
+
+        {esAdmin && (
+          <NavLink to="/gestion/usuarios" className={linkClass}>
+            Usuarios
+          </NavLink>
+        )}
 
         <NavLink to="/gestion/clientes" className={linkClass}>
           Clientes
