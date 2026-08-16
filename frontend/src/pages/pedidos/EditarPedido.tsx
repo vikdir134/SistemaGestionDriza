@@ -25,7 +25,7 @@ function EditarPedido() {
   const [dialogAbierto, setDialogAbierto] = useState(false);
 
   const [feedback, setFeedback] = useState({
-    tipo: 'info' as 'success' | 'error' | 'info',
+    tipo: 'info' as 'success' | 'error' | 'info' | 'warning',
     mensaje: ''
   });
 
@@ -75,7 +75,8 @@ function EditarPedido() {
       cliente_id: String(pedidoActual.cliente_id),
       codigo_pedido: pedidoActual.codigo_pedido || '',
       fecha_pedido: pedidoActual.fecha_pedido?.slice(0, 10) || '',
-      fecha_entrega_estimada: pedidoActual.fecha_entrega_estimada?.slice(0, 10) || '',
+      fecha_entrega_estimada:
+        pedidoActual.fecha_entrega_estimada?.slice(0, 10) || '',
       descripcion_pedido: pedidoActual.descripcion_pedido || '',
       motivo_cambio: ''
     });
@@ -97,7 +98,9 @@ function EditarPedido() {
   }, [pedido_id]);
 
   const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    e: ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
   ) => {
     setForm({
       ...form,
@@ -139,23 +142,31 @@ function EditarPedido() {
         cliente_id: Number(form.cliente_id),
         codigo_pedido: form.codigo_pedido || null,
         fecha_pedido: form.fecha_pedido,
-        fecha_entrega_estimada: form.fecha_entrega_estimada || null,
+        fecha_entrega_estimada:
+          form.fecha_entrega_estimada || null,
         descripcion_pedido: form.descripcion_pedido,
         motivo_cambio: form.motivo_cambio,
+
         nuevos_detalles: detallesValidos.map((item) => ({
           tipo_producto_id: Number(item.tipo_producto_id),
           medida_id: Number(item.medida_id),
           color_id: Number(item.color_id),
           material_id: Number(item.material_id),
+
           cantidad_pedida: Number(item.cantidad_pedida),
+
           unidad_medida_id: Number(item.unidad_medida_id),
+
           cantidad_presentacion: item.cantidad_presentacion
             ? Number(item.cantidad_presentacion)
             : null,
+
           unidad_presentacion_id: item.unidad_presentacion_id
             ? Number(item.unidad_presentacion_id)
             : null,
+
           precio_unitario: Number(item.precio_unitario),
+
           moneda_codigo: item.moneda_codigo,
           descripcion_item: item.descripcion_item,
           observacion: item.observacion
@@ -175,7 +186,6 @@ function EditarPedido() {
       setTimeout(() => {
         navigate(`/gestion/pedidos/${pedido_id}`);
       }, 800);
-
     } catch (error: any) {
       setFeedback({
         tipo: 'error',
@@ -185,8 +195,14 @@ function EditarPedido() {
   };
 
   const claseEstadoEntrega = (estado: string) => {
-    if (estado === 'COMPLETO') return 'estado estado-completo';
-    if (estado === 'PARCIAL') return 'estado estado-parcial';
+    if (estado === 'COMPLETO') {
+      return 'estado estado-completo';
+    }
+
+    if (estado === 'PARCIAL') {
+      return 'estado estado-parcial';
+    }
+
     return 'estado estado-pendiente';
   };
 
@@ -196,10 +212,18 @@ function EditarPedido() {
         <FeedbackToast
           tipo={feedback.tipo}
           mensaje={feedback.mensaje}
-          onClose={() => setFeedback({ ...feedback, mensaje: '' })}
+          onClose={() =>
+            setFeedback({
+              ...feedback,
+              mensaje: ''
+            })
+          }
         />
 
-        <Link to="/gestion/pedidos" className="btn-volver">
+        <Link
+          to="/gestion/pedidos"
+          className="btn-volver"
+        >
           ← Volver a pedidos
         </Link>
 
@@ -213,7 +237,12 @@ function EditarPedido() {
       <FeedbackToast
         tipo={feedback.tipo}
         mensaje={feedback.mensaje}
-        onClose={() => setFeedback({ ...feedback, mensaje: '' })}
+        onClose={() =>
+          setFeedback({
+            ...feedback,
+            mensaje: ''
+          })
+        }
       />
 
       <ConfirmDialog
@@ -225,35 +254,55 @@ function EditarPedido() {
         onCerrar={() => setDialogAbierto(false)}
       />
 
-      <Link to={`/gestion/pedidos/${pedido_id}`} className="btn-volver">
+      <Link
+        to={`/gestion/pedidos/${pedido_id}`}
+        className="btn-volver"
+      >
         ← Volver al detalle
       </Link>
 
       <div className="pedidos-header">
         <div>
-          <h1>Editar pedido #{pedido.pedido_id}</h1>
-          <p>Edita la cabecera del pedido o agrega nuevos productos con motivo.</p>
+          <h1>
+            Editar pedido #{pedido.pedido_id}
+          </h1>
+
+          <p>
+            Edita la cabecera del pedido o agrega
+            nuevos productos con motivo.
+          </p>
         </div>
       </div>
 
-      <form className="form-card pedido-form" onSubmit={prepararEdicion}>
+      <form
+        className="form-card pedido-form"
+        onSubmit={prepararEdicion}
+      >
         <h3>Datos actuales del pedido</h3>
 
         <label>Cliente</label>
+
         <select
           name="cliente_id"
           value={form.cliente_id}
           onChange={handleChange}
         >
-          <option value="">Seleccione cliente</option>
+          <option value="">
+            Seleccione cliente
+          </option>
+
           {clientes.map((cliente) => (
-            <option key={cliente.cliente_id} value={cliente.cliente_id}>
+            <option
+              key={cliente.cliente_id}
+              value={cliente.cliente_id}
+            >
               {cliente.razon_social} - {cliente.ruc}
             </option>
           ))}
         </select>
 
         <label>Código de pedido</label>
+
         <input
           name="codigo_pedido"
           value={form.codigo_pedido}
@@ -262,6 +311,7 @@ function EditarPedido() {
         />
 
         <label>Fecha de pedido</label>
+
         <input
           type="date"
           name="fecha_pedido"
@@ -270,6 +320,7 @@ function EditarPedido() {
         />
 
         <label>Fecha de entrega estimada</label>
+
         <input
           type="date"
           name="fecha_entrega_estimada"
@@ -278,6 +329,7 @@ function EditarPedido() {
         />
 
         <label>Descripción del pedido</label>
+
         <textarea
           name="descripcion_pedido"
           value={form.descripcion_pedido}
@@ -286,6 +338,7 @@ function EditarPedido() {
         />
 
         <label>Motivo del cambio</label>
+
         <textarea
           name="motivo_cambio"
           value={form.motivo_cambio}
@@ -310,31 +363,63 @@ function EditarPedido() {
             </thead>
 
             <tbody>
-              {pedido.detalles.map((detalle: any) => (
-                <tr key={detalle.pedido_detalle_id}>
-                  <td>
-                    <strong>
-                      {detalle.tipo_producto} {detalle.material} {detalle.medida} {detalle.color}
-                    </strong>
-                    <br />
-                    <span className="muted">{detalle.descripcion_item || '-'}</span>
-                  </td>
+              {pedido.detalles.map(
+                (detalle: any) => (
+                  <tr
+                    key={
+                      detalle.pedido_detalle_id
+                    }
+                  >
+                    <td>
+                      <strong>
+                        {detalle.tipo_producto}{' '}
+                        {detalle.material}{' '}
+                        {detalle.medida}{' '}
+                        {detalle.color}
+                      </strong>
 
-                  <td>{detalle.cantidad_pedida} {detalle.unidad}</td>
-                  <td>{detalle.cantidad_entregada} {detalle.unidad}</td>
-                  <td>{detalle.cantidad_pendiente} {detalle.unidad}</td>
+                      <br />
 
-                  <td>
-                    {Number(detalle.precio_unitario).toFixed(2)} {detalle.moneda_codigo}
-                  </td>
+                      <span className="muted">
+                        {detalle.descripcion_item ||
+                          '-'}
+                      </span>
+                    </td>
 
-                  <td>
-                    <span className={claseEstadoEntrega(detalle.estado_entrega)}>
-                      {detalle.estado_entrega}
-                    </span>
-                  </td>
-                </tr>
-              ))}
+                    <td>
+                      {detalle.cantidad_pedida}{' '}
+                      {detalle.unidad}
+                    </td>
+
+                    <td>
+                      {detalle.cantidad_entregada}{' '}
+                      {detalle.unidad}
+                    </td>
+
+                    <td>
+                      {detalle.cantidad_pendiente}{' '}
+                      {detalle.unidad}
+                    </td>
+
+                    <td>
+                      {Number(
+                        detalle.precio_unitario
+                      ).toFixed(2)}{' '}
+                      {detalle.moneda_codigo}
+                    </td>
+
+                    <td>
+                      <span
+                        className={claseEstadoEntrega(
+                          detalle.estado_entrega
+                        )}
+                      >
+                        {detalle.estado_entrega}
+                      </span>
+                    </td>
+                  </tr>
+                )
+              )}
             </tbody>
           </table>
         </div>
@@ -349,9 +434,9 @@ function EditarPedido() {
           unidades={unidades}
           titulo="Agregar nuevos productos opcionales"
           textoBotonAgregar="+ Agregar otro producto nuevo"
-          onMensaje={(mensaje) =>
+          onFeedback={(tipo, mensaje) =>
             setFeedback({
-              tipo: 'error',
+              tipo,
               mensaje
             })
           }

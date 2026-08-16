@@ -4,7 +4,6 @@ import './styles/pedidos.css';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Catalogos from './pages/Catalogos';
-import Productos from './pages/Productos';
 import PedidosLista from './pages/pedidos/PedidosLista';
 import RegistrarPedido from './pages/pedidos/RegistrarPedido';
 import PedidoDetalle from './pages/pedidos/PedidoDetalle';
