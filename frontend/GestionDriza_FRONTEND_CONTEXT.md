@@ -7,10 +7,10 @@
 
 - Proyecto: GestionDriza
 - Componente: Frontend
-- Fecha de generación: 2026-08-23 13:41:12
+- Fecha de generación: 2026-08-23 14:53:31
 - Branch Git: main
-- Commit Git: 192849096803e0725003aa13ebbfeeb820760f6e
-- Cantidad de archivos incluidos: 47
+- Commit Git: b910c5f68611c176b67f80b23b3d8fc7e3a265c5
+- Cantidad de archivos incluidos: 48
 
 ---
 
@@ -32,6 +32,7 @@
 - src\components\pedidos\PedidoItemsEditor.tsx
 - src\components\ProtectedRoute.tsx
 - src\components\Sidebar.tsx
+- src\hooks\useBloqueoAccion.ts
 - src\index.css
 - src\layouts\GestionLayout.tsx
 - src\main.tsx
@@ -704,6 +705,8 @@ type ConfirmDialogProps = {
   titulo: string;
   descripcion: string;
   textoConfirmar?: string;
+  textoProcesando?: string;
+  procesando?: boolean;
   onConfirmar: () => void;
   onCerrar: () => void;
 };
@@ -713,6 +716,8 @@ function ConfirmDialog({
   titulo,
   descripcion,
   textoConfirmar = 'Confirmar',
+  textoProcesando = 'Procesando...',
+  procesando = false,
   onConfirmar,
   onCerrar
 }: ConfirmDialogProps) {
@@ -725,12 +730,23 @@ function ConfirmDialog({
         <p>{descripcion}</p>
 
         <div className="dialog-actions">
-          <button type="button" className="btn-secondary" onClick={onCerrar}>
+          <button
+            type="button"
+            className="btn-secondary"
+            onClick={onCerrar}
+            disabled={procesando}
+          >
             Cancelar
           </button>
 
-          <button type="button" onClick={onConfirmar}>
-            {textoConfirmar}
+          <button
+            type="button"
+            onClick={onConfirmar}
+            disabled={procesando}
+          >
+            {procesando
+              ? textoProcesando
+              : textoConfirmar}
           </button>
         </div>
       </div>
@@ -1287,6 +1303,44 @@ function Sidebar() {
 }
 
 export default Sidebar;
+
+<<<END OF FILE>>>
+
+
+---
+
+## FILE: src\hooks\useBloqueoAccion.ts
+
+<<<START OF FILE>>>
+
+import { useRef, useState } from 'react';
+
+export function useBloqueoAccion() {
+  const bloqueoRef = useRef(false);
+  const [procesando, setProcesando] = useState(false);
+
+  const intentarBloquear = () => {
+    if (bloqueoRef.current) {
+      return false;
+    }
+
+    bloqueoRef.current = true;
+    setProcesando(true);
+
+    return true;
+  };
+
+  const liberar = () => {
+    bloqueoRef.current = false;
+    setProcesando(false);
+  };
+
+  return {
+    procesando,
+    intentarBloquear,
+    liberar
+  };
+}
 
 <<<END OF FILE>>>
 
@@ -3049,6 +3103,7 @@ export default RegistrarCliente;
 
 import { useEffect, useState } from 'react';
 import { apiFetch } from '../services/api';
+import { useBloqueoAccion } from '../hooks/useBloqueoAccion';
 
 type DetalleCompraForm = {
   material_id: string;
@@ -3076,6 +3131,7 @@ function Compras() {
   const [busqueda, setBusqueda] = useState('');
 
   const [page, setPage] = useState(1);
+
   const [paginacion, setPaginacion] = useState({
     page: 1,
     limit: 10,
@@ -3097,6 +3153,19 @@ function Compras() {
   const [detalles, setDetalles] = useState<DetalleCompraForm[]>([
     { ...detalleVacio }
   ]);
+
+  /*
+   * Protección contra múltiples registros.
+   *
+   * - registrandoCompra controla el estado visual.
+   * - bloquearCompra evita que se ejecute otro POST.
+   * - liberarCompra permite volver a intentar cuando termina.
+   */
+  const {
+    procesando: registrandoCompra,
+    intentarBloquear: bloquearCompra,
+    liberar: liberarCompra
+  } = useBloqueoAccion();
 
   const cargarCatalogosBase = async () => {
     const [
@@ -3125,14 +3194,22 @@ function Compras() {
     params.append('limit', '10');
 
     if (proveedorActual) {
-      params.append('proveedor_id', proveedorActual);
+      params.append(
+        'proveedor_id',
+        proveedorActual
+      );
     }
 
     if (busquedaActual.trim()) {
-      params.append('q', busquedaActual.trim());
+      params.append(
+        'q',
+        busquedaActual.trim()
+      );
     }
 
-    const comprasData = await apiFetch(`/compras?${params.toString()}`);
+    const comprasData = await apiFetch(
+      `/compras?${params.toString()}`
+    );
 
     setCompras(comprasData.compras);
     setPaginacion(comprasData.paginacion);
@@ -3143,6 +3220,7 @@ function Compras() {
       try {
         await cargarCatalogosBase();
         await cargarCompras(1);
+
       } catch (error: any) {
         setError(error.message);
       }
@@ -3155,6 +3233,7 @@ function Compras() {
     const cargar = async () => {
       try {
         await cargarCompras(page);
+
       } catch (error: any) {
         setError(error.message);
       }
@@ -3164,7 +3243,11 @@ function Compras() {
   }, [page, proveedorFiltro]);
 
   const handleCompraChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement |
+      HTMLSelectElement |
+      HTMLTextAreaElement
+    >
   ) => {
     setForm({
       ...form,
@@ -3174,7 +3257,10 @@ function Compras() {
 
   const handleDetalleChange = (
     index: number,
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement |
+      HTMLSelectElement
+    >
   ) => {
     const nuevosDetalles = [...detalles];
 
@@ -3187,25 +3273,50 @@ function Compras() {
   };
 
   const agregarDetalle = () => {
-    setDetalles([...detalles, { ...detalleVacio }]);
-  };
-
-  const quitarDetalle = (index: number) => {
-    if (detalles.length === 1) {
-      setError('La compra debe tener al menos un item');
+    if (registrandoCompra) {
       return;
     }
 
-    setDetalles(detalles.filter((_, i) => i !== index));
+    setDetalles([
+      ...detalles,
+      { ...detalleVacio }
+    ]);
+  };
+
+  const quitarDetalle = (index: number) => {
+    if (registrandoCompra) {
+      return;
+    }
+
+    if (detalles.length === 1) {
+      setError(
+        'La compra debe tener al menos un item'
+      );
+
+      return;
+    }
+
+    setDetalles(
+      detalles.filter((_, i) => i !== index)
+    );
   };
 
   const calcularTotal = () => {
-    return detalles.reduce((total, item) => {
-      return total + Number(item.cantidad || 0) * Number(item.precio_unitario || 0);
-    }, 0);
+    return detalles.reduce(
+      (total, item) => {
+        return (
+          total +
+          Number(item.cantidad || 0) *
+          Number(item.precio_unitario || 0)
+        );
+      },
+      0
+    );
   };
 
-  const aplicarBusqueda = async (e: React.FormEvent) => {
+  const aplicarBusqueda = async (
+    e: React.FormEvent
+  ) => {
     e.preventDefault();
 
     setError('');
@@ -3214,6 +3325,7 @@ function Compras() {
 
     try {
       await cargarCompras(1);
+
     } catch (error: any) {
       setError(error.message);
     }
@@ -3228,39 +3340,179 @@ function Compras() {
     setPage(1);
 
     try {
-      await cargarCompras(1, '', '');
+      await cargarCompras(
+        1,
+        '',
+        ''
+      );
+
     } catch (error: any) {
       setError(error.message);
     }
   };
 
-  const registrarCompra = async (e: React.FormEvent) => {
+  /*
+   * Validaciones antes de ejecutar el POST.
+   *
+   * Es importante validar ANTES de tomar
+   * el bloqueo de la operación.
+   */
+  const validarCompra = () => {
+    if (!form.proveedor_id) {
+      setError(
+        'Debe seleccionar un proveedor'
+      );
+
+      return false;
+    }
+
+    if (detalles.length === 0) {
+      setError(
+        'La compra debe tener al menos un item'
+      );
+
+      return false;
+    }
+
+    for (
+      let index = 0;
+      index < detalles.length;
+      index++
+    ) {
+      const item = detalles[index];
+
+      if (
+        !item.material_id &&
+        !item.descripcion_item.trim()
+      ) {
+        setError(
+          `El item ${index + 1} debe tener un material o una descripción`
+        );
+
+        return false;
+      }
+
+      if (
+        !item.cantidad ||
+        Number(item.cantidad) <= 0
+      ) {
+        setError(
+          `El item ${index + 1} debe tener una cantidad mayor a 0`
+        );
+
+        return false;
+      }
+
+      if (!item.unidad_medida_id) {
+        setError(
+          `El item ${index + 1} debe tener una unidad`
+        );
+
+        return false;
+      }
+
+      if (
+        !item.precio_unitario ||
+        Number(item.precio_unitario) <= 0
+      ) {
+        setError(
+          `El item ${index + 1} debe tener un precio unitario mayor a 0`
+        );
+
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  const registrarCompra = async (
+    e: React.FormEvent
+  ) => {
     e.preventDefault();
 
     setError('');
     setMensaje('');
 
+    /*
+     * Primero validamos.
+     *
+     * Si existe un error todavía no tomamos
+     * el bloqueo.
+     */
+    if (!validarCompra()) {
+      return;
+    }
+
+    /*
+     * Protección inmediata.
+     *
+     * Si ya existe una compra procesándose,
+     * ignoramos cualquier nuevo submit.
+     */
+    if (!bloquearCompra()) {
+      return;
+    }
+
+    let compraRegistrada = false;
+
     try {
       await apiFetch('/compras', {
         method: 'POST',
+
         body: JSON.stringify({
-          proveedor_id: Number(form.proveedor_id),
-          fecha_compra: form.fecha_compra || undefined,
-          numero_documento: form.numero_documento,
-          moneda_codigo: form.moneda_codigo,
-          descripcion: form.descripcion,
-          detalles: detalles.map((item) => ({
-            material_id: item.material_id ? Number(item.material_id) : null,
-            descripcion_item: item.descripcion_item,
-            cantidad: Number(item.cantidad),
-            unidad_medida_id: Number(item.unidad_medida_id),
-            precio_unitario: Number(item.precio_unitario)
-          }))
+          proveedor_id:
+            Number(form.proveedor_id),
+
+          fecha_compra:
+            form.fecha_compra || undefined,
+
+          numero_documento:
+            form.numero_documento,
+
+          moneda_codigo:
+            form.moneda_codigo,
+
+          descripcion:
+            form.descripcion,
+
+          detalles:
+            detalles.map((item) => ({
+              material_id:
+                item.material_id
+                  ? Number(item.material_id)
+                  : null,
+
+              descripcion_item:
+                item.descripcion_item,
+
+              cantidad:
+                Number(item.cantidad),
+
+              unidad_medida_id:
+                Number(item.unidad_medida_id),
+
+              precio_unitario:
+                Number(item.precio_unitario)
+            }))
         })
       });
 
-      setMensaje('Compra registrada correctamente');
+      /*
+       * Desde este punto sabemos que
+       * el POST fue exitoso.
+       */
+      compraRegistrada = true;
 
+      setMensaje(
+        'Compra registrada correctamente'
+      );
+
+      /*
+       * Limpiamos el formulario solamente
+       * después de que el backend confirmó
+       * la creación.
+       */
       setForm({
         proveedor_id: '',
         fecha_compra: '',
@@ -3269,198 +3521,386 @@ function Compras() {
         descripcion: ''
       });
 
-      setDetalles([{ ...detalleVacio }]);
+      setDetalles([
+        { ...detalleVacio }
+      ]);
 
       setPage(1);
-      await cargarCompras(1);
+
+      /*
+       * La actualización del listado se maneja
+       * aparte del registro.
+       *
+       * Esto evita que una falla al recargar
+       * haga creer al usuario que la compra
+       * no fue registrada.
+       */
+      try {
+        await cargarCompras(
+          1,
+          proveedorFiltro,
+          busqueda
+        );
+
+      } catch (errorListado: any) {
+        console.error(
+          'La compra fue registrada, pero no se pudo actualizar el listado:',
+          errorListado.message
+        );
+
+        setError(
+          'La compra fue registrada correctamente, pero no se pudo actualizar el listado. Recarga la página para verla.'
+        );
+      }
 
     } catch (error: any) {
-      setError(error.message);
+      /*
+       * Este error corresponde únicamente
+       * al registro de la compra.
+       */
+      if (!compraRegistrada) {
+        setError(error.message);
+      }
+
+    } finally {
+      /*
+       * Una vez terminada toda la operación,
+       * permitimos un nuevo registro.
+       */
+      liberarCompra();
     }
   };
 
   return (
     <div>
       <h1>Compras</h1>
-      <p>Registra compras a proveedores con uno o varios items.</p>
 
-      {error && <div className="error">{error}</div>}
-      {mensaje && <div className="success">{mensaje}</div>}
+      <p>
+        Registra compras a proveedores con uno o varios items.
+      </p>
 
-      <form className="form-card pedido-form" onSubmit={registrarCompra}>
+      {error && (
+        <div className="error">
+          {error}
+        </div>
+      )}
+
+      {mensaje && (
+        <div className="success">
+          {mensaje}
+        </div>
+      )}
+
+      <form
+        className="form-card pedido-form"
+        onSubmit={registrarCompra}
+      >
         <h3>Registrar compra</h3>
 
         <label>Proveedor</label>
+
         <select
           name="proveedor_id"
           value={form.proveedor_id}
           onChange={handleCompraChange}
+          disabled={registrandoCompra}
         >
-          <option value="">Seleccione proveedor</option>
-          {proveedores.map((proveedor) => (
-            <option key={proveedor.proveedor_id} value={proveedor.proveedor_id}>
-              {proveedor.razon_social} - {proveedor.ruc}
-            </option>
-          ))}
+          <option value="">
+            Seleccione proveedor
+          </option>
+
+          {proveedores.map(
+            (proveedor) => (
+              <option
+                key={proveedor.proveedor_id}
+                value={proveedor.proveedor_id}
+              >
+                {proveedor.razon_social} - {proveedor.ruc}
+              </option>
+            )
+          )}
         </select>
 
         <label>Fecha de compra</label>
+
         <input
           type="date"
           name="fecha_compra"
           value={form.fecha_compra}
           onChange={handleCompraChange}
+          disabled={registrandoCompra}
         />
 
         <label>Número de documento</label>
+
         <input
           name="numero_documento"
           value={form.numero_documento}
           onChange={handleCompraChange}
           placeholder="Factura, boleta, guía, etc."
+          disabled={registrandoCompra}
         />
 
         <label>Moneda</label>
+
         <select
           name="moneda_codigo"
           value={form.moneda_codigo}
           onChange={handleCompraChange}
+          disabled={registrandoCompra}
         >
-          <option value="PEN">Soles</option>
-          <option value="USD">Dólares</option>
+          <option value="PEN">
+            Soles
+          </option>
+
+          <option value="USD">
+            Dólares
+          </option>
         </select>
 
         <label>Descripción</label>
+
         <textarea
           name="descripcion"
           value={form.descripcion}
           onChange={handleCompraChange}
           placeholder="Ejemplo: Compra de materia prima para producción"
           rows={3}
+          disabled={registrandoCompra}
         />
 
         <h3>Items de compra</h3>
 
-        {detalles.map((detalle, index) => (
-          <div className="detalle-card" key={index}>
-            <div className="detalle-header">
-              <strong>Item {index + 1}</strong>
+        {detalles.map(
+          (detalle, index) => (
+            <div
+              className="detalle-card"
+              key={index}
+            >
+              <div className="detalle-header">
+                <strong>
+                  Item {index + 1}
+                </strong>
 
-              <button
-                type="button"
-                className="btn-danger"
-                onClick={() => quitarDetalle(index)}
-              >
-                Quitar
-              </button>
-            </div>
+                <button
+                  type="button"
+                  className="btn-danger"
+                  onClick={() =>
+                    quitarDetalle(index)
+                  }
+                  disabled={registrandoCompra}
+                >
+                  Quitar
+                </button>
+              </div>
 
-            <div className="detalle-grid">
-              <select
-                name="material_id"
-                value={detalle.material_id}
-                onChange={(e) => handleDetalleChange(index, e)}
-              >
-                <option value="">Material opcional</option>
-                {materiales.map((material) => (
-                  <option key={material.id} value={material.id}>
-                    {material.nombre}
+              <div className="detalle-grid">
+                <select
+                  name="material_id"
+                  value={detalle.material_id}
+                  onChange={(e) =>
+                    handleDetalleChange(
+                      index,
+                      e
+                    )
+                  }
+                  disabled={registrandoCompra}
+                >
+                  <option value="">
+                    Material opcional
                   </option>
-                ))}
-              </select>
 
-              <input
-                name="descripcion_item"
-                value={detalle.descripcion_item}
-                onChange={(e) => handleDetalleChange(index, e)}
-                placeholder="Descripción del item"
-              />
+                  {materiales.map(
+                    (material) => (
+                      <option
+                        key={material.id}
+                        value={material.id}
+                      >
+                        {material.nombre}
+                      </option>
+                    )
+                  )}
+                </select>
 
-              <input
-                type="number"
-                name="cantidad"
-                value={detalle.cantidad}
-                onChange={(e) => handleDetalleChange(index, e)}
-                placeholder="Cantidad"
-              />
+                <input
+                  name="descripcion_item"
+                  value={
+                    detalle.descripcion_item
+                  }
+                  onChange={(e) =>
+                    handleDetalleChange(
+                      index,
+                      e
+                    )
+                  }
+                  placeholder="Descripción del item"
+                  disabled={registrandoCompra}
+                />
 
-              <select
-                name="unidad_medida_id"
-                value={detalle.unidad_medida_id}
-                onChange={(e) => handleDetalleChange(index, e)}
-              >
-                <option value="">Unidad</option>
-                {unidades.map((unidad) => (
-                  <option key={unidad.unidad_medida_id} value={unidad.unidad_medida_id}>
-                    {unidad.codigo}
+                <input
+                  type="number"
+                  name="cantidad"
+                  value={detalle.cantidad}
+                  onChange={(e) =>
+                    handleDetalleChange(
+                      index,
+                      e
+                    )
+                  }
+                  placeholder="Cantidad"
+                  min="0"
+                  step="any"
+                  disabled={registrandoCompra}
+                />
+
+                <select
+                  name="unidad_medida_id"
+                  value={
+                    detalle.unidad_medida_id
+                  }
+                  onChange={(e) =>
+                    handleDetalleChange(
+                      index,
+                      e
+                    )
+                  }
+                  disabled={registrandoCompra}
+                >
+                  <option value="">
+                    Unidad
                   </option>
-                ))}
-              </select>
 
-              <input
-                type="number"
-                name="precio_unitario"
-                value={detalle.precio_unitario}
-                onChange={(e) => handleDetalleChange(index, e)}
-                placeholder="Precio unitario"
-              />
+                  {unidades.map(
+                    (unidad) => (
+                      <option
+                        key={
+                          unidad.unidad_medida_id
+                        }
+                        value={
+                          unidad.unidad_medida_id
+                        }
+                      >
+                        {unidad.codigo}
+                      </option>
+                    )
+                  )}
+                </select>
 
-              <input
-                value={(
-                  Number(detalle.cantidad || 0) *
-                  Number(detalle.precio_unitario || 0)
-                ).toFixed(2)}
-                disabled
-                placeholder="Subtotal"
-              />
+                <input
+                  type="number"
+                  name="precio_unitario"
+                  value={
+                    detalle.precio_unitario
+                  }
+                  onChange={(e) =>
+                    handleDetalleChange(
+                      index,
+                      e
+                    )
+                  }
+                  placeholder="Precio unitario"
+                  min="0"
+                  step="any"
+                  disabled={registrandoCompra}
+                />
+
+                <input
+                  value={(
+                    Number(
+                      detalle.cantidad || 0
+                    ) *
+                    Number(
+                      detalle.precio_unitario || 0
+                    )
+                  ).toFixed(2)}
+                  disabled
+                  placeholder="Subtotal"
+                />
+              </div>
             </div>
-          </div>
-        ))}
+          )
+        )}
 
-        <button type="button" onClick={agregarDetalle}>
+        <button
+          type="button"
+          onClick={agregarDetalle}
+          disabled={registrandoCompra}
+        >
           + Agregar item
         </button>
 
         <div className="total-box">
-          Total compra: {calcularTotal().toFixed(2)} {form.moneda_codigo}
+          Total compra:{' '}
+          {calcularTotal().toFixed(2)}{' '}
+          {form.moneda_codigo}
         </div>
 
-        <button type="submit">
-          Guardar compra
+        <button
+          type="submit"
+          disabled={registrandoCompra}
+        >
+          {registrandoCompra
+            ? 'Registrando compra...'
+            : 'Guardar compra'}
         </button>
       </form>
 
-      <form className="filtros-card" onSubmit={aplicarBusqueda}>
+      <form
+        className="filtros-card"
+        onSubmit={aplicarBusqueda}
+      >
         <div>
           <label>Proveedor</label>
+
           <select
             value={proveedorFiltro}
             onChange={(e) => {
-              setProveedorFiltro(e.target.value);
+              setProveedorFiltro(
+                e.target.value
+              );
+
               setPage(1);
             }}
           >
-            <option value="">Todos los proveedores</option>
-            {proveedores.map((proveedor) => (
-              <option key={proveedor.proveedor_id} value={proveedor.proveedor_id}>
-                {proveedor.razon_social} - {proveedor.ruc}
-              </option>
-            ))}
+            <option value="">
+              Todos los proveedores
+            </option>
+
+            {proveedores.map(
+              (proveedor) => (
+                <option
+                  key={proveedor.proveedor_id}
+                  value={proveedor.proveedor_id}
+                >
+                  {proveedor.razon_social} - {proveedor.ruc}
+                </option>
+              )
+            )}
           </select>
         </div>
 
         <div>
           <label>Buscar</label>
+
           <input
             value={busqueda}
-            onChange={(e) => setBusqueda(e.target.value)}
+            onChange={(e) =>
+              setBusqueda(e.target.value)
+            }
             placeholder="Proveedor, RUC, documento o descripción"
           />
         </div>
 
         <div className="filtros-actions">
-          <button type="submit">Buscar</button>
-          <button type="button" className="btn-secondary" onClick={limpiarFiltros}>
+          <button type="submit">
+            Buscar
+          </button>
+
+          <button
+            type="button"
+            className="btn-secondary"
+            onClick={limpiarFiltros}
+          >
             Limpiar
           </button>
         </div>
@@ -3484,22 +3924,59 @@ function Compras() {
           </thead>
 
           <tbody>
-            {compras.map((compra) => (
-              <tr key={compra.compra_id}>
-                <td>#{compra.compra_id}</td>
-                <td>{compra.razon_social}</td>
-                <td>{compra.fecha_compra?.slice(0, 10)}</td>
-                <td>{compra.numero_documento || '-'}</td>
-                <td>{Number(compra.monto_total).toFixed(2)}</td>
-                <td>{compra.moneda_codigo}</td>
-                <td>{compra.cantidad_items}</td>
-                <td>{compra.registrado_por}</td>
-              </tr>
-            ))}
+            {compras.map(
+              (compra) => (
+                <tr
+                  key={compra.compra_id}
+                >
+                  <td>
+                    #{compra.compra_id}
+                  </td>
+
+                  <td>
+                    {compra.razon_social}
+                  </td>
+
+                  <td>
+                    {compra.fecha_compra?.slice(
+                      0,
+                      10
+                    )}
+                  </td>
+
+                  <td>
+                    {
+                      compra.numero_documento ||
+                      '-'
+                    }
+                  </td>
+
+                  <td>
+                    {Number(
+                      compra.monto_total
+                    ).toFixed(2)}
+                  </td>
+
+                  <td>
+                    {compra.moneda_codigo}
+                  </td>
+
+                  <td>
+                    {compra.cantidad_items}
+                  </td>
+
+                  <td>
+                    {compra.registrado_por}
+                  </td>
+                </tr>
+              )
+            )}
 
             {compras.length === 0 && (
               <tr>
-                <td colSpan={8}>No hay compras registradas.</td>
+                <td colSpan={8}>
+                  No hay compras registradas.
+                </td>
               </tr>
             )}
           </tbody>
@@ -3509,19 +3986,27 @@ function Compras() {
           <button
             type="button"
             disabled={page <= 1}
-            onClick={() => setPage(page - 1)}
+            onClick={() =>
+              setPage(page - 1)
+            }
           >
             Anterior
           </button>
 
           <span>
-            Página {paginacion.page} de {paginacion.totalPaginas || 1}
+            Página {paginacion.page} de{' '}
+            {paginacion.totalPaginas || 1}
           </span>
 
           <button
             type="button"
-            disabled={page >= paginacion.totalPaginas}
-            onClick={() => setPage(page + 1)}
+            disabled={
+              page >=
+              paginacion.totalPaginas
+            }
+            onClick={() =>
+              setPage(page + 1)
+            }
           >
             Siguiente
           </button>
@@ -3586,10 +4071,16 @@ export default Dashboard;
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { apiFetch } from '../services/api';
+import { useBloqueoAccion } from '../hooks/useBloqueoAccion';
 
 function DepositoPedidoDetalle() {
   const { pedido_id } = useParams();
-
+  const {
+    procesando: registrandoDeposito,
+    intentarBloquear: bloquearDeposito,
+    liberar: liberarDeposito
+  } = useBloqueoAccion();
+  
   const [pedido, setPedido] = useState<any | null>(null);
   const [tiposDeposito, setTiposDeposito] = useState<any[]>([]);
 
@@ -3648,49 +4139,67 @@ function DepositoPedidoDetalle() {
     if (estado === 'PARCIAL') return 'Parcial';
     return 'Sin pago';
   };
+  
 
   const registrarDeposito = async (e: React.FormEvent) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    setError('');
-    setMensaje('');
+  setError('');
+  setMensaje('');
 
-    if (!pedido) {
-      setError('No se encontró el pedido');
-      return;
-    }
+  if (!pedido) {
+    setError('No se encontró el pedido');
+    return;
+  }
 
-    try {
-      await apiFetch('/depositos', {
-        method: 'POST',
-        body: JSON.stringify({
-          pedido_id: pedido.pedido_id,
-          tipo_deposito_id: Number(form.tipo_deposito_id),
-          fecha_deposito: form.fecha_deposito || undefined,
-          monto: Number(form.monto),
-          moneda_codigo: form.moneda_codigo,
-          numero_operacion: form.numero_operacion,
-          observacion: form.observacion
-        })
-      });
+  if (!form.tipo_deposito_id) {
+    setError('Debe seleccionar un tipo de depósito');
+    return;
+  }
 
-      setMensaje('Depósito registrado correctamente');
+  if (!form.monto || Number(form.monto) <= 0) {
+    setError('El monto debe ser mayor a 0');
+    return;
+  }
 
-      setForm({
-        tipo_deposito_id: '',
-        fecha_deposito: '',
-        monto: '',
-        moneda_codigo: 'PEN',
-        numero_operacion: '',
-        observacion: ''
-      });
+  if (!bloquearDeposito()) {
+    return;
+  }
 
-      await cargarPedido();
+  try {
+    await apiFetch('/depositos', {
+      method: 'POST',
+      body: JSON.stringify({
+        pedido_id: pedido.pedido_id,
+        tipo_deposito_id: Number(form.tipo_deposito_id),
+        fecha_deposito: form.fecha_deposito || undefined,
+        monto: Number(form.monto),
+        moneda_codigo: form.moneda_codigo,
+        numero_operacion: form.numero_operacion,
+        observacion: form.observacion
+      })
+    });
 
-    } catch (error: any) {
-      setError(error.message);
-    }
-  };
+    setMensaje('Depósito registrado correctamente');
+
+    setForm({
+      tipo_deposito_id: '',
+      fecha_deposito: '',
+      monto: '',
+      moneda_codigo: 'PEN',
+      numero_operacion: '',
+      observacion: ''
+    });
+
+    await cargarPedido();
+
+  } catch (error: any) {
+    setError(error.message);
+
+  } finally {
+    liberarDeposito();
+  }
+};
 
   if (!pedido) {
     return (
@@ -3844,9 +4353,14 @@ function DepositoPedidoDetalle() {
           rows={3}
         />
 
-        <button type="submit">
-          Guardar depósito
-        </button>
+        <button
+        type="submit"
+        disabled={registrandoDeposito}
+      >
+        {registrandoDeposito
+          ? 'Registrando depósito...'
+          : 'Guardar depósito'}
+      </button>
       </form>
 
       <div className="tabla-card">
@@ -4143,6 +4657,7 @@ export default Depositos;
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { apiFetch } from '../services/api';
+import { useBloqueoAccion } from '../hooks/useBloqueoAccion';
 
 function EntregaPedidoDetalle() {
   const { pedido_id } = useParams();
@@ -4154,7 +4669,11 @@ function EntregaPedidoDetalle() {
 
   const [error, setError] = useState('');
   const [mensaje, setMensaje] = useState('');
-
+  const {
+    procesando: registrandoEntrega,
+    intentarBloquear: bloquearEntrega,
+    liberar: liberarEntrega
+  } = useBloqueoAccion();
   const cargarPedido = async () => {
     const data = await apiFetch(`/entregas/pedidos/${pedido_id}`);
 
@@ -4232,28 +4751,33 @@ function EntregaPedidoDetalle() {
       setError('Ingrese al menos una cantidad entregada');
       return;
     }
-
-    try {
-      await apiFetch('/entregas', {
-        method: 'POST',
-        body: JSON.stringify({
-          pedido_id: pedido.pedido_id,
-          fecha_entrega: fechaEntrega || undefined,
-          comentario_entrega: comentarioEntrega,
-          detalles
-        })
-      });
-
-      setMensaje('Entrega registrada correctamente');
-      setFechaEntrega('');
-      setComentarioEntrega('');
-
-      await cargarPedido();
-
-    } catch (error: any) {
-      setError(error.message);
+    if (!bloquearEntrega()) {
+      return;
     }
-  };
+    try {
+  await apiFetch('/entregas', {
+    method: 'POST',
+    body: JSON.stringify({
+      pedido_id: pedido.pedido_id,
+      fecha_entrega: fechaEntrega || undefined,
+      comentario_entrega: comentarioEntrega,
+      detalles
+    })
+  });
+
+  setMensaje('Entrega registrada correctamente');
+
+  setFechaEntrega('');
+  setComentarioEntrega('');
+
+  await cargarPedido();
+
+} catch (error: any) {
+  setError(error.message);
+
+} finally {
+  liberarEntrega();
+};}
 
   if (!pedido) {
     return (
@@ -4398,9 +4922,14 @@ function EntregaPedidoDetalle() {
           );
         })}
 
-        <button type="submit">
-          Guardar entrega
-        </button>
+      <button
+        type="submit"
+        disabled={registrandoEntrega}
+      >
+        {registrandoEntrega
+          ? 'Registrando entrega...'
+          : 'Guardar entrega'}
+      </button>
       </form>
 
       <div className="tabla-card">
@@ -5206,7 +5735,7 @@ function Login() {
   return (
     <div className="login-page">
       <form className="login-card" onSubmit={handleLogin}>
-        <h1>GestionDriza.v1.1</h1>
+        <h1>GestionDriza.v1.12</h1>
         <p>Sistema de Gestión</p>
 
         {error && <div className="error">{error}</div>}
@@ -5688,13 +6217,18 @@ export default Pedidos;
 import { useEffect, useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+
 import { apiFetch } from '../../services/api';
+
 import FeedbackToast from '../../components/common/FeedbackToast';
 import ConfirmDialog from '../../components/common/ConfirmDialog';
+
 import PedidoItemsEditor, {
   detallePedidoVacio,
   type DetallePedidoForm
 } from '../../components/pedidos/PedidoItemsEditor';
+
+import { useBloqueoAccion } from '../../hooks/useBloqueoAccion';
 
 function EditarPedido() {
   const { pedido_id } = useParams();
@@ -5725,9 +6259,24 @@ function EditarPedido() {
     motivo_cambio: ''
   });
 
-  const [nuevosDetalles, setNuevosDetalles] = useState<DetallePedidoForm[]>([
+  const [nuevosDetalles, setNuevosDetalles] = useState<
+    DetallePedidoForm[]
+  >([
     { ...detallePedidoVacio }
   ]);
+
+  /*
+   * Protección contra múltiples actualizaciones.
+   *
+   * useBloqueoAccion utiliza:
+   * - useRef para bloquear inmediatamente.
+   * - useState para reflejar el estado en la interfaz.
+   */
+  const {
+    procesando: actualizandoPedido,
+    intentarBloquear: bloquearActualizacion,
+    liberar: liberarActualizacion
+  } = useBloqueoAccion();
 
   const cargarDatos = async () => {
     const [
@@ -5751,7 +6300,9 @@ function EditarPedido() {
     const pedidoActual = pedidoData.pedido;
 
     setPedido(pedidoActual);
+
     setClientes(clientesData.clientes);
+
     setTipos(tiposData.items);
     setMedidas(medidasData.items);
     setColores(coloresData.items);
@@ -5760,11 +6311,19 @@ function EditarPedido() {
 
     setForm({
       cliente_id: String(pedidoActual.cliente_id),
-      codigo_pedido: pedidoActual.codigo_pedido || '',
-      fecha_pedido: pedidoActual.fecha_pedido?.slice(0, 10) || '',
+
+      codigo_pedido:
+        pedidoActual.codigo_pedido || '',
+
+      fecha_pedido:
+        pedidoActual.fecha_pedido?.slice(0, 10) || '',
+
       fecha_entrega_estimada:
         pedidoActual.fecha_entrega_estimada?.slice(0, 10) || '',
-      descripcion_pedido: pedidoActual.descripcion_pedido || '',
+
+      descripcion_pedido:
+        pedidoActual.descripcion_pedido || '',
+
       motivo_cambio: ''
     });
   };
@@ -5773,6 +6332,7 @@ function EditarPedido() {
     const iniciar = async () => {
       try {
         await cargarDatos();
+
       } catch (error: any) {
         setFeedback({
           tipo: 'error',
@@ -5786,7 +6346,9 @@ function EditarPedido() {
 
   const handleChange = (
     e: ChangeEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+      HTMLInputElement |
+      HTMLSelectElement |
+      HTMLTextAreaElement
     >
   ) => {
     setForm({
@@ -5795,85 +6357,277 @@ function EditarPedido() {
     });
   };
 
+  /*
+   * Primer paso:
+   * el usuario pulsa "Actualizar pedido".
+   *
+   * Todavía NO actualizamos.
+   * Abrimos el diálogo de confirmación.
+   */
   const prepararEdicion = (e: FormEvent) => {
     e.preventDefault();
+
+    /*
+     * Si ya existe una actualización en curso,
+     * ignoramos cualquier nuevo submit.
+     */
+    if (actualizandoPedido) {
+      return;
+    }
+
+    if (!form.cliente_id) {
+      setFeedback({
+        tipo: 'error',
+        mensaje: 'Debes seleccionar un cliente'
+      });
+
+      return;
+    }
+
+    if (!form.fecha_pedido) {
+      setFeedback({
+        tipo: 'error',
+        mensaje: 'Debes ingresar la fecha del pedido'
+      });
+
+      return;
+    }
 
     if (!form.motivo_cambio.trim()) {
       setFeedback({
         tipo: 'error',
         mensaje: 'Debes ingresar el motivo del cambio'
       });
+
       return;
     }
 
     setDialogAbierto(true);
   };
 
+  /*
+   * Segundo paso:
+   * el usuario confirma la edición.
+   *
+   * Aquí sí hacemos el PUT.
+   */
   const confirmarEdicion = async () => {
-    setDialogAbierto(false);
+    /*
+     * BLOQUEO INMEDIATO.
+     *
+     * Primer clic:
+     * bloquearActualizacion() -> true
+     *
+     * Segundo, tercero, cuarto clic:
+     * bloquearActualizacion() -> false
+     *
+     * Por lo tanto solo puede existir un PUT.
+     */
+    if (!bloquearActualizacion()) {
+      return;
+    }
 
     try {
-      const detallesValidos = nuevosDetalles.filter((item) => {
-        return (
-          item.tipo_producto_id ||
-          item.medida_id ||
-          item.color_id ||
-          item.material_id ||
-          item.cantidad_pedida ||
-          item.precio_unitario ||
-          item.descripcion_item
-        );
-      });
+      /*
+       * El editor siempre tiene inicialmente una fila vacía.
+       *
+       * Solo enviamos elementos que tengan algún dato.
+       */
+      const detallesValidos = nuevosDetalles.filter(
+        (item) => {
+          return (
+            item.tipo_producto_id ||
+            item.medida_id ||
+            item.color_id ||
+            item.material_id ||
+            item.cantidad_pedida ||
+            item.precio_unitario ||
+            item.descripcion_item
+          );
+        }
+      );
+
+      /*
+       * Si el usuario comenzó a llenar un producto nuevo,
+       * debemos asegurarnos de que esté completo.
+       */
+      for (
+        let index = 0;
+        index < detallesValidos.length;
+        index++
+      ) {
+        const item = detallesValidos[index];
+
+        if (
+          !item.tipo_producto_id ||
+          !item.medida_id ||
+          !item.color_id ||
+          !item.material_id
+        ) {
+          setFeedback({
+            tipo: 'error',
+            mensaje:
+              `El nuevo producto ${index + 1} debe tener tipo, medida, color y material`
+          });
+
+          liberarActualizacion();
+          return;
+        }
+
+        if (
+          !item.cantidad_pedida ||
+          Number(item.cantidad_pedida) <= 0
+        ) {
+          setFeedback({
+            tipo: 'error',
+            mensaje:
+              `El nuevo producto ${index + 1} debe tener una cantidad mayor a 0`
+          });
+
+          liberarActualizacion();
+          return;
+        }
+
+        if (!item.unidad_medida_id) {
+          setFeedback({
+            tipo: 'error',
+            mensaje:
+              `El nuevo producto ${index + 1} debe tener una unidad de medida`
+          });
+
+          liberarActualizacion();
+          return;
+        }
+
+        if (
+          item.precio_unitario === '' ||
+          Number(item.precio_unitario) < 0
+        ) {
+          setFeedback({
+            tipo: 'error',
+            mensaje:
+              `El nuevo producto ${index + 1} debe tener un precio válido`
+          });
+
+          liberarActualizacion();
+          return;
+        }
+
+        if (!item.moneda_codigo) {
+          setFeedback({
+            tipo: 'error',
+            mensaje:
+              `El nuevo producto ${index + 1} debe tener una moneda`
+          });
+
+          liberarActualizacion();
+          return;
+        }
+      }
 
       const body = {
-        cliente_id: Number(form.cliente_id),
-        codigo_pedido: form.codigo_pedido || null,
-        fecha_pedido: form.fecha_pedido,
+        cliente_id:
+          Number(form.cliente_id),
+
+        codigo_pedido:
+          form.codigo_pedido || null,
+
+        fecha_pedido:
+          form.fecha_pedido,
+
         fecha_entrega_estimada:
           form.fecha_entrega_estimada || null,
-        descripcion_pedido: form.descripcion_pedido,
-        motivo_cambio: form.motivo_cambio,
 
-        nuevos_detalles: detallesValidos.map((item) => ({
-          tipo_producto_id: Number(item.tipo_producto_id),
-          medida_id: Number(item.medida_id),
-          color_id: Number(item.color_id),
-          material_id: Number(item.material_id),
+        descripcion_pedido:
+          form.descripcion_pedido,
 
-          cantidad_pedida: Number(item.cantidad_pedida),
+        motivo_cambio:
+          form.motivo_cambio,
 
-          unidad_medida_id: Number(item.unidad_medida_id),
+        nuevos_detalles:
+          detallesValidos.map((item) => ({
+            tipo_producto_id:
+              Number(item.tipo_producto_id),
 
-          cantidad_presentacion: item.cantidad_presentacion
-            ? Number(item.cantidad_presentacion)
-            : null,
+            medida_id:
+              Number(item.medida_id),
 
-          unidad_presentacion_id: item.unidad_presentacion_id
-            ? Number(item.unidad_presentacion_id)
-            : null,
+            color_id:
+              Number(item.color_id),
 
-          precio_unitario: Number(item.precio_unitario),
+            material_id:
+              Number(item.material_id),
 
-          moneda_codigo: item.moneda_codigo,
-          descripcion_item: item.descripcion_item,
-          observacion: item.observacion
-        }))
+            cantidad_pedida:
+              Number(item.cantidad_pedida),
+
+            unidad_medida_id:
+              Number(item.unidad_medida_id),
+
+            cantidad_presentacion:
+              item.cantidad_presentacion
+                ? Number(item.cantidad_presentacion)
+                : null,
+
+            unidad_presentacion_id:
+              item.unidad_presentacion_id
+                ? Number(item.unidad_presentacion_id)
+                : null,
+
+            precio_unitario:
+              Number(item.precio_unitario),
+
+            moneda_codigo:
+              item.moneda_codigo,
+
+            descripcion_item:
+              item.descripcion_item,
+
+            observacion:
+              item.observacion
+          }))
       };
 
-      await apiFetch(`/pedidos/${pedido_id}`, {
-        method: 'PUT',
-        body: JSON.stringify(body)
-      });
+      await apiFetch(
+        `/pedidos/${pedido_id}`,
+        {
+          method: 'PUT',
+          body: JSON.stringify(body)
+        }
+      );
+
+      /*
+       * Cerramos el diálogo solo cuando el backend
+       * confirmó correctamente la actualización.
+       */
+      setDialogAbierto(false);
 
       setFeedback({
         tipo: 'success',
         mensaje: 'Pedido actualizado correctamente'
       });
 
+      /*
+       * NO liberamos actualizandoPedido aquí.
+       *
+       * Esto es intencional.
+       *
+       * Durante estos 800 ms el usuario tampoco
+       * podrá generar otro PUT.
+       */
       setTimeout(() => {
-        navigate(`/gestion/pedidos/${pedido_id}`);
+        navigate(
+          `/gestion/pedidos/${pedido_id}`
+        );
       }, 800);
+
     } catch (error: any) {
+      /*
+       * Si falló el backend sí permitimos
+       * que el usuario vuelva a intentarlo.
+       */
+      liberarActualizacion();
+
       setFeedback({
         tipo: 'error',
         mensaje: error.message
@@ -5881,7 +6635,9 @@ function EditarPedido() {
     }
   };
 
-  const claseEstadoEntrega = (estado: string) => {
+  const claseEstadoEntrega = (
+    estado: string
+  ) => {
     if (estado === 'COMPLETO') {
       return 'estado estado-completo';
     }
@@ -5893,6 +6649,10 @@ function EditarPedido() {
     return 'estado estado-pendiente';
   };
 
+  /*
+   * Estado inicial mientras cargamos
+   * pedido + clientes + catálogos.
+   */
   if (!pedido) {
     return (
       <div>
@@ -5937,8 +6697,18 @@ function EditarPedido() {
         titulo="Confirmar edición"
         descripcion="Se actualizará la cabecera del pedido y se registrará el motivo del cambio. Si agregaste productos nuevos, quedarán añadidos al pedido."
         textoConfirmar="Actualizar pedido"
+        textoProcesando="Actualizando pedido..."
+        procesando={actualizandoPedido}
         onConfirmar={confirmarEdicion}
-        onCerrar={() => setDialogAbierto(false)}
+        onCerrar={() => {
+          /*
+           * El diálogo tampoco puede cerrarse
+           * mientras el PUT está ejecutándose.
+           */
+          if (!actualizandoPedido) {
+            setDialogAbierto(false);
+          }
+        }}
       />
 
       <Link
@@ -5973,6 +6743,7 @@ function EditarPedido() {
           name="cliente_id"
           value={form.cliente_id}
           onChange={handleChange}
+          disabled={actualizandoPedido}
         >
           <option value="">
             Seleccione cliente
@@ -5995,6 +6766,7 @@ function EditarPedido() {
           value={form.codigo_pedido}
           onChange={handleChange}
           placeholder="Ejemplo: PED-001"
+          disabled={actualizandoPedido}
         />
 
         <label>Fecha de pedido</label>
@@ -6004,6 +6776,7 @@ function EditarPedido() {
           name="fecha_pedido"
           value={form.fecha_pedido}
           onChange={handleChange}
+          disabled={actualizandoPedido}
         />
 
         <label>Fecha de entrega estimada</label>
@@ -6013,6 +6786,7 @@ function EditarPedido() {
           name="fecha_entrega_estimada"
           value={form.fecha_entrega_estimada}
           onChange={handleChange}
+          disabled={actualizandoPedido}
         />
 
         <label>Descripción del pedido</label>
@@ -6022,6 +6796,7 @@ function EditarPedido() {
           value={form.descripcion_pedido}
           onChange={handleChange}
           rows={3}
+          disabled={actualizandoPedido}
         />
 
         <label>Motivo del cambio</label>
@@ -6032,6 +6807,7 @@ function EditarPedido() {
           onChange={handleChange}
           rows={3}
           placeholder="Ejemplo: El cliente solicitó aumentar productos al pedido"
+          disabled={actualizandoPedido}
         />
 
         <div className="tabla-card">
@@ -6068,8 +6844,10 @@ function EditarPedido() {
                       <br />
 
                       <span className="muted">
-                        {detalle.descripcion_item ||
-                          '-'}
+                        {
+                          detalle.descripcion_item ||
+                          '-'
+                        }
                       </span>
                     </td>
 
@@ -6097,9 +6875,11 @@ function EditarPedido() {
 
                     <td>
                       <span
-                        className={claseEstadoEntrega(
-                          detalle.estado_entrega
-                        )}
+                        className={
+                          claseEstadoEntrega(
+                            detalle.estado_entrega
+                          )
+                        }
                       >
                         {detalle.estado_entrega}
                       </span>
@@ -6131,8 +6911,13 @@ function EditarPedido() {
 
         <br />
 
-        <button type="submit">
-          Actualizar pedido
+        <button
+          type="submit"
+          disabled={actualizandoPedido}
+        >
+          {actualizandoPedido
+            ? 'Actualizando pedido...'
+            : 'Actualizar pedido'}
         </button>
       </form>
     </div>
@@ -6780,7 +7565,7 @@ export default PedidosLista;
 
 <<<START OF FILE>>>
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { apiFetch } from '../../services/api';
@@ -6799,6 +7584,8 @@ function RegistrarPedido() {
   const [colores, setColores] = useState<any[]>([]);
   const [materiales, setMateriales] = useState<any[]>([]);
   const [unidades, setUnidades] = useState<any[]>([]);
+  const [guardando, setGuardando] = useState(false);
+  const envioEnCursoRef = useRef(false);
 
   const [feedback, setFeedback] = useState({
     tipo: 'info' as 'success' | 'error' | 'info' | 'warning',
@@ -6926,55 +7713,78 @@ function RegistrarPedido() {
     return true;
   };
 
-  const registrarPedido = async (e: FormEvent) => {
-    e.preventDefault();
+ const registrarPedido = async (e: FormEvent) => {
+  e.preventDefault();
 
-    if (!validarFormulario()) {
-      return;
-    }
+  // Protección inmediata contra múltiples submits
+  if (envioEnCursoRef.current) {
+    return;
+  }
 
-    try {
-      const body = {
-        cliente_id: Number(form.cliente_id),
-        codigo_pedido: form.codigo_pedido || null,
-        fecha_pedido: form.fecha_pedido || undefined,
-        fecha_entrega_estimada: form.fecha_entrega_estimada || null,
-        descripcion_pedido: form.descripcion_pedido,
-        detalles: detalles.map((item) => ({
-          tipo_producto_id: Number(item.tipo_producto_id),
-          medida_id: Number(item.medida_id),
-          color_id: Number(item.color_id),
-          material_id: Number(item.material_id),
-          cantidad_pedida: Number(item.cantidad_pedida),
-          unidad_medida_id: Number(item.unidad_medida_id),
-          cantidad_presentacion: item.cantidad_presentacion
-            ? Number(item.cantidad_presentacion)
-            : null,
-          unidad_presentacion_id: item.unidad_presentacion_id
-            ? Number(item.unidad_presentacion_id)
-            : Number(item.unidad_medida_id),
-          precio_unitario: Number(item.precio_unitario),
-          moneda_codigo: item.moneda_codigo,
-          descripcion_item: item.descripcion_item,
-          observacion: item.observacion
-        }))
-      };
+  if (!validarFormulario()) {
+    return;
+  }
 
-      const data = await apiFetch('/pedidos', {
-        method: 'POST',
-        body: JSON.stringify(body)
-      });
+  envioEnCursoRef.current = true;
+  setGuardando(true);
 
-      mostrarFeedback('success', 'Pedido registrado correctamente');
+  try {
+    const body = {
+      cliente_id: Number(form.cliente_id),
+      codigo_pedido: form.codigo_pedido || null,
+      fecha_pedido: form.fecha_pedido || undefined,
+      fecha_entrega_estimada: form.fecha_entrega_estimada || null,
+      descripcion_pedido: form.descripcion_pedido,
 
-      setTimeout(() => {
-        navigate(`/gestion/pedidos/${data.pedido.pedido_id}`);
-      }, 900);
+      detalles: detalles.map((item) => ({
+        tipo_producto_id: Number(item.tipo_producto_id),
+        medida_id: Number(item.medida_id),
+        color_id: Number(item.color_id),
+        material_id: Number(item.material_id),
 
-    } catch (error: any) {
-      mostrarFeedback('error', error.message);
-    }
-  };
+        cantidad_pedida: Number(item.cantidad_pedida),
+        unidad_medida_id: Number(item.unidad_medida_id),
+
+        cantidad_presentacion: item.cantidad_presentacion
+          ? Number(item.cantidad_presentacion)
+          : null,
+
+        unidad_presentacion_id: item.unidad_presentacion_id
+          ? Number(item.unidad_presentacion_id)
+          : Number(item.unidad_medida_id),
+
+        precio_unitario: Number(item.precio_unitario),
+        moneda_codigo: item.moneda_codigo,
+        descripcion_item: item.descripcion_item,
+        observacion: item.observacion
+      }))
+    };
+
+    const data = await apiFetch('/pedidos', {
+      method: 'POST',
+      body: JSON.stringify(body)
+    });
+
+    mostrarFeedback(
+      'success',
+      'Pedido registrado correctamente'
+    );
+
+    setTimeout(() => {
+      navigate(`/gestion/pedidos/${data.pedido.pedido_id}`);
+    }, 900);
+
+  } catch (error: any) {
+    mostrarFeedback(
+      'error',
+      error.message
+    );
+
+    // Solamente permitimos otro intento si hubo error
+    envioEnCursoRef.current = false;
+    setGuardando(false);
+  }
+};
 
   return (
     <div className="pedidos-page">
@@ -7069,9 +7879,12 @@ function RegistrarPedido() {
         />
 
         <div className="pedido-form-actions">
-          <button type="submit">
-            Guardar pedido
-          </button>
+          <button
+          type="submit"
+          disabled={guardando}
+        >
+          {guardando ? 'Guardando pedido...' : 'Guardar pedido'}
+        </button>
         </div>
       </form>
     </div>

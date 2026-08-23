@@ -362,3 +362,175 @@
   font-weight: 700;
   color: #475569;
 }
+/* =========================================================
+   FEEDBACK WARNING
+   ========================================================= */
+
+.feedback-warning {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+
+/* =========================================================
+   GASTOS
+   ========================================================= */
+
+.gastos-config-grid {
+  display: grid;
+  grid-template-columns:
+    minmax(260px, 0.7fr)
+    minmax(0, 1.8fr);
+  gap: 20px;
+  align-items: start;
+}
+
+
+.gasto-tipo-card {
+  max-width: 100%;
+  margin-bottom: 0;
+}
+
+
+.gasto-form-card {
+  max-width: 100%;
+  margin-bottom: 0;
+}
+
+
+.gasto-form-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+  gap: 4px 16px;
+}
+
+
+.gasto-campo-completo {
+  grid-column: 1 / -1;
+}
+
+
+.gasto-form-actions {
+  margin-top: 14px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+
+.gasto-form-actions button {
+  min-width: 180px;
+}
+
+
+.gasto-auditoria-card {
+  background: white;
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow:
+    0 8px 20px
+    rgba(15, 23, 42, 0.06);
+
+  display: grid;
+  grid-template-columns:
+    repeat(
+      4,
+      minmax(0, 1fr)
+    );
+  gap: 14px;
+}
+
+
+.gasto-auditoria-card > div {
+  padding: 12px;
+  background: #f8fafc;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+}
+
+
+.gasto-auditoria-card span {
+  display: block;
+  color: #64748b;
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+
+.gasto-auditoria-card strong {
+  display: block;
+  color: #111827;
+}
+
+
+.tabla-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+
+.tabla-acciones {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+
+.tabla-acciones .btn-danger {
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   RESPONSIVE GASTOS
+   ========================================================= */
+
+@media (max-width: 1000px) {
+
+  .gastos-config-grid {
+    grid-template-columns: 1fr;
+  }
+
+
+  .gasto-auditoria-card {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+
+}
+
+
+@media (max-width: 650px) {
+
+  .gasto-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+
+  .gasto-campo-completo {
+    grid-column: auto;
+  }
+
+
+  .gasto-auditoria-card {
+    grid-template-columns: 1fr;
+  }
+
+
+  .gasto-form-actions {
+    justify-content: stretch;
+  }
+
+
+  .gasto-form-actions button {
+    width: 100%;
+  }
+
+}
