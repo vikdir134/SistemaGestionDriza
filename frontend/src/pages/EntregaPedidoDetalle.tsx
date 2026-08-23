@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { apiFetch } from '../services/api';
+import { useBloqueoAccion } from '../hooks/useBloqueoAccion';
 
 function EntregaPedidoDetalle() {
   const { pedido_id } = useParams();
@@ -12,7 +13,11 @@ function EntregaPedidoDetalle() {
 
   const [error, setError] = useState('');
   const [mensaje, setMensaje] = useState('');
-
+  const {
+    procesando: registrandoEntrega,
+    intentarBloquear: bloquearEntrega,
+    liberar: liberarEntrega
+  } = useBloqueoAccion();
   const cargarPedido = async () => {
     const data = await apiFetch(`/entregas/pedidos/${pedido_id}`);
 
@@ -90,28 +95,33 @@ function EntregaPedidoDetalle() {
       setError('Ingrese al menos una cantidad entregada');
       return;
     }
-
-    try {
-      await apiFetch('/entregas', {
-        method: 'POST',
-        body: JSON.stringify({
-          pedido_id: pedido.pedido_id,
-          fecha_entrega: fechaEntrega || undefined,
-          comentario_entrega: comentarioEntrega,
-          detalles
-        })
-      });
-
-      setMensaje('Entrega registrada correctamente');
-      setFechaEntrega('');
-      setComentarioEntrega('');
-
-      await cargarPedido();
-
-    } catch (error: any) {
-      setError(error.message);
+    if (!bloquearEntrega()) {
+      return;
     }
-  };
+    try {
+  await apiFetch('/entregas', {
+    method: 'POST',
+    body: JSON.stringify({
+      pedido_id: pedido.pedido_id,
+      fecha_entrega: fechaEntrega || undefined,
+      comentario_entrega: comentarioEntrega,
+      detalles
+    })
+  });
+
+  setMensaje('Entrega registrada correctamente');
+
+  setFechaEntrega('');
+  setComentarioEntrega('');
+
+  await cargarPedido();
+
+} catch (error: any) {
+  setError(error.message);
+
+} finally {
+  liberarEntrega();
+};}
 
   if (!pedido) {
     return (
@@ -256,9 +266,14 @@ function EntregaPedidoDetalle() {
           );
         })}
 
-        <button type="submit">
-          Guardar entrega
-        </button>
+      <button
+        type="submit"
+        disabled={registrandoEntrega}
+      >
+        {registrandoEntrega
+          ? 'Registrando entrega...'
+          : 'Guardar entrega'}
+      </button>
       </form>
 
       <div className="tabla-card">

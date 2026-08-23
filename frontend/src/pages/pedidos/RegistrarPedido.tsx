@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { apiFetch } from '../../services/api';
@@ -17,6 +17,8 @@ function RegistrarPedido() {
   const [colores, setColores] = useState<any[]>([]);
   const [materiales, setMateriales] = useState<any[]>([]);
   const [unidades, setUnidades] = useState<any[]>([]);
+  const [guardando, setGuardando] = useState(false);
+  const envioEnCursoRef = useRef(false);
 
   const [feedback, setFeedback] = useState({
     tipo: 'info' as 'success' | 'error' | 'info' | 'warning',
@@ -144,55 +146,78 @@ function RegistrarPedido() {
     return true;
   };
 
-  const registrarPedido = async (e: FormEvent) => {
-    e.preventDefault();
+ const registrarPedido = async (e: FormEvent) => {
+  e.preventDefault();
 
-    if (!validarFormulario()) {
-      return;
-    }
+  // Protección inmediata contra múltiples submits
+  if (envioEnCursoRef.current) {
+    return;
+  }
 
-    try {
-      const body = {
-        cliente_id: Number(form.cliente_id),
-        codigo_pedido: form.codigo_pedido || null,
-        fecha_pedido: form.fecha_pedido || undefined,
-        fecha_entrega_estimada: form.fecha_entrega_estimada || null,
-        descripcion_pedido: form.descripcion_pedido,
-        detalles: detalles.map((item) => ({
-          tipo_producto_id: Number(item.tipo_producto_id),
-          medida_id: Number(item.medida_id),
-          color_id: Number(item.color_id),
-          material_id: Number(item.material_id),
-          cantidad_pedida: Number(item.cantidad_pedida),
-          unidad_medida_id: Number(item.unidad_medida_id),
-          cantidad_presentacion: item.cantidad_presentacion
-            ? Number(item.cantidad_presentacion)
-            : null,
-          unidad_presentacion_id: item.unidad_presentacion_id
-            ? Number(item.unidad_presentacion_id)
-            : Number(item.unidad_medida_id),
-          precio_unitario: Number(item.precio_unitario),
-          moneda_codigo: item.moneda_codigo,
-          descripcion_item: item.descripcion_item,
-          observacion: item.observacion
-        }))
-      };
+  if (!validarFormulario()) {
+    return;
+  }
 
-      const data = await apiFetch('/pedidos', {
-        method: 'POST',
-        body: JSON.stringify(body)
-      });
+  envioEnCursoRef.current = true;
+  setGuardando(true);
 
-      mostrarFeedback('success', 'Pedido registrado correctamente');
+  try {
+    const body = {
+      cliente_id: Number(form.cliente_id),
+      codigo_pedido: form.codigo_pedido || null,
+      fecha_pedido: form.fecha_pedido || undefined,
+      fecha_entrega_estimada: form.fecha_entrega_estimada || null,
+      descripcion_pedido: form.descripcion_pedido,
 
-      setTimeout(() => {
-        navigate(`/gestion/pedidos/${data.pedido.pedido_id}`);
-      }, 900);
+      detalles: detalles.map((item) => ({
+        tipo_producto_id: Number(item.tipo_producto_id),
+        medida_id: Number(item.medida_id),
+        color_id: Number(item.color_id),
+        material_id: Number(item.material_id),
 
-    } catch (error: any) {
-      mostrarFeedback('error', error.message);
-    }
-  };
+        cantidad_pedida: Number(item.cantidad_pedida),
+        unidad_medida_id: Number(item.unidad_medida_id),
+
+        cantidad_presentacion: item.cantidad_presentacion
+          ? Number(item.cantidad_presentacion)
+          : null,
+
+        unidad_presentacion_id: item.unidad_presentacion_id
+          ? Number(item.unidad_presentacion_id)
+          : Number(item.unidad_medida_id),
+
+        precio_unitario: Number(item.precio_unitario),
+        moneda_codigo: item.moneda_codigo,
+        descripcion_item: item.descripcion_item,
+        observacion: item.observacion
+      }))
+    };
+
+    const data = await apiFetch('/pedidos', {
+      method: 'POST',
+      body: JSON.stringify(body)
+    });
+
+    mostrarFeedback(
+      'success',
+      'Pedido registrado correctamente'
+    );
+
+    setTimeout(() => {
+      navigate(`/gestion/pedidos/${data.pedido.pedido_id}`);
+    }, 900);
+
+  } catch (error: any) {
+    mostrarFeedback(
+      'error',
+      error.message
+    );
+
+    // Solamente permitimos otro intento si hubo error
+    envioEnCursoRef.current = false;
+    setGuardando(false);
+  }
+};
 
   return (
     <div className="pedidos-page">
@@ -287,9 +312,12 @@ function RegistrarPedido() {
         />
 
         <div className="pedido-form-actions">
-          <button type="submit">
-            Guardar pedido
-          </button>
+          <button
+          type="submit"
+          disabled={guardando}
+        >
+          {guardando ? 'Guardando pedido...' : 'Guardar pedido'}
+        </button>
         </div>
       </form>
     </div>

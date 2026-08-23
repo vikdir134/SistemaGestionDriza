@@ -3,6 +3,8 @@ type ConfirmDialogProps = {
   titulo: string;
   descripcion: string;
   textoConfirmar?: string;
+  textoProcesando?: string;
+  procesando?: boolean;
   onConfirmar: () => void;
   onCerrar: () => void;
 };
@@ -12,6 +14,8 @@ function ConfirmDialog({
   titulo,
   descripcion,
   textoConfirmar = 'Confirmar',
+  textoProcesando = 'Procesando...',
+  procesando = false,
   onConfirmar,
   onCerrar
 }: ConfirmDialogProps) {
@@ -24,12 +28,23 @@ function ConfirmDialog({
         <p>{descripcion}</p>
 
         <div className="dialog-actions">
-          <button type="button" className="btn-secondary" onClick={onCerrar}>
+          <button
+            type="button"
+            className="btn-secondary"
+            onClick={onCerrar}
+            disabled={procesando}
+          >
             Cancelar
           </button>
 
-          <button type="button" onClick={onConfirmar}>
-            {textoConfirmar}
+          <button
+            type="button"
+            onClick={onConfirmar}
+            disabled={procesando}
+          >
+            {procesando
+              ? textoProcesando
+              : textoConfirmar}
           </button>
         </div>
       </div>

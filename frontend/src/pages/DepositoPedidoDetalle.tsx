@@ -1,10 +1,16 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { apiFetch } from '../services/api';
+import { useBloqueoAccion } from '../hooks/useBloqueoAccion';
 
 function DepositoPedidoDetalle() {
   const { pedido_id } = useParams();
-
+  const {
+    procesando: registrandoDeposito,
+    intentarBloquear: bloquearDeposito,
+    liberar: liberarDeposito
+  } = useBloqueoAccion();
+  
   const [pedido, setPedido] = useState<any | null>(null);
   const [tiposDeposito, setTiposDeposito] = useState<any[]>([]);
 
@@ -63,49 +69,67 @@ function DepositoPedidoDetalle() {
     if (estado === 'PARCIAL') return 'Parcial';
     return 'Sin pago';
   };
+  
 
   const registrarDeposito = async (e: React.FormEvent) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    setError('');
-    setMensaje('');
+  setError('');
+  setMensaje('');
 
-    if (!pedido) {
-      setError('No se encontró el pedido');
-      return;
-    }
+  if (!pedido) {
+    setError('No se encontró el pedido');
+    return;
+  }
 
-    try {
-      await apiFetch('/depositos', {
-        method: 'POST',
-        body: JSON.stringify({
-          pedido_id: pedido.pedido_id,
-          tipo_deposito_id: Number(form.tipo_deposito_id),
-          fecha_deposito: form.fecha_deposito || undefined,
-          monto: Number(form.monto),
-          moneda_codigo: form.moneda_codigo,
-          numero_operacion: form.numero_operacion,
-          observacion: form.observacion
-        })
-      });
+  if (!form.tipo_deposito_id) {
+    setError('Debe seleccionar un tipo de depósito');
+    return;
+  }
 
-      setMensaje('Depósito registrado correctamente');
+  if (!form.monto || Number(form.monto) <= 0) {
+    setError('El monto debe ser mayor a 0');
+    return;
+  }
 
-      setForm({
-        tipo_deposito_id: '',
-        fecha_deposito: '',
-        monto: '',
-        moneda_codigo: 'PEN',
-        numero_operacion: '',
-        observacion: ''
-      });
+  if (!bloquearDeposito()) {
+    return;
+  }
 
-      await cargarPedido();
+  try {
+    await apiFetch('/depositos', {
+      method: 'POST',
+      body: JSON.stringify({
+        pedido_id: pedido.pedido_id,
+        tipo_deposito_id: Number(form.tipo_deposito_id),
+        fecha_deposito: form.fecha_deposito || undefined,
+        monto: Number(form.monto),
+        moneda_codigo: form.moneda_codigo,
+        numero_operacion: form.numero_operacion,
+        observacion: form.observacion
+      })
+    });
 
-    } catch (error: any) {
-      setError(error.message);
-    }
-  };
+    setMensaje('Depósito registrado correctamente');
+
+    setForm({
+      tipo_deposito_id: '',
+      fecha_deposito: '',
+      monto: '',
+      moneda_codigo: 'PEN',
+      numero_operacion: '',
+      observacion: ''
+    });
+
+    await cargarPedido();
+
+  } catch (error: any) {
+    setError(error.message);
+
+  } finally {
+    liberarDeposito();
+  }
+};
 
   if (!pedido) {
     return (
@@ -259,9 +283,14 @@ function DepositoPedidoDetalle() {
           rows={3}
         />
 
-        <button type="submit">
-          Guardar depósito
-        </button>
+        <button
+        type="submit"
+        disabled={registrandoDeposito}
+      >
+        {registrandoDeposito
+          ? 'Registrando depósito...'
+          : 'Guardar depósito'}
+      </button>
       </form>
 
       <div className="tabla-card">
