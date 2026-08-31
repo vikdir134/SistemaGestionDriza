@@ -7,10 +7,10 @@
 
 - Proyecto: GestionDriza
 - Componente: Frontend
-- Fecha de generación: 2026-08-23 14:53:31
+- Fecha de generación: 2026-08-30 21:06:37
 - Branch Git: main
-- Commit Git: b910c5f68611c176b67f80b23b3d8fc7e3a265c5
-- Cantidad de archivos incluidos: 48
+- Commit Git: 3b73029d9df34a565ac9242ca90d03932cd5b897
+- Cantidad de archivos incluidos: 50
 
 ---
 
@@ -29,6 +29,7 @@
 - src\components\clientes\ClienteForm.tsx
 - src\components\common\ConfirmDialog.tsx
 - src\components\common\FeedbackToast.tsx
+- src\components\gastos\GastoForm.tsx
 - src\components\pedidos\PedidoItemsEditor.tsx
 - src\components\ProtectedRoute.tsx
 - src\components\Sidebar.tsx
@@ -49,6 +50,7 @@
 - src\pages\EntregaPedidoDetalle.tsx
 - src\pages\Entregas.tsx
 - src\pages\Gastos.tsx
+- src\pages\gastos\EditarGasto.tsx
 - src\pages\Login.tsx
 - src\pages\Pedidos.tsx
 - src\pages\pedidos\EditarPedido.tsx
@@ -500,39 +502,106 @@ export default defineConfig([
 
 <<<START OF FILE>>>
 
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import {
+  BrowserRouter,
+  Navigate,
+  Route,
+  Routes
+} from 'react-router-dom';
 
 import './styles/pedidos.css';
-import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
-import Catalogos from './pages/Catalogos';
-import PedidosLista from './pages/pedidos/PedidosLista';
-import RegistrarPedido from './pages/pedidos/RegistrarPedido';
-import PedidoDetalle from './pages/pedidos/PedidoDetalle';
-import EditarPedido from './pages/pedidos/EditarPedido';
-import Entregas from './pages/Entregas';
-import EntregaPedidoDetalle from './pages/EntregaPedidoDetalle';
-import Depositos from './pages/Depositos';
-import DepositoPedidoDetalle from './pages/DepositoPedidoDetalle';
-import Proveedores from './pages/Proveedores';
-import Compras from './pages/Compras';
-import Gastos from './pages/Gastos';
-import ClientesLista from './pages/clientes/ClientesLista';
-import RegistrarCliente from './pages/clientes/RegistrarCliente';
-import EditarCliente from './pages/clientes/EditarCliente';
-import HistorialPreciosCliente from './pages/clientes/HistorialPreciosCliente';
-import UsuariosAdmin from './pages/usuarios/UsuariosAdmin';
 
-import ProtectedRoute from './components/ProtectedRoute';
-import GestionLayout from './layouts/GestionLayout';
+import Login
+  from './pages/Login';
+
+import Dashboard
+  from './pages/Dashboard';
+
+import Catalogos
+  from './pages/Catalogos';
+
+import PedidosLista
+  from './pages/pedidos/PedidosLista';
+
+import RegistrarPedido
+  from './pages/pedidos/RegistrarPedido';
+
+import PedidoDetalle
+  from './pages/pedidos/PedidoDetalle';
+
+import EditarPedido
+  from './pages/pedidos/EditarPedido';
+
+import Entregas
+  from './pages/Entregas';
+
+import EntregaPedidoDetalle
+  from './pages/EntregaPedidoDetalle';
+
+import Depositos
+  from './pages/Depositos';
+
+import DepositoPedidoDetalle
+  from './pages/DepositoPedidoDetalle';
+
+import Proveedores
+  from './pages/Proveedores';
+
+import Compras
+  from './pages/Compras';
+
+import Gastos
+  from './pages/Gastos';
+
+import EditarGasto
+  from './pages/gastos/EditarGasto';
+
+import ClientesLista
+  from './pages/clientes/ClientesLista';
+
+import RegistrarCliente
+  from './pages/clientes/RegistrarCliente';
+
+import EditarCliente
+  from './pages/clientes/EditarCliente';
+
+import HistorialPreciosCliente
+  from './pages/clientes/HistorialPreciosCliente';
+
+import UsuariosAdmin
+  from './pages/usuarios/UsuariosAdmin';
+
+import ProtectedRoute
+  from './components/ProtectedRoute';
+
+import GestionLayout
+  from './layouts/GestionLayout';
+
 
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
 
-        <Route path="/login" element={<Login />} />
+      <Routes>
+
+        <Route
+          path="/"
+          element={
+            <Navigate
+              to="/login"
+              replace
+            />
+          }
+        />
+
+
+        <Route
+          path="/login"
+          element={
+            <Login />
+          }
+        />
+
 
         <Route
           path="/gestion"
@@ -542,43 +611,191 @@ function App() {
             </ProtectedRoute>
           }
         >
-          <Route index element={<Dashboard />} />
+
+          <Route
+            index
+            element={
+              <Dashboard />
+            }
+          />
+
 
           <Route
             path="usuarios"
             element={
-              <ProtectedRoute rolesPermitidos={['ADMIN']}>
+              <ProtectedRoute
+                rolesPermitidos={[
+                  'ADMIN'
+                ]}
+              >
                 <UsuariosAdmin />
               </ProtectedRoute>
             }
           />
 
-          <Route path="catalogos" element={<Catalogos />} />
 
-          <Route path="pedidos" element={<PedidosLista />} />
-          <Route path="pedidos/registrar" element={<RegistrarPedido />} />
-          <Route path="pedidos/:pedido_id" element={<PedidoDetalle />} />
-          <Route path="pedidos/:pedido_id/editar" element={<EditarPedido />} />
+          <Route
+            path="catalogos"
+            element={
+              <Catalogos />
+            }
+          />
 
-          <Route path="entregas" element={<Entregas />} />
-          <Route path="entregas/:pedido_id" element={<EntregaPedidoDetalle />} />
 
-          <Route path="depositos" element={<Depositos />} />
-          <Route path="depositos/:pedido_id" element={<DepositoPedidoDetalle />} />
+          {/* =========================
+              PEDIDOS
+              ========================= */}
 
-          <Route path="proveedores" element={<Proveedores />} />
-          <Route path="compras" element={<Compras />} />
-          <Route path="gastos" element={<Gastos />} />
+          <Route
+            path="pedidos"
+            element={
+              <PedidosLista />
+            }
+          />
 
-          <Route path="clientes" element={<ClientesLista />} />
-          <Route path="clientes/registrar" element={<RegistrarCliente />} />
-          <Route path="clientes/precios" element={<HistorialPreciosCliente />} />
-          <Route path="clientes/:cliente_id/editar" element={<EditarCliente />} />
+          <Route
+            path="pedidos/registrar"
+            element={
+              <RegistrarPedido />
+            }
+          />
+
+          <Route
+            path="pedidos/:pedido_id"
+            element={
+              <PedidoDetalle />
+            }
+          />
+
+          <Route
+            path="pedidos/:pedido_id/editar"
+            element={
+              <EditarPedido />
+            }
+          />
+
+
+          {/* =========================
+              ENTREGAS
+              ========================= */}
+
+          <Route
+            path="entregas"
+            element={
+              <Entregas />
+            }
+          />
+
+          <Route
+            path="entregas/:pedido_id"
+            element={
+              <EntregaPedidoDetalle />
+            }
+          />
+
+
+          {/* =========================
+              DEPOSITOS
+              ========================= */}
+
+          <Route
+            path="depositos"
+            element={
+              <Depositos />
+            }
+          />
+
+          <Route
+            path="depositos/:pedido_id"
+            element={
+              <DepositoPedidoDetalle />
+            }
+          />
+
+
+          {/* =========================
+              PROVEEDORES
+              ========================= */}
+
+          <Route
+            path="proveedores"
+            element={
+              <Proveedores />
+            }
+          />
+
+
+          {/* =========================
+              COMPRAS
+              ========================= */}
+
+          <Route
+            path="compras"
+            element={
+              <Compras />
+            }
+          />
+
+
+          {/* =========================
+              GASTOS
+              ========================= */}
+
+          <Route
+            path="gastos"
+            element={
+              <Gastos />
+            }
+          />
+
+          <Route
+            path="gastos/:gasto_id/editar"
+            element={
+              <EditarGasto />
+            }
+          />
+
+
+          {/* =========================
+              CLIENTES
+              ========================= */}
+
+          <Route
+            path="clientes"
+            element={
+              <ClientesLista />
+            }
+          />
+
+          <Route
+            path="clientes/registrar"
+            element={
+              <RegistrarCliente />
+            }
+          />
+
+          <Route
+            path="clientes/precios"
+            element={
+              <HistorialPreciosCliente />
+            }
+          />
+
+          <Route
+            path="clientes/:cliente_id/editar"
+            element={
+              <EditarCliente />
+            }
+          />
+
         </Route>
+
       </Routes>
+
     </BrowserRouter>
   );
 }
+
 
 export default App;
 
@@ -820,93 +1037,611 @@ export default FeedbackToast;
 
 ---
 
+## FILE: src\components\gastos\GastoForm.tsx
+
+<<<START OF FILE>>>
+
+import type {
+  ChangeEvent,
+  FormEvent
+} from 'react';
+
+
+export type GastoFormData = {
+  tipo_gasto_id: string;
+  proveedor_id: string;
+  fecha_gasto: string;
+  monto: string;
+  moneda_codigo: string;
+  descripcion: string;
+  comprobante: string;
+};
+
+
+export const gastoFormVacio: GastoFormData = {
+  tipo_gasto_id: '',
+  proveedor_id: '',
+  fecha_gasto: '',
+  monto: '',
+  moneda_codigo: 'PEN',
+  descripcion: '',
+  comprobante: ''
+};
+
+
+export const validarGastoForm = (
+  form: GastoFormData,
+  exigirFecha = false
+) => {
+  if (!form.tipo_gasto_id) {
+    return 'Debe seleccionar un tipo de gasto';
+  }
+
+  const monto = Number(form.monto);
+
+  if (
+    !Number.isFinite(monto) ||
+    monto <= 0
+  ) {
+    return 'El monto debe ser mayor a 0';
+  }
+
+  if (
+    !['PEN', 'USD'].includes(
+      form.moneda_codigo
+    )
+  ) {
+    return 'Debe seleccionar una moneda válida';
+  }
+
+  if (
+    exigirFecha &&
+    !form.fecha_gasto
+  ) {
+    return 'La fecha del gasto es obligatoria';
+  }
+
+  return null;
+};
+
+
+type GastoFormProps = {
+  titulo: string;
+
+  form: GastoFormData;
+
+  tiposGasto: any[];
+
+  proveedores: any[];
+
+  procesando?: boolean;
+
+  textoBoton: string;
+
+  textoProcesando?: string;
+
+  onChange: (
+    e: ChangeEvent<
+      HTMLInputElement |
+      HTMLSelectElement |
+      HTMLTextAreaElement
+    >
+  ) => void;
+
+  onSubmit: (
+    e: FormEvent
+  ) => void;
+};
+
+
+function GastoForm({
+  titulo,
+  form,
+  tiposGasto,
+  proveedores,
+  procesando = false,
+  textoBoton,
+  textoProcesando = 'Procesando...',
+  onChange,
+  onSubmit
+}: GastoFormProps) {
+  return (
+    <form
+      className="form-card pedido-form gasto-form-card"
+      onSubmit={onSubmit}
+    >
+      <h3>{titulo}</h3>
+
+      <div className="gasto-form-grid">
+
+        <div>
+          <label>
+            Tipo de gasto
+          </label>
+
+          <select
+            name="tipo_gasto_id"
+            value={form.tipo_gasto_id}
+            onChange={onChange}
+            disabled={procesando}
+          >
+            <option value="">
+              Seleccione tipo
+            </option>
+
+            {tiposGasto.map((tipo) => (
+              <option
+                key={tipo.tipo_gasto_id}
+                value={tipo.tipo_gasto_id}
+              >
+                {tipo.nombre}
+              </option>
+            ))}
+          </select>
+        </div>
+
+
+        <div>
+          <label>
+            Proveedor opcional
+          </label>
+
+          <select
+            name="proveedor_id"
+            value={form.proveedor_id}
+            onChange={onChange}
+            disabled={procesando}
+          >
+            <option value="">
+              Sin proveedor
+            </option>
+
+            {proveedores.map(
+              (proveedor) => (
+                <option
+                  key={
+                    proveedor.proveedor_id
+                  }
+                  value={
+                    proveedor.proveedor_id
+                  }
+                >
+                  {proveedor.razon_social}
+                  {' - '}
+                  {proveedor.ruc}
+                </option>
+              )
+            )}
+          </select>
+        </div>
+
+
+        <div>
+          <label>
+            Fecha de gasto
+          </label>
+
+          <input
+            type="date"
+            name="fecha_gasto"
+            value={form.fecha_gasto}
+            onChange={onChange}
+            disabled={procesando}
+          />
+        </div>
+
+
+        <div>
+          <label>
+            Moneda
+          </label>
+
+          <select
+            name="moneda_codigo"
+            value={form.moneda_codigo}
+            onChange={onChange}
+            disabled={procesando}
+          >
+            <option value="PEN">
+              Soles
+            </option>
+
+            <option value="USD">
+              Dólares
+            </option>
+          </select>
+        </div>
+
+
+        <div>
+          <label>
+            Monto
+          </label>
+
+          <input
+            type="number"
+            name="monto"
+            value={form.monto}
+            onChange={onChange}
+            placeholder="0.00"
+            min="0.01"
+            step="0.01"
+            disabled={procesando}
+          />
+        </div>
+
+
+        <div>
+          <label>
+            Comprobante
+          </label>
+
+          <input
+            name="comprobante"
+            value={form.comprobante}
+            onChange={onChange}
+            placeholder="Ejemplo: F001-000123"
+            disabled={procesando}
+          />
+        </div>
+
+
+        <div className="gasto-campo-completo">
+          <label>
+            Descripción
+          </label>
+
+          <textarea
+            name="descripcion"
+            value={form.descripcion}
+            onChange={onChange}
+            placeholder="Ejemplo: Pago de luz del local"
+            rows={3}
+            disabled={procesando}
+          />
+        </div>
+
+      </div>
+
+
+      <div className="gasto-form-actions">
+        <button
+          type="submit"
+          disabled={procesando}
+        >
+          {procesando
+            ? textoProcesando
+            : textoBoton}
+        </button>
+      </div>
+    </form>
+  );
+}
+
+
+export default GastoForm;
+
+<<<END OF FILE>>>
+
+
+---
+
 ## FILE: src\components\pedidos\PedidoItemsEditor.tsx
 
 <<<START OF FILE>>>
 
-import type { ChangeEvent } from 'react';
+import type {
+  ChangeEvent
+} from 'react';
+
 
 export type DetallePedidoForm = {
+  /*
+   * Estos campos solamente existen
+   * cuando estamos editando un producto
+   * que ya pertenece al pedido.
+   */
+  pedido_detalle_id?: number;
+
+  cantidad_entregada?: number;
+
+  cantidad_pendiente?: number;
+
+  estado_entrega?: string;
+
+  /*
+   * Código visible de la unidad.
+   *
+   * Ejemplos:
+   * KG
+   * CONO
+   * TUBO
+   */
+  unidad?: string;
+
+
+  /* =========================================================
+     CAMPOS DEL PRODUCTO
+     ========================================================= */
+
   tipo_producto_id: string;
+
   medida_id: string;
+
   color_id: string;
+
   material_id: string;
+
   cantidad_pedida: string;
+
   unidad_medida_id: string;
+
   cantidad_presentacion: string;
+
   unidad_presentacion_id: string;
+
   precio_unitario: string;
+
   moneda_codigo: string;
+
   descripcion_item: string;
+
   observacion: string;
 };
 
-export const detallePedidoVacio: DetallePedidoForm = {
+
+export const detallePedidoVacio:
+  DetallePedidoForm = {
+
   tipo_producto_id: '',
+
   medida_id: '',
+
   color_id: '',
+
   material_id: '',
+
   cantidad_pedida: '',
+
   unidad_medida_id: '',
+
   cantidad_presentacion: '',
+
   unidad_presentacion_id: '',
+
   precio_unitario: '',
+
   moneda_codigo: 'PEN',
+
   descripcion_item: '',
+
   observacion: ''
 };
 
+
+type FeedbackTipo =
+  | 'success'
+  | 'error'
+  | 'info'
+  | 'warning';
+
+
 type PedidoItemsEditorProps = {
   detalles: DetallePedidoForm[];
-  setDetalles: (detalles: DetallePedidoForm[]) => void;
+
+  setDetalles: (
+    detalles: DetallePedidoForm[]
+  ) => void;
+
+
   tipos: any[];
+
   medidas: any[];
+
   colores: any[];
+
   materiales: any[];
+
   unidades: any[];
+
+
   titulo?: string;
+
   textoBotonAgregar?: string;
-  onFeedback?: (tipo: 'success' | 'error' | 'info' | 'warning', mensaje: string) => void;
+
+
+  /*
+   * RegistrarPedido:
+   * true
+   *
+   * Productos existentes:
+   * false
+   */
+  permitirAgregar?: boolean;
+
+
+  /*
+   * RegistrarPedido y productos nuevos:
+   * true
+   *
+   * Productos existentes:
+   * false
+   *
+   * Por ahora no estamos implementando
+   * eliminación de productos existentes.
+   */
+  permitirQuitar?: boolean;
+
+
+  /*
+   * Cuando cantidad_entregada > 0:
+   *
+   * bloqueamos:
+   * - tipo
+   * - medida
+   * - color
+   * - material
+   * - unidad
+   * - moneda
+   *
+   * pero seguimos permitiendo:
+   * - cantidad
+   * - presentación
+   * - precio
+   * - descripción
+   * - observación
+   */
+  bloquearEstructuraConEntrega?: boolean;
+
+
+  /*
+   * Permite bloquear todo el editor
+   * mientras se está enviando
+   * el PUT / POST.
+   */
+  procesando?: boolean;
+
+
+  /*
+   * En EditarPedido mostramos:
+   *
+   * - cantidad pedida
+   * - cantidad entregada
+   * - cantidad pendiente
+   * - estado
+   */
+  mostrarResumenEntrega?: boolean;
+
+
+  onFeedback?: (
+    tipo: FeedbackTipo,
+    mensaje: string
+  ) => void;
 };
+
 
 function PedidoItemsEditor({
   detalles,
+
   setDetalles,
+
   tipos,
+
   medidas,
+
   colores,
+
   materiales,
+
   unidades,
-  titulo = 'Productos del pedido',
-  textoBotonAgregar = '+ Agregar producto',
+
+  titulo =
+    'Productos del pedido',
+
+  textoBotonAgregar =
+    '+ Agregar producto',
+
+  permitirAgregar = true,
+
+  permitirQuitar = true,
+
+  bloquearEstructuraConEntrega =
+    false,
+
+  procesando = false,
+
+  mostrarResumenEntrega = false,
+
   onFeedback
 }: PedidoItemsEditorProps) {
+
+
+  /* =========================================================
+     CAMBIO DE CAMPOS
+     ========================================================= */
+
   const handleDetalleChange = (
     index: number,
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+
+    e: ChangeEvent<
+      HTMLInputElement |
+      HTMLSelectElement
+    >
   ) => {
-    const { name, value } = e.target;
+    if (procesando) {
+      return;
+    }
 
-    const nuevosDetalles = [...detalles];
 
-    if (name === 'unidad_medida_id') {
+    const {
+      name,
+      value
+    } = e.target;
+
+
+    const nuevosDetalles = [
+      ...detalles
+    ];
+
+
+    /*
+     * La unidad de presentación sigue
+     * automáticamente la unidad principal.
+     *
+     * Conservamos esta lógica actual
+     * del sistema.
+     */
+    if (
+      name ===
+      'unidad_medida_id'
+    ) {
       nuevosDetalles[index] = {
         ...nuevosDetalles[index],
-        unidad_medida_id: value,
-        unidad_presentacion_id: value
+
+        unidad_medida_id:
+          value,
+
+        unidad_presentacion_id:
+          value
       };
+
     } else {
       nuevosDetalles[index] = {
         ...nuevosDetalles[index],
-        [name]: value
+
+        [name]:
+          value
       };
     }
 
-    setDetalles(nuevosDetalles);
+
+    setDetalles(
+      nuevosDetalles
+    );
   };
 
+
+  /* =========================================================
+     AGREGAR PRODUCTO
+     ========================================================= */
+
   const agregarDetalle = () => {
-    setDetalles([...detalles, { ...detallePedidoVacio }]);
+    if (
+      procesando ||
+      !permitirAgregar
+    ) {
+      return;
+    }
+
+
+    setDetalles([
+      ...detalles,
+
+      {
+        ...detallePedidoVacio
+      }
+    ]);
+
 
     onFeedback?.(
       'success',
@@ -914,16 +1649,45 @@ function PedidoItemsEditor({
     );
   };
 
-  const quitarDetalle = (index: number) => {
-    if (detalles.length === 1) {
+
+  /* =========================================================
+     QUITAR PRODUCTO
+     ========================================================= */
+
+  const quitarDetalle = (
+    index: number
+  ) => {
+    if (
+      procesando ||
+      !permitirQuitar
+    ) {
+      return;
+    }
+
+
+    /*
+     * Debe mantenerse por lo menos
+     * una fila en el editor.
+     */
+    if (
+      detalles.length === 1
+    ) {
       onFeedback?.(
         'error',
         'Debe existir al menos un producto en el pedido'
       );
+
       return;
     }
 
-    setDetalles(detalles.filter((_, i) => i !== index));
+
+    setDetalles(
+      detalles.filter(
+        (_, i) =>
+          i !== index
+      )
+    );
+
 
     onFeedback?.(
       'warning',
@@ -931,212 +1695,1091 @@ function PedidoItemsEditor({
     );
   };
 
-  const calcularSubtotal = (detalle: DetallePedidoForm) => {
-    return Number(detalle.cantidad_pedida || 0) * Number(detalle.precio_unitario || 0);
+
+  /* =========================================================
+     SUBTOTAL
+     ========================================================= */
+
+  const calcularSubtotal = (
+    detalle: DetallePedidoForm
+  ) => {
+    const cantidad =
+      Number(
+        detalle.cantidad_pedida ||
+        0
+      );
+
+
+    const precio =
+      Number(
+        detalle.precio_unitario ||
+        0
+      );
+
+
+    return (
+      cantidad *
+      precio
+    );
   };
+
+
+  /* =========================================================
+     CLASE DE ESTADO
+     ========================================================= */
+
+  const claseEstado = (
+    estado: string
+  ) => {
+    if (
+      estado === 'COMPLETO'
+    ) {
+      return (
+        'estado estado-completo'
+      );
+    }
+
+
+    if (
+      estado === 'PARCIAL'
+    ) {
+      return (
+        'estado estado-parcial'
+      );
+    }
+
+
+    return (
+      'estado estado-pendiente'
+    );
+  };
+
+
+  /* =========================================================
+     RENDER
+     ========================================================= */
 
   return (
     <div className="pedido-productos-section">
-      <div className="pedido-productos-header">
-        <h3>{titulo}</h3>
 
-        <button type="button" onClick={agregarDetalle}>
-          {textoBotonAgregar}
-        </button>
+
+      {/* =====================================================
+          CABECERA
+          ===================================================== */}
+
+      <div className="pedido-productos-header">
+
+        <h3>
+          {titulo}
+        </h3>
+
+
+        {permitirAgregar && (
+          <button
+            type="button"
+            onClick={
+              agregarDetalle
+            }
+            disabled={
+              procesando
+            }
+          >
+            {
+              textoBotonAgregar
+            }
+          </button>
+        )}
+
       </div>
 
-      {detalles.map((detalle, index) => (
-        <div className="detalle-card" key={index}>
-          <div className="detalle-header">
-            <strong>Producto {index + 1}</strong>
 
-            <button
-              type="button"
-              className="btn-danger"
-              onClick={() => quitarDetalle(index)}
+      {/* =====================================================
+          PRODUCTOS
+          ===================================================== */}
+
+      {detalles.map(
+        (
+          detalle,
+          index
+        ) => {
+
+          /* =================================================
+             CANTIDADES ACTUALES
+             ================================================= */
+
+          const cantidadEntregada =
+            Number(
+              detalle.cantidad_entregada ||
+              0
+            );
+
+
+          const cantidadPedidaActual =
+            Number(
+              detalle.cantidad_pedida ||
+              0
+            );
+
+
+          /*
+           * IMPORTANTE:
+           *
+           * Este valor NO utiliza
+           * detalle.cantidad_pendiente.
+           *
+           * Lo calculamos en tiempo real
+           * porque cantidad_pedida puede estar
+           * siendo modificada en pantalla.
+           */
+          const cantidadPendienteActual =
+            cantidadPedidaActual -
+            cantidadEntregada;
+
+
+          /* =================================================
+             ESTADO EN TIEMPO REAL
+             ================================================= */
+
+          let estadoActual =
+            'PENDIENTE';
+
+
+          if (
+            cantidadEntregada > 0 &&
+            cantidadPedidaActual > 0 &&
+            cantidadEntregada >=
+              cantidadPedidaActual
+          ) {
+            estadoActual =
+              'COMPLETO';
+
+          } else if (
+            cantidadEntregada > 0
+          ) {
+            estadoActual =
+              'PARCIAL';
+          }
+
+
+          /* =================================================
+             BLOQUEO ESTRUCTURAL
+             ================================================= */
+
+          /*
+           * Si el producto ya tuvo entregas:
+           *
+           * NO:
+           * - tipo
+           * - medida
+           * - color
+           * - material
+           * - unidad
+           * - moneda
+           *
+           * SÍ:
+           * - cantidad
+           * - presentación
+           * - precio
+           * - descripción
+           * - observación
+           */
+          const estructuraBloqueada =
+            procesando ||
+            (
+              bloquearEstructuraConEntrega &&
+              cantidadEntregada > 0
+            );
+
+
+          /* =================================================
+             CANTIDAD MÍNIMA
+             ================================================= */
+
+          /*
+           * Si ya entregamos 80 KG,
+           * visualmente el input tendrá:
+           *
+           * min = 80
+           *
+           * El backend sigue siendo la
+           * validación definitiva.
+           */
+          const cantidadMinima =
+            cantidadEntregada > 0
+              ? cantidadEntregada
+              : 0.001;
+
+
+          return (
+            <div
+              className="detalle-card"
+
+              key={
+                detalle
+                  .pedido_detalle_id ??
+                index
+              }
             >
-              Quitar
-            </button>
-          </div>
 
-          <div className="detalle-grid detalle-grid-5">
-            <div>
-              <label>Tipo</label>
-              <select
-                name="tipo_producto_id"
-                value={detalle.tipo_producto_id}
-                onChange={(e) => handleDetalleChange(index, e)}
-              >
-                <option value="">Seleccione</option>
-                {tipos.map((tipo) => (
-                  <option key={tipo.id} value={tipo.id}>
-                    {tipo.nombre}
-                  </option>
-                ))}
-              </select>
-            </div>
 
-            <div>
-              <label>Medida</label>
-              <select
-                name="medida_id"
-                value={detalle.medida_id}
-                onChange={(e) => handleDetalleChange(index, e)}
-              >
-                <option value="">Seleccione</option>
-                {medidas.map((medida) => (
-                  <option key={medida.id} value={medida.id}>
-                    {medida.nombre}
-                  </option>
-                ))}
-              </select>
-            </div>
+              {/* =============================================
+                  CABECERA DEL PRODUCTO
+                  ============================================= */}
 
-            <div>
-              <label>Color</label>
-              <select
-                name="color_id"
-                value={detalle.color_id}
-                onChange={(e) => handleDetalleChange(index, e)}
-              >
-                <option value="">-</option>
-                {colores.map((color) => (
-                  <option key={color.id} value={color.id}>
-                    {color.nombre}
-                  </option>
-                ))}
-              </select>
-            </div>
+              <div className="detalle-header">
 
-            <div>
-              <label>Material</label>
-              <select
-                name="material_id"
-                value={detalle.material_id}
-                onChange={(e) => handleDetalleChange(index, e)}
-              >
-                <option value="">Seleccione</option>
-                {materiales.map((material) => (
-                  <option key={material.id} value={material.id}>
-                    {material.nombre}
-                  </option>
-                ))}
-              </select>
-            </div>
+                <div>
 
-            <div>
-              <label>Cantidad total</label>
-              <input
-                type="number"
-                name="cantidad_pedida"
-                value={detalle.cantidad_pedida}
-                onChange={(e) => handleDetalleChange(index, e)}
-                placeholder="0"
-              />
-            </div>
+                  <strong>
+                    {
+                      detalle
+                        .pedido_detalle_id
+                        ? `Producto registrado #${detalle.pedido_detalle_id}`
+                        : `Producto ${index + 1}`
+                    }
+                  </strong>
 
-            <div>
-              <label>Unidad</label>
-              <select
-                name="unidad_medida_id"
-                value={detalle.unidad_medida_id}
-                onChange={(e) => handleDetalleChange(index, e)}
-              >
-                <option value="">Seleccione</option>
-                {unidades.map((unidad) => (
-                  <option key={unidad.unidad_medida_id} value={unidad.unidad_medida_id}>
-                    {unidad.codigo}
-                  </option>
-                ))}
-              </select>
-            </div>
 
-            <div>
-              <label>Presentación</label>
-              <input
-                type="number"
-                name="cantidad_presentacion"
-                value={detalle.cantidad_presentacion}
-                onChange={(e) => handleDetalleChange(index, e)}
-                placeholder="0"
-              />
-            </div>
+                  {mostrarResumenEntrega &&
+                    detalle.pedido_detalle_id && (
+                      <>
+                        {' '}
 
-            <div>
-              <label>Unidad presentación</label>
-              <select
-                name="unidad_presentacion_id"
-                value={detalle.unidad_presentacion_id}
-                onChange={(e) => handleDetalleChange(index, e)}
-                disabled
-              >
-                <option value="">Igual a unidad</option>
-                {unidades.map((unidad) => (
-                  <option key={unidad.unidad_medida_id} value={unidad.unidad_medida_id}>
-                    {unidad.codigo}
-                  </option>
-                ))}
-              </select>
-            </div>
+                        <span
+                          className={
+                            claseEstado(
+                              estadoActual
+                            )
+                          }
+                        >
+                          {
+                            estadoActual
+                          }
+                        </span>
+                      </>
+                    )}
 
-            <div>
-              <label>Precio</label>
-              <input
-                type="number"
-                name="precio_unitario"
-                value={detalle.precio_unitario}
-                onChange={(e) => handleDetalleChange(index, e)}
-                placeholder="0.00"
-              />
-            </div>
+                </div>
 
-            <div>
-              <label>Moneda</label>
-              <select
-                name="moneda_codigo"
-                value={detalle.moneda_codigo}
-                onChange={(e) => handleDetalleChange(index, e)}
-              >
-                <option value="PEN">Soles</option>
-                <option value="USD">Dólares</option>
-              </select>
-            </div>
 
-            <div>
-              <label>Subtotal</label>
-              <input
-                value={calcularSubtotal(detalle).toFixed(2)}
-                disabled
-              />
-            </div>
-          </div>
+                {permitirQuitar && (
+                  <button
+                    type="button"
 
-          <div className="detalle-textos-grid">
-            <div>
-              <label>Descripción del producto</label>
-              <input
-                name="descripcion_item"
-                value={detalle.descripcion_item}
-                onChange={(e) => handleDetalleChange(index, e)}
-                placeholder="Ejemplo: DRIZA POLIESTER 1/4 BLANCO"
-              />
-            </div>
+                    className="btn-danger"
 
-            <div>
-              <label>Observación</label>
-              <input
-                name="observacion"
-                value={detalle.observacion}
-                onChange={(e) => handleDetalleChange(index, e)}
-                placeholder="Observación opcional"
-              />
+                    onClick={() =>
+                      quitarDetalle(
+                        index
+                      )
+                    }
+
+                    disabled={
+                      procesando
+                    }
+                  >
+                    Quitar
+                  </button>
+                )}
+
+              </div>
+
+
+              {/* =============================================
+                  INFORMACIÓN DE ENTREGA
+                  ============================================= */}
+
+              {mostrarResumenEntrega &&
+                detalle.pedido_detalle_id && (
+
+                  <div className="pedido-item-entrega-info">
+
+
+                    {/* PEDIDO */}
+
+                    <div>
+
+                      <span>
+                        Pedido actual
+                      </span>
+
+                      <strong>
+                        {
+                          detalle
+                            .cantidad_pedida ||
+                          0
+                        }
+                        {' '}
+                        {
+                          detalle.unidad ||
+                          ''
+                        }
+                      </strong>
+
+                    </div>
+
+
+                    {/* ENTREGADO */}
+
+                    <div>
+
+                      <span>
+                        Ya entregado
+                      </span>
+
+                      <strong>
+                        {
+                          cantidadEntregada
+                        }
+                        {' '}
+                        {
+                          detalle.unidad ||
+                          ''
+                        }
+                      </strong>
+
+                    </div>
+
+
+                    {/* PENDIENTE */}
+
+                    <div>
+
+                      <span>
+                        Pendiente actual
+                      </span>
+
+                      <strong>
+                        {
+                          cantidadPendienteActual
+                        }
+                        {' '}
+                        {
+                          detalle.unidad ||
+                          ''
+                        }
+                      </strong>
+
+                    </div>
+
+                  </div>
+                )}
+
+
+              {/* =============================================
+                  AVISO DE PRODUCTO CON ENTREGAS
+                  ============================================= */}
+
+              {bloquearEstructuraConEntrega &&
+                cantidadEntregada > 0 && (
+
+                  <div className="pedido-item-aviso-entrega">
+
+                    Este producto ya tiene{' '}
+
+                    <strong>
+                      {cantidadEntregada}{' '}
+                      {detalle.unidad || ''}
+                    </strong>
+
+                    {' '}entregados.
+
+                    {' '}
+
+                    Puedes modificar la cantidad,
+                    presentación, precio,
+                    descripción y observación.
+
+                    {' '}
+
+                    La nueva cantidad no puede ser
+                    menor a lo ya entregado.
+
+                  </div>
+                )}
+
+
+              {/* =============================================
+                  CAMPOS PRINCIPALES
+                  ============================================= */}
+
+              <div className="detalle-grid detalle-grid-5">
+
+
+                {/* ===========================================
+                    TIPO
+                    =========================================== */}
+
+                <div>
+
+                  <label>
+                    Tipo
+                  </label>
+
+
+                  <select
+                    name="tipo_producto_id"
+
+                    value={
+                      detalle
+                        .tipo_producto_id
+                    }
+
+                    onChange={(e) =>
+                      handleDetalleChange(
+                        index,
+                        e
+                      )
+                    }
+
+                    disabled={
+                      estructuraBloqueada
+                    }
+                  >
+
+                    <option value="">
+                      Seleccione
+                    </option>
+
+
+                    {tipos.map(
+                      (tipo) => (
+
+                        <option
+                          key={
+                            tipo.id
+                          }
+
+                          value={
+                            tipo.id
+                          }
+                        >
+                          {
+                            tipo.nombre
+                          }
+                        </option>
+
+                      )
+                    )}
+
+                  </select>
+
+                </div>
+
+
+                {/* ===========================================
+                    MEDIDA
+                    =========================================== */}
+
+                <div>
+
+                  <label>
+                    Medida
+                  </label>
+
+
+                  <select
+                    name="medida_id"
+
+                    value={
+                      detalle.medida_id
+                    }
+
+                    onChange={(e) =>
+                      handleDetalleChange(
+                        index,
+                        e
+                      )
+                    }
+
+                    disabled={
+                      estructuraBloqueada
+                    }
+                  >
+
+                    <option value="">
+                      Seleccione
+                    </option>
+
+
+                    {medidas.map(
+                      (medida) => (
+
+                        <option
+                          key={
+                            medida.id
+                          }
+
+                          value={
+                            medida.id
+                          }
+                        >
+                          {
+                            medida.nombre
+                          }
+                        </option>
+
+                      )
+                    )}
+
+                  </select>
+
+                </div>
+
+
+                {/* ===========================================
+                    COLOR
+                    =========================================== */}
+
+                <div>
+
+                  <label>
+                    Color
+                  </label>
+
+
+                  <select
+                    name="color_id"
+
+                    value={
+                      detalle.color_id
+                    }
+
+                    onChange={(e) =>
+                      handleDetalleChange(
+                        index,
+                        e
+                      )
+                    }
+
+                    disabled={
+                      estructuraBloqueada
+                    }
+                  >
+
+                    <option value="">
+                      Seleccione
+                    </option>
+
+
+                    {colores.map(
+                      (color) => (
+
+                        <option
+                          key={
+                            color.id
+                          }
+
+                          value={
+                            color.id
+                          }
+                        >
+                          {
+                            color.nombre
+                          }
+                        </option>
+
+                      )
+                    )}
+
+                  </select>
+
+                </div>
+
+
+                {/* ===========================================
+                    MATERIAL
+                    =========================================== */}
+
+                <div>
+
+                  <label>
+                    Material
+                  </label>
+
+
+                  <select
+                    name="material_id"
+
+                    value={
+                      detalle.material_id
+                    }
+
+                    onChange={(e) =>
+                      handleDetalleChange(
+                        index,
+                        e
+                      )
+                    }
+
+                    disabled={
+                      estructuraBloqueada
+                    }
+                  >
+
+                    <option value="">
+                      Seleccione
+                    </option>
+
+
+                    {materiales.map(
+                      (material) => (
+
+                        <option
+                          key={
+                            material.id
+                          }
+
+                          value={
+                            material.id
+                          }
+                        >
+                          {
+                            material.nombre
+                          }
+                        </option>
+
+                      )
+                    )}
+
+                  </select>
+
+                </div>
+
+
+                {/* ===========================================
+                    CANTIDAD
+                    =========================================== */}
+
+                <div>
+
+                  <label>
+                    Cantidad total
+                  </label>
+
+
+                  <input
+                    type="number"
+
+                    name="cantidad_pedida"
+
+                    value={
+                      detalle
+                        .cantidad_pedida
+                    }
+
+                    onChange={(e) =>
+                      handleDetalleChange(
+                        index,
+                        e
+                      )
+                    }
+
+                    placeholder="0"
+
+                    min={
+                      cantidadMinima
+                    }
+
+                    step="0.001"
+
+                    disabled={
+                      procesando
+                    }
+                  />
+
+
+                  {cantidadEntregada > 0 && (
+
+                    <span className="muted">
+
+                      Mínimo permitido:{' '}
+
+                      {
+                        cantidadEntregada
+                      }
+
+                      {' '}
+
+                      {
+                        detalle.unidad ||
+                        ''
+                      }
+
+                    </span>
+
+                  )}
+
+                </div>
+
+
+                {/* ===========================================
+                    UNIDAD
+                    =========================================== */}
+
+                <div>
+
+                  <label>
+                    Unidad
+                  </label>
+
+
+                  <select
+                    name="unidad_medida_id"
+
+                    value={
+                      detalle
+                        .unidad_medida_id
+                    }
+
+                    onChange={(e) =>
+                      handleDetalleChange(
+                        index,
+                        e
+                      )
+                    }
+
+                    disabled={
+                      estructuraBloqueada
+                    }
+                  >
+
+                    <option value="">
+                      Seleccione
+                    </option>
+
+
+                    {unidades.map(
+                      (unidad) => (
+
+                        <option
+                          key={
+                            unidad
+                              .unidad_medida_id
+                          }
+
+                          value={
+                            unidad
+                              .unidad_medida_id
+                          }
+                        >
+                          {
+                            unidad.codigo
+                          }
+                        </option>
+
+                      )
+                    )}
+
+                  </select>
+
+                </div>
+
+
+                {/* ===========================================
+                    PRESENTACIÓN
+                    =========================================== */}
+
+                <div>
+
+                  <label>
+                    Presentación
+                  </label>
+
+
+                  <input
+                    type="number"
+
+                    name="cantidad_presentacion"
+
+                    value={
+                      detalle
+                        .cantidad_presentacion
+                    }
+
+                    onChange={(e) =>
+                      handleDetalleChange(
+                        index,
+                        e
+                      )
+                    }
+
+                    placeholder="0"
+
+                    min="0.001"
+
+                    step="0.001"
+
+                    disabled={
+                      procesando
+                    }
+                  />
+
+                </div>
+
+
+                {/* ===========================================
+                    UNIDAD DE PRESENTACIÓN
+                    =========================================== */}
+
+                <div>
+
+                  <label>
+                    Unidad presentación
+                  </label>
+
+
+                  <select
+                    name="unidad_presentacion_id"
+
+                    value={
+                      detalle
+                        .unidad_presentacion_id
+                    }
+
+                    onChange={(e) =>
+                      handleDetalleChange(
+                        index,
+                        e
+                      )
+                    }
+
+                    /*
+                     * Actualmente la unidad
+                     * de presentación sigue
+                     * la unidad principal.
+                     */
+                    disabled
+                  >
+
+                    <option value="">
+                      Igual a unidad
+                    </option>
+
+
+                    {unidades.map(
+                      (unidad) => (
+
+                        <option
+                          key={
+                            unidad
+                              .unidad_medida_id
+                          }
+
+                          value={
+                            unidad
+                              .unidad_medida_id
+                          }
+                        >
+                          {
+                            unidad.codigo
+                          }
+                        </option>
+
+                      )
+                    )}
+
+                  </select>
+
+                </div>
+
+
+                {/* ===========================================
+                    PRECIO
+                    =========================================== */}
+
+                <div>
+
+                  <label>
+                    Precio
+                  </label>
+
+
+                  <input
+                    type="number"
+
+                    name="precio_unitario"
+
+                    value={
+                      detalle
+                        .precio_unitario
+                    }
+
+                    onChange={(e) =>
+                      handleDetalleChange(
+                        index,
+                        e
+                      )
+                    }
+
+                    placeholder="0.00"
+
+                    min="0.01"
+
+                    step="0.0001"
+
+                    disabled={
+                      procesando
+                    }
+                  />
+
+                </div>
+
+
+                {/* ===========================================
+                    MONEDA
+                    =========================================== */}
+
+                <div>
+
+                  <label>
+                    Moneda
+                  </label>
+
+
+                  <select
+                    name="moneda_codigo"
+
+                    value={
+                      detalle
+                        .moneda_codigo
+                    }
+
+                    onChange={(e) =>
+                      handleDetalleChange(
+                        index,
+                        e
+                      )
+                    }
+
+                    disabled={
+                      estructuraBloqueada
+                    }
+                  >
+
+                    <option value="PEN">
+                      Soles
+                    </option>
+
+                    <option value="USD">
+                      Dólares
+                    </option>
+
+                  </select>
+
+                </div>
+
+
+                {/* ===========================================
+                    SUBTOTAL
+                    =========================================== */}
+
+                <div>
+
+                  <label>
+                    Subtotal
+                  </label>
+
+
+                  <input
+                    value={
+                      calcularSubtotal(
+                        detalle
+                      ).toFixed(2)
+                    }
+
+                    disabled
+                  />
+
+                </div>
+
+              </div>
+
+
+              {/* =============================================
+                  DESCRIPCIÓN Y OBSERVACIÓN
+                  ============================================= */}
+
+              <div className="detalle-textos-grid">
+
+
+                {/* DESCRIPCIÓN */}
+
+                <div>
+
+                  <label>
+                    Descripción del producto
+                  </label>
+
+
+                  <input
+                    name="descripcion_item"
+
+                    value={
+                      detalle
+                        .descripcion_item
+                    }
+
+                    onChange={(e) =>
+                      handleDetalleChange(
+                        index,
+                        e
+                      )
+                    }
+
+                    placeholder="Ejemplo: DRIZA POLIESTER 1/4 BLANCO"
+
+                    disabled={
+                      procesando
+                    }
+                  />
+
+                </div>
+
+
+                {/* OBSERVACIÓN */}
+
+                <div>
+
+                  <label>
+                    Observación
+                  </label>
+
+
+                  <input
+                    name="observacion"
+
+                    value={
+                      detalle.observacion
+                    }
+
+                    onChange={(e) =>
+                      handleDetalleChange(
+                        index,
+                        e
+                      )
+                    }
+
+                    placeholder="Observación opcional"
+
+                    disabled={
+                      procesando
+                    }
+                  />
+
+                </div>
+
+              </div>
+
             </div>
-          </div>
-        </div>
-      ))}
+          );
+        }
+      )}
+
     </div>
   );
 }
+
 
 export default PedidoItemsEditor;
 
@@ -5217,457 +6860,1814 @@ export default Entregas;
 
 <<<START OF FILE>>>
 
-import { useEffect, useState } from 'react';
-import { apiFetch } from '../services/api';
+import {
+  useCallback,
+  useEffect,
+  useState
+} from 'react';
+
+import type {
+  ChangeEvent,
+  FormEvent
+} from 'react';
+
+import {
+  Link
+} from 'react-router-dom';
+
+import {
+  apiFetch
+} from '../services/api';
+
+import FeedbackToast
+  from '../components/common/FeedbackToast';
+
+import ConfirmDialog
+  from '../components/common/ConfirmDialog';
+
+import GastoForm, {
+  gastoFormVacio,
+  validarGastoForm,
+  type GastoFormData
+} from '../components/gastos/GastoForm';
+
+import {
+  useBloqueoAccion
+} from '../hooks/useBloqueoAccion';
+
+
+type FeedbackTipo =
+  | 'success'
+  | 'error'
+  | 'info'
+  | 'warning';
+
+
+type FiltrosGasto = {
+  tipo_gasto_id: string;
+  proveedor_id: string;
+  moneda_codigo: string;
+  q: string;
+};
+
+
+const filtrosVacios: FiltrosGasto = {
+  tipo_gasto_id: '',
+  proveedor_id: '',
+  moneda_codigo: '',
+  q: ''
+};
+
 
 function Gastos() {
-  const [gastos, setGastos] = useState<any[]>([]);
-  const [tiposGasto, setTiposGasto] = useState<any[]>([]);
-  const [proveedores, setProveedores] = useState<any[]>([]);
+  const [
+    gastos,
+    setGastos
+  ] = useState<any[]>([]);
 
-  const [error, setError] = useState('');
-  const [mensaje, setMensaje] = useState('');
+  const [
+    tiposGasto,
+    setTiposGasto
+  ] = useState<any[]>([]);
 
-  const [page, setPage] = useState(1);
-  const [paginacion, setPaginacion] = useState({
+  const [
+    proveedores,
+    setProveedores
+  ] = useState<any[]>([]);
+
+
+  const [
+    page,
+    setPage
+  ] = useState(1);
+
+
+  const [
+    paginacion,
+    setPaginacion
+  ] = useState({
     page: 1,
     limit: 10,
     total: 0,
     totalPaginas: 1
   });
 
-  const [filtros, setFiltros] = useState({
-    tipo_gasto_id: '',
-    proveedor_id: '',
-    moneda_codigo: '',
-    q: ''
+
+  /*
+   * filtros:
+   * lo que actualmente está escribiendo
+   * o seleccionando el usuario.
+   */
+  const [
+    filtros,
+    setFiltros
+  ] = useState<FiltrosGasto>({
+    ...filtrosVacios
   });
 
-  const [form, setForm] = useState({
-    tipo_gasto_id: '',
-    proveedor_id: '',
-    fecha_gasto: '',
-    monto: '',
-    moneda_codigo: 'PEN',
-    descripcion: '',
-    comprobante: ''
+
+  /*
+   * filtrosAplicados:
+   * filtros realmente utilizados por
+   * el listado y la paginación.
+   */
+  const [
+    filtrosAplicados,
+    setFiltrosAplicados
+  ] = useState<FiltrosGasto>({
+    ...filtrosVacios
   });
 
-  const [nuevoTipo, setNuevoTipo] = useState('');
 
-  const cargarDatosBase = async () => {
-    const [tiposData, proveedoresData] = await Promise.all([
-      apiFetch('/gastos/tipos'),
-      apiFetch('/proveedores')
-    ]);
+  const [
+    form,
+    setForm
+  ] = useState<GastoFormData>({
+    ...gastoFormVacio
+  });
 
-    setTiposGasto(tiposData.tipos);
-    setProveedores(proveedoresData.proveedores);
-  };
 
-  const cargarGastos = async (
-    paginaActual = page,
-    filtrosActuales = filtros
+  const [
+    nuevoTipo,
+    setNuevoTipo
+  ] = useState('');
+
+
+  const [
+    gastoAEliminar,
+    setGastoAEliminar
+  ] = useState<any | null>(null);
+
+
+  const [
+    feedback,
+    setFeedback
+  ] = useState<{
+    tipo: FeedbackTipo;
+    mensaje: string;
+  }>({
+    tipo: 'info',
+    mensaje: ''
+  });
+
+
+  /*
+   * Cada operación crítica tiene
+   * su propio bloqueo.
+   */
+  const {
+    procesando: registrandoTipo,
+    intentarBloquear:
+      bloquearRegistroTipo,
+    liberar:
+      liberarRegistroTipo
+  } = useBloqueoAccion();
+
+
+  const {
+    procesando: registrandoGasto,
+    intentarBloquear:
+      bloquearRegistroGasto,
+    liberar:
+      liberarRegistroGasto
+  } = useBloqueoAccion();
+
+
+  const {
+    procesando: eliminandoGasto,
+    intentarBloquear:
+      bloquearEliminacion,
+    liberar:
+      liberarEliminacion
+  } = useBloqueoAccion();
+
+
+  const mostrarFeedback = (
+    tipo: FeedbackTipo,
+    mensaje: string
   ) => {
-    const params = new URLSearchParams();
-
-    params.append('page', String(paginaActual));
-    params.append('limit', '10');
-
-    if (filtrosActuales.tipo_gasto_id) {
-      params.append('tipo_gasto_id', filtrosActuales.tipo_gasto_id);
-    }
-
-    if (filtrosActuales.proveedor_id) {
-      params.append('proveedor_id', filtrosActuales.proveedor_id);
-    }
-
-    if (filtrosActuales.moneda_codigo) {
-      params.append('moneda_codigo', filtrosActuales.moneda_codigo);
-    }
-
-    if (filtrosActuales.q.trim()) {
-      params.append('q', filtrosActuales.q.trim());
-    }
-
-    const data = await apiFetch(`/gastos?${params.toString()}`);
-
-    setGastos(data.gastos);
-    setPaginacion(data.paginacion);
+    setFeedback({
+      tipo,
+      mensaje
+    });
   };
 
+
+  /* =========================================================
+     DATOS BASE
+     ========================================================= */
+
+  const cargarDatosBase =
+    useCallback(
+      async () => {
+        const [
+          tiposData,
+          proveedoresData
+        ] = await Promise.all([
+          apiFetch(
+            '/gastos/tipos'
+          ),
+
+          apiFetch(
+            '/proveedores'
+          )
+        ]);
+
+        setTiposGasto(
+          tiposData.tipos
+        );
+
+        setProveedores(
+          proveedoresData.proveedores
+        );
+      },
+      []
+    );
+
+
+  /* =========================================================
+     LISTADO PAGINADO
+     ========================================================= */
+
+  const cargarGastos =
+    useCallback(
+      async (
+        paginaActual: number,
+        filtrosActuales: FiltrosGasto
+      ) => {
+        const params =
+          new URLSearchParams();
+
+        params.append(
+          'page',
+          String(paginaActual)
+        );
+
+        params.append(
+          'limit',
+          '10'
+        );
+
+
+        if (
+          filtrosActuales.tipo_gasto_id
+        ) {
+          params.append(
+            'tipo_gasto_id',
+            filtrosActuales.tipo_gasto_id
+          );
+        }
+
+
+        if (
+          filtrosActuales.proveedor_id
+        ) {
+          params.append(
+            'proveedor_id',
+            filtrosActuales.proveedor_id
+          );
+        }
+
+
+        if (
+          filtrosActuales.moneda_codigo
+        ) {
+          params.append(
+            'moneda_codigo',
+            filtrosActuales.moneda_codigo
+          );
+        }
+
+
+        if (
+          filtrosActuales.q.trim()
+        ) {
+          params.append(
+            'q',
+            filtrosActuales.q.trim()
+          );
+        }
+
+
+        const data =
+          await apiFetch(
+            `/gastos?${params.toString()}`
+          );
+
+
+        setGastos(
+          data.gastos
+        );
+
+        setPaginacion(
+          data.paginacion
+        );
+      },
+      []
+    );
+
+
+  /*
+   * Tipos y proveedores.
+   */
   useEffect(() => {
-    const iniciar = async () => {
-      try {
-        await cargarDatosBase();
-        await cargarGastos(1);
-      } catch (error: any) {
-        setError(error.message);
-      }
-    };
+    const iniciar =
+      async () => {
+        try {
+          await cargarDatosBase();
+
+        } catch (error: any) {
+          mostrarFeedback(
+            'error',
+            error.message
+          );
+        }
+      };
 
     iniciar();
-  }, []);
+  }, [cargarDatosBase]);
 
+
+  /*
+   * Listado.
+   *
+   * Al cambiar página o aplicar
+   * filtros, vuelve a consultar.
+   */
   useEffect(() => {
-    const cargar = async () => {
-      try {
-        await cargarGastos(page);
-      } catch (error: any) {
-        setError(error.message);
-      }
-    };
+    const cargar =
+      async () => {
+        try {
+          await cargarGastos(
+            page,
+            filtrosAplicados
+          );
+
+        } catch (error: any) {
+          mostrarFeedback(
+            'error',
+            error.message
+          );
+        }
+      };
 
     cargar();
-  }, [page]);
+
+  }, [
+    page,
+    filtrosAplicados,
+    cargarGastos
+  ]);
+
+
+  /* =========================================================
+     CAMBIOS DE FORMULARIO
+     ========================================================= */
 
   const handleFormChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    e: ChangeEvent<
+      HTMLInputElement |
+      HTMLSelectElement |
+      HTMLTextAreaElement
+    >
   ) => {
     setForm({
       ...form,
-      [e.target.name]: e.target.value
+      [e.target.name]:
+        e.target.value
     });
   };
 
+
   const handleFiltroChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: ChangeEvent<
+      HTMLInputElement |
+      HTMLSelectElement
+    >
   ) => {
     setFiltros({
       ...filtros,
-      [e.target.name]: e.target.value
+      [e.target.name]:
+        e.target.value
     });
   };
 
-  const registrarTipoGasto = async (e: React.FormEvent) => {
-    e.preventDefault();
 
-    setError('');
-    setMensaje('');
+  /* =========================================================
+     REGISTRAR TIPO DE GASTO
+     ========================================================= */
 
-    try {
-      await apiFetch('/gastos/tipos', {
-        method: 'POST',
-        body: JSON.stringify({
-          nombre: nuevoTipo
-        })
-      });
+  const registrarTipoGasto =
+    async (
+      e: FormEvent
+    ) => {
+      e.preventDefault();
 
-      setMensaje('Tipo de gasto registrado correctamente');
-      setNuevoTipo('');
 
-      await cargarDatosBase();
+      const nombre =
+        nuevoTipo.trim();
 
-    } catch (error: any) {
-      setError(error.message);
-    }
-  };
 
-  const registrarGasto = async (e: React.FormEvent) => {
-    e.preventDefault();
+      if (!nombre) {
+        mostrarFeedback(
+          'error',
+          'Ingrese el nombre del tipo de gasto'
+        );
 
-    setError('');
-    setMensaje('');
+        return;
+      }
 
-    try {
-      await apiFetch('/gastos', {
-        method: 'POST',
-        body: JSON.stringify({
-          tipo_gasto_id: Number(form.tipo_gasto_id),
-          proveedor_id: form.proveedor_id ? Number(form.proveedor_id) : null,
-          fecha_gasto: form.fecha_gasto || undefined,
-          monto: Number(form.monto),
-          moneda_codigo: form.moneda_codigo,
-          descripcion: form.descripcion,
-          comprobante: form.comprobante
-        })
-      });
 
-      setMensaje('Gasto registrado correctamente');
+      if (
+        !bloquearRegistroTipo()
+      ) {
+        return;
+      }
 
-      setForm({
-        tipo_gasto_id: '',
-        proveedor_id: '',
-        fecha_gasto: '',
-        monto: '',
-        moneda_codigo: 'PEN',
-        descripcion: '',
-        comprobante: ''
-      });
 
-      setPage(1);
-      await cargarGastos(1);
+      try {
+        await apiFetch(
+          '/gastos/tipos',
+          {
+            method: 'POST',
 
-    } catch (error: any) {
-      setError(error.message);
-    }
-  };
+            body: JSON.stringify({
+              nombre
+            })
+          }
+        );
 
-  const aplicarFiltros = async (e: React.FormEvent) => {
-    e.preventDefault();
 
-    setError('');
-    setMensaje('');
-    setPage(1);
+        setNuevoTipo('');
 
-    try {
-      await cargarGastos(1, filtros);
-    } catch (error: any) {
-      setError(error.message);
-    }
-  };
 
-  const limpiarFiltros = async () => {
-    const filtrosLimpios = {
-      tipo_gasto_id: '',
-      proveedor_id: '',
-      moneda_codigo: '',
-      q: ''
+        mostrarFeedback(
+          'success',
+          'Tipo de gasto registrado correctamente'
+        );
+
+
+        /*
+         * Si la recarga falla, el registro
+         * ya fue creado. No debemos decir
+         * que el POST falló.
+         */
+        try {
+          await cargarDatosBase();
+
+        } catch (error: any) {
+          mostrarFeedback(
+            'warning',
+            'El tipo de gasto fue registrado, pero no se pudo actualizar la lista. Recarga la página.'
+          );
+        }
+
+      } catch (error: any) {
+        mostrarFeedback(
+          'error',
+          error.message
+        );
+
+      } finally {
+        liberarRegistroTipo();
+      }
     };
 
-    setFiltros(filtrosLimpios);
+
+  /* =========================================================
+     REGISTRAR GASTO
+     ========================================================= */
+
+  const registrarGasto =
+    async (
+      e: FormEvent
+    ) => {
+      e.preventDefault();
+
+
+      const errorValidacion =
+        validarGastoForm(
+          form,
+          false
+        );
+
+
+      if (errorValidacion) {
+        mostrarFeedback(
+          'error',
+          errorValidacion
+        );
+
+        return;
+      }
+
+
+      if (
+        !bloquearRegistroGasto()
+      ) {
+        return;
+      }
+
+
+      try {
+        await apiFetch(
+          '/gastos',
+          {
+            method: 'POST',
+
+            body: JSON.stringify({
+              tipo_gasto_id:
+                Number(
+                  form.tipo_gasto_id
+                ),
+
+              proveedor_id:
+                form.proveedor_id
+                  ? Number(
+                      form.proveedor_id
+                    )
+                  : null,
+
+              fecha_gasto:
+                form.fecha_gasto ||
+                undefined,
+
+              monto:
+                Number(
+                  form.monto
+                ),
+
+              moneda_codigo:
+                form.moneda_codigo,
+
+              descripcion:
+                form.descripcion,
+
+              comprobante:
+                form.comprobante
+            })
+          }
+        );
+
+
+        setForm({
+          ...gastoFormVacio
+        });
+
+
+        mostrarFeedback(
+          'success',
+          'Gasto registrado correctamente'
+        );
+
+
+        /*
+         * Actualizamos el listado.
+         *
+         * Separado del POST para evitar
+         * confundir una falla del GET con
+         * una falla al registrar.
+         */
+        try {
+          if (page !== 1) {
+            setPage(1);
+
+          } else {
+            await cargarGastos(
+              1,
+              filtrosAplicados
+            );
+          }
+
+        } catch (error: any) {
+          mostrarFeedback(
+            'warning',
+            'El gasto fue registrado correctamente, pero no se pudo actualizar el listado. Recarga la página.'
+          );
+        }
+
+      } catch (error: any) {
+        mostrarFeedback(
+          'error',
+          error.message
+        );
+
+      } finally {
+        liberarRegistroGasto();
+      }
+    };
+
+
+  /* =========================================================
+     FILTROS
+     ========================================================= */
+
+  const aplicarFiltros = (
+    e: FormEvent
+  ) => {
+    e.preventDefault();
+
     setPage(1);
 
-    try {
-      await cargarGastos(1, filtrosLimpios);
-    } catch (error: any) {
-      setError(error.message);
-    }
+    setFiltrosAplicados({
+      ...filtros
+    });
   };
 
+
+  const limpiarFiltros = () => {
+    setFiltros({
+      ...filtrosVacios
+    });
+
+    setFiltrosAplicados({
+      ...filtrosVacios
+    });
+
+    setPage(1);
+  };
+
+
+  /* =========================================================
+     ELIMINACIÓN
+     ========================================================= */
+
+  const solicitarEliminar = (
+    gasto: any
+  ) => {
+    setGastoAEliminar(
+      gasto
+    );
+  };
+
+
+  const confirmarEliminacion =
+    async () => {
+      if (!gastoAEliminar) {
+        return;
+      }
+
+
+      if (
+        !bloquearEliminacion()
+      ) {
+        return;
+      }
+
+
+      const gastoId =
+        gastoAEliminar.gasto_id;
+
+
+      try {
+        await apiFetch(
+          `/gastos/${gastoId}`,
+          {
+            method: 'DELETE'
+          }
+        );
+
+
+        setGastoAEliminar(
+          null
+        );
+
+
+        mostrarFeedback(
+          'warning',
+          `Gasto #${gastoId} eliminado correctamente`
+        );
+
+
+        /*
+         * Si eliminamos el último registro
+         * de una página distinta de la 1,
+         * retrocedemos una página.
+         */
+        if (
+          gastos.length === 1 &&
+          page > 1
+        ) {
+          setPage(
+            (paginaActual) =>
+              paginaActual - 1
+          );
+
+        } else {
+          try {
+            await cargarGastos(
+              page,
+              filtrosAplicados
+            );
+
+          } catch (error: any) {
+            mostrarFeedback(
+              'warning',
+              `El gasto #${gastoId} fue eliminado, pero no se pudo actualizar el listado. Recarga la página.`
+            );
+          }
+        }
+
+      } catch (error: any) {
+        mostrarFeedback(
+          'error',
+          error.message
+        );
+
+      } finally {
+        liberarEliminacion();
+      }
+    };
+
+
   return (
-    <div>
-      <h1>Gastos</h1>
-      <p>Registra y consulta los gastos de la empresa.</p>
+    <div className="pedidos-page">
 
-      {error && <div className="error">{error}</div>}
-      {mensaje && <div className="success">{mensaje}</div>}
+      <FeedbackToast
+        tipo={feedback.tipo}
+        mensaje={feedback.mensaje}
+        onClose={() =>
+          setFeedback({
+            ...feedback,
+            mensaje: ''
+          })
+        }
+      />
 
-      <form className="form-card" onSubmit={registrarTipoGasto}>
-        <h3>Registrar tipo de gasto</h3>
 
-        <label>Nuevo tipo de gasto</label>
-        <input
-          value={nuevoTipo}
-          onChange={(e) => setNuevoTipo(e.target.value)}
-          placeholder="Ejemplo: COMBUSTIBLE"
-        />
+      <ConfirmDialog
+        abierto={
+          gastoAEliminar !== null
+        }
+        titulo={
+          gastoAEliminar
+            ? `Eliminar gasto #${gastoAEliminar.gasto_id}`
+            : 'Eliminar gasto'
+        }
+        descripcion={
+          gastoAEliminar
+            ? `Se retirará del registro activo el gasto ${gastoAEliminar.tipo_gasto} por ${Number(gastoAEliminar.monto).toFixed(2)} ${gastoAEliminar.moneda_codigo}. El registro permanecerá almacenado para auditoría.`
+            : ''
+        }
+        textoConfirmar="Eliminar gasto"
+        textoProcesando="Eliminando gasto..."
+        procesando={eliminandoGasto}
+        onConfirmar={
+          confirmarEliminacion
+        }
+        onCerrar={() => {
+          if (!eliminandoGasto) {
+            setGastoAEliminar(
+              null
+            );
+          }
+        }}
+      />
 
-        <button type="submit">
-          Guardar tipo
-        </button>
-      </form>
 
-      <form className="form-card pedido-form" onSubmit={registrarGasto}>
-        <h3>Registrar gasto</h3>
-
-        <label>Tipo de gasto</label>
-        <select
-          name="tipo_gasto_id"
-          value={form.tipo_gasto_id}
-          onChange={handleFormChange}
-        >
-          <option value="">Seleccione tipo</option>
-          {tiposGasto.map((tipo) => (
-            <option key={tipo.tipo_gasto_id} value={tipo.tipo_gasto_id}>
-              {tipo.nombre}
-            </option>
-          ))}
-        </select>
-
-        <label>Proveedor opcional</label>
-        <select
-          name="proveedor_id"
-          value={form.proveedor_id}
-          onChange={handleFormChange}
-        >
-          <option value="">Sin proveedor</option>
-          {proveedores.map((proveedor) => (
-            <option key={proveedor.proveedor_id} value={proveedor.proveedor_id}>
-              {proveedor.razon_social} - {proveedor.ruc}
-            </option>
-          ))}
-        </select>
-
-        <label>Fecha de gasto</label>
-        <input
-          type="date"
-          name="fecha_gasto"
-          value={form.fecha_gasto}
-          onChange={handleFormChange}
-        />
-
-        <label>Moneda</label>
-        <select
-          name="moneda_codigo"
-          value={form.moneda_codigo}
-          onChange={handleFormChange}
-        >
-          <option value="PEN">Soles</option>
-          <option value="USD">Dólares</option>
-        </select>
-
-        <label>Monto</label>
-        <input
-          type="number"
-          name="monto"
-          value={form.monto}
-          onChange={handleFormChange}
-          placeholder="Monto del gasto"
-        />
-
-        <label>Comprobante</label>
-        <input
-          name="comprobante"
-          value={form.comprobante}
-          onChange={handleFormChange}
-          placeholder="Ejemplo: REC-001, F001-000123"
-        />
-
-        <label>Descripción</label>
-        <textarea
-          name="descripcion"
-          value={form.descripcion}
-          onChange={handleFormChange}
-          placeholder="Ejemplo: Pago de luz del local"
-          rows={3}
-        />
-
-        <button type="submit">
-          Guardar gasto
-        </button>
-      </form>
-
-      <form className="filtros-card" onSubmit={aplicarFiltros}>
+      <div className="pedidos-header">
         <div>
-          <label>Tipo de gasto</label>
+          <h1>
+            Gastos
+          </h1>
+
+          <p>
+            Registra, consulta, edita
+            y administra los gastos de
+            la empresa.
+          </p>
+        </div>
+      </div>
+
+
+      <div className="gastos-config-grid">
+
+        <form
+          className="form-card gasto-tipo-card"
+          onSubmit={
+            registrarTipoGasto
+          }
+        >
+          <h3>
+            Registrar tipo de gasto
+          </h3>
+
+          <label>
+            Nuevo tipo
+          </label>
+
+          <input
+            value={nuevoTipo}
+            onChange={(e) =>
+              setNuevoTipo(
+                e.target.value
+              )
+            }
+            placeholder="Ejemplo: COMBUSTIBLE"
+            disabled={registrandoTipo}
+          />
+
+          <button
+            type="submit"
+            disabled={registrandoTipo}
+          >
+            {registrandoTipo
+              ? 'Guardando tipo...'
+              : 'Guardar tipo'}
+          </button>
+        </form>
+
+
+        <GastoForm
+          titulo="Registrar gasto"
+          form={form}
+          tiposGasto={tiposGasto}
+          proveedores={proveedores}
+          procesando={registrandoGasto}
+          textoBoton="Guardar gasto"
+          textoProcesando="Registrando gasto..."
+          onChange={handleFormChange}
+          onSubmit={registrarGasto}
+        />
+
+      </div>
+
+
+      <form
+        className="filtros-card"
+        onSubmit={aplicarFiltros}
+      >
+
+        <div>
+          <label>
+            Tipo de gasto
+          </label>
+
           <select
             name="tipo_gasto_id"
-            value={filtros.tipo_gasto_id}
-            onChange={handleFiltroChange}
+            value={
+              filtros.tipo_gasto_id
+            }
+            onChange={
+              handleFiltroChange
+            }
           >
-            <option value="">Todos</option>
-            {tiposGasto.map((tipo) => (
-              <option key={tipo.tipo_gasto_id} value={tipo.tipo_gasto_id}>
-                {tipo.nombre}
-              </option>
-            ))}
+            <option value="">
+              Todos
+            </option>
+
+            {tiposGasto.map(
+              (tipo) => (
+                <option
+                  key={
+                    tipo.tipo_gasto_id
+                  }
+                  value={
+                    tipo.tipo_gasto_id
+                  }
+                >
+                  {tipo.nombre}
+                </option>
+              )
+            )}
           </select>
         </div>
 
+
         <div>
-          <label>Proveedor</label>
+          <label>
+            Proveedor
+          </label>
+
           <select
             name="proveedor_id"
-            value={filtros.proveedor_id}
-            onChange={handleFiltroChange}
+            value={
+              filtros.proveedor_id
+            }
+            onChange={
+              handleFiltroChange
+            }
           >
-            <option value="">Todos</option>
-            {proveedores.map((proveedor) => (
-              <option key={proveedor.proveedor_id} value={proveedor.proveedor_id}>
-                {proveedor.razon_social} - {proveedor.ruc}
-              </option>
-            ))}
+            <option value="">
+              Todos
+            </option>
+
+            {proveedores.map(
+              (proveedor) => (
+                <option
+                  key={
+                    proveedor.proveedor_id
+                  }
+                  value={
+                    proveedor.proveedor_id
+                  }
+                >
+                  {
+                    proveedor.razon_social
+                  }
+                  {' - '}
+                  {proveedor.ruc}
+                </option>
+              )
+            )}
           </select>
         </div>
 
+
         <div>
-          <label>Moneda</label>
+          <label>
+            Moneda
+          </label>
+
           <select
             name="moneda_codigo"
-            value={filtros.moneda_codigo}
-            onChange={handleFiltroChange}
+            value={
+              filtros.moneda_codigo
+            }
+            onChange={
+              handleFiltroChange
+            }
           >
-            <option value="">Todas</option>
-            <option value="PEN">Soles</option>
-            <option value="USD">Dólares</option>
+            <option value="">
+              Todas
+            </option>
+
+            <option value="PEN">
+              Soles
+            </option>
+
+            <option value="USD">
+              Dólares
+            </option>
           </select>
         </div>
 
+
         <div>
-          <label>Buscar</label>
+          <label>
+            Buscar
+          </label>
+
           <input
             name="q"
             value={filtros.q}
-            onChange={handleFiltroChange}
+            onChange={
+              handleFiltroChange
+            }
             placeholder="Descripción, comprobante o proveedor"
           />
         </div>
 
+
         <div className="filtros-actions">
-          <button type="submit">Buscar</button>
-          <button type="button" className="btn-secondary" onClick={limpiarFiltros}>
+          <button type="submit">
+            Buscar
+          </button>
+
+          <button
+            type="button"
+            className="btn-secondary"
+            onClick={
+              limpiarFiltros
+            }
+          >
             Limpiar
           </button>
         </div>
+
       </form>
 
-      <div className="tabla-card">
-        <h3>Listado de gastos</h3>
 
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Tipo</th>
-              <th>Proveedor</th>
-              <th>Fecha</th>
-              <th>Monto</th>
-              <th>Moneda</th>
-              <th>Comprobante</th>
-              <th>Registrado por</th>
-            </tr>
-          </thead>
+      <div className="pedidos-card">
+        <h3>
+          Listado de gastos
+        </h3>
 
-          <tbody>
-            {gastos.map((gasto) => (
-              <tr key={gasto.gasto_id}>
-                <td>#{gasto.gasto_id}</td>
-                <td>{gasto.tipo_gasto}</td>
-                <td>{gasto.proveedor || '-'}</td>
-                <td>{gasto.fecha_gasto?.slice(0, 10)}</td>
-                <td>{Number(gasto.monto).toFixed(2)}</td>
-                <td>{gasto.moneda_codigo}</td>
-                <td>{gasto.comprobante || '-'}</td>
-                <td>{gasto.registrado_por}</td>
-              </tr>
-            ))}
+        <div className="tabla-responsive">
+          <table>
 
-            {gastos.length === 0 && (
+            <thead>
               <tr>
-                <td colSpan={8}>No hay gastos registrados.</td>
+                <th>ID</th>
+                <th>Tipo / descripción</th>
+                <th>Proveedor</th>
+                <th>Fecha</th>
+                <th>Monto</th>
+                <th>Moneda</th>
+                <th>Comprobante</th>
+                <th>Registrado por</th>
+                <th>Acciones</th>
               </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+
+
+            <tbody>
+
+              {gastos.map(
+                (gasto) => (
+                  <tr
+                    key={
+                      gasto.gasto_id
+                    }
+                  >
+                    <td>
+                      #{gasto.gasto_id}
+                    </td>
+
+
+                    <td>
+                      <strong>
+                        {gasto.tipo_gasto}
+                      </strong>
+
+                      <br />
+
+                      <span className="muted">
+                        {
+                          gasto.descripcion ||
+                          'Sin descripción'
+                        }
+                      </span>
+                    </td>
+
+
+                    <td>
+                      {gasto.proveedor ? (
+                        <>
+                          <strong>
+                            {
+                              gasto.proveedor
+                            }
+                          </strong>
+
+                          <br />
+
+                          <span className="muted">
+                            {
+                              gasto.proveedor_ruc ||
+                              ''
+                            }
+                          </span>
+                        </>
+                      ) : (
+                        '-'
+                      )}
+                    </td>
+
+
+                    <td>
+                      {
+                        gasto.fecha_gasto
+                          ?.slice(
+                            0,
+                            10
+                          )
+                      }
+                    </td>
+
+
+                    <td>
+                      <strong>
+                        {Number(
+                          gasto.monto
+                        ).toFixed(2)}
+                      </strong>
+                    </td>
+
+
+                    <td>
+                      {
+                        gasto.moneda_codigo
+                      }
+                    </td>
+
+
+                    <td>
+                      {
+                        gasto.comprobante ||
+                        '-'
+                      }
+                    </td>
+
+
+                    <td>
+                      {
+                        gasto.registrado_por
+                      }
+                    </td>
+
+
+                    <td>
+                      <div className="tabla-acciones">
+
+                        <Link
+                          className="btn-outline"
+                          to={
+                            `/gestion/gastos/${gasto.gasto_id}/editar`
+                          }
+                        >
+                          Editar
+                        </Link>
+
+
+                        <button
+                          type="button"
+                          className="btn-danger"
+                          onClick={() =>
+                            solicitarEliminar(
+                              gasto
+                            )
+                          }
+                        >
+                          Eliminar
+                        </button>
+
+                      </div>
+                    </td>
+                  </tr>
+                )
+              )}
+
+
+              {gastos.length === 0 && (
+                <tr>
+                  <td colSpan={9}>
+                    No hay gastos registrados.
+                  </td>
+                </tr>
+              )}
+
+            </tbody>
+
+          </table>
+        </div>
+
 
         <div className="paginado">
+
           <button
             type="button"
             disabled={page <= 1}
-            onClick={() => setPage(page - 1)}
+            onClick={() =>
+              setPage(
+                page - 1
+              )
+            }
           >
             Anterior
           </button>
 
+
           <span>
-            Página {paginacion.page} de {paginacion.totalPaginas || 1}
+            Página {paginacion.page}
+            {' de '}
+            {
+              paginacion.totalPaginas ||
+              1
+            }
           </span>
+
 
           <button
             type="button"
-            disabled={page >= paginacion.totalPaginas}
-            onClick={() => setPage(page + 1)}
+            disabled={
+              page >=
+              paginacion.totalPaginas
+            }
+            onClick={() =>
+              setPage(
+                page + 1
+              )
+            }
           >
             Siguiente
           </button>
+
         </div>
       </div>
+
     </div>
   );
 }
 
+
 export default Gastos;
+
+<<<END OF FILE>>>
+
+
+---
+
+## FILE: src\pages\gastos\EditarGasto.tsx
+
+<<<START OF FILE>>>
+
+import {
+  useCallback,
+  useEffect,
+  useState
+} from 'react';
+
+import type {
+  ChangeEvent,
+  FormEvent
+} from 'react';
+
+import {
+  Link,
+  useNavigate,
+  useParams
+} from 'react-router-dom';
+
+import {
+  apiFetch
+} from '../../services/api';
+
+import FeedbackToast
+  from '../../components/common/FeedbackToast';
+
+import GastoForm, {
+  gastoFormVacio,
+  validarGastoForm,
+  type GastoFormData
+} from '../../components/gastos/GastoForm';
+
+import {
+  useBloqueoAccion
+} from '../../hooks/useBloqueoAccion';
+
+
+type FeedbackTipo =
+  | 'success'
+  | 'error'
+  | 'info'
+  | 'warning';
+
+
+function EditarGasto() {
+  const {
+    gasto_id
+  } = useParams();
+
+  const navigate =
+    useNavigate();
+
+
+  const [
+    gasto,
+    setGasto
+  ] = useState<any | null>(
+    null
+  );
+
+
+  const [
+    tiposGasto,
+    setTiposGasto
+  ] = useState<any[]>([]);
+
+
+  const [
+    proveedores,
+    setProveedores
+  ] = useState<any[]>([]);
+
+
+  const [
+    cargando,
+    setCargando
+  ] = useState(true);
+
+
+  const [
+    form,
+    setForm
+  ] = useState<GastoFormData>({
+    ...gastoFormVacio
+  });
+
+
+  const [
+    feedback,
+    setFeedback
+  ] = useState<{
+    tipo: FeedbackTipo;
+    mensaje: string;
+  }>({
+    tipo: 'info',
+    mensaje: ''
+  });
+
+
+  const {
+    procesando: actualizandoGasto,
+    intentarBloquear:
+      bloquearActualizacion,
+    liberar:
+      liberarActualizacion
+  } = useBloqueoAccion();
+
+
+  const mostrarFeedback = (
+    tipo: FeedbackTipo,
+    mensaje: string
+  ) => {
+    setFeedback({
+      tipo,
+      mensaje
+    });
+  };
+
+
+  /* =========================================================
+     CARGAR GASTO
+     ========================================================= */
+
+  const cargarDatos =
+    useCallback(
+      async () => {
+        if (!gasto_id) {
+          throw new Error(
+            'ID de gasto no válido'
+          );
+        }
+
+
+        const [
+          gastoData,
+          tiposData,
+          proveedoresData
+        ] = await Promise.all([
+          apiFetch(
+            `/gastos/${gasto_id}`
+          ),
+
+          apiFetch(
+            '/gastos/tipos'
+          ),
+
+          apiFetch(
+            '/proveedores'
+          )
+        ]);
+
+
+        const gastoActual =
+          gastoData.gasto;
+
+
+        /*
+         * Si el proveedor del gasto ya no
+         * se encuentra activo, lo agregamos
+         * al select para poder representar
+         * correctamente el valor histórico.
+         */
+        const listaProveedores = [
+          ...proveedoresData.proveedores
+        ];
+
+
+        if (
+          gastoActual.proveedor_id &&
+          !listaProveedores.some(
+            (proveedor) =>
+              Number(
+                proveedor.proveedor_id
+              ) ===
+              Number(
+                gastoActual.proveedor_id
+              )
+          )
+        ) {
+          listaProveedores.push({
+            proveedor_id:
+              gastoActual.proveedor_id,
+
+            razon_social:
+              gastoActual.proveedor ||
+              'Proveedor no disponible',
+
+            ruc:
+              gastoActual.proveedor_ruc ||
+              '-'
+          });
+        }
+
+
+        setGasto(
+          gastoActual
+        );
+
+
+        setTiposGasto(
+          tiposData.tipos
+        );
+
+
+        setProveedores(
+          listaProveedores
+        );
+
+
+        setForm({
+          tipo_gasto_id:
+            String(
+              gastoActual.tipo_gasto_id
+            ),
+
+          proveedor_id:
+            gastoActual.proveedor_id
+              ? String(
+                  gastoActual.proveedor_id
+                )
+              : '',
+
+          fecha_gasto:
+            gastoActual.fecha_gasto
+              ?.slice(
+                0,
+                10
+              ) || '',
+
+          monto:
+            String(
+              gastoActual.monto
+            ),
+
+          moneda_codigo:
+            gastoActual.moneda_codigo ||
+            'PEN',
+
+          descripcion:
+            gastoActual.descripcion ||
+            '',
+
+          comprobante:
+            gastoActual.comprobante ||
+            ''
+        });
+      },
+      [gasto_id]
+    );
+
+
+  useEffect(() => {
+    const iniciar =
+      async () => {
+        try {
+          setCargando(true);
+
+          await cargarDatos();
+
+        } catch (error: any) {
+          mostrarFeedback(
+            'error',
+            error.message
+          );
+
+        } finally {
+          setCargando(false);
+        }
+      };
+
+    iniciar();
+
+  }, [cargarDatos]);
+
+
+  /* =========================================================
+     CAMBIO DE CAMPOS
+     ========================================================= */
+
+  const handleChange = (
+    e: ChangeEvent<
+      HTMLInputElement |
+      HTMLSelectElement |
+      HTMLTextAreaElement
+    >
+  ) => {
+    setForm({
+      ...form,
+      [e.target.name]:
+        e.target.value
+    });
+  };
+
+
+  /* =========================================================
+     ACTUALIZAR
+     ========================================================= */
+
+  const actualizarGasto =
+    async (
+      e: FormEvent
+    ) => {
+      e.preventDefault();
+
+
+      const errorValidacion =
+        validarGastoForm(
+          form,
+          true
+        );
+
+
+      if (errorValidacion) {
+        mostrarFeedback(
+          'error',
+          errorValidacion
+        );
+
+        return;
+      }
+
+
+      if (
+        !bloquearActualizacion()
+      ) {
+        return;
+      }
+
+
+      try {
+        await apiFetch(
+          `/gastos/${gasto_id}`,
+          {
+            method: 'PUT',
+
+            body: JSON.stringify({
+              tipo_gasto_id:
+                Number(
+                  form.tipo_gasto_id
+                ),
+
+              proveedor_id:
+                form.proveedor_id
+                  ? Number(
+                      form.proveedor_id
+                    )
+                  : null,
+
+              fecha_gasto:
+                form.fecha_gasto,
+
+              monto:
+                Number(
+                  form.monto
+                ),
+
+              moneda_codigo:
+                form.moneda_codigo,
+
+              descripcion:
+                form.descripcion,
+
+              comprobante:
+                form.comprobante
+            })
+          }
+        );
+
+
+        mostrarFeedback(
+          'success',
+          'Gasto actualizado correctamente'
+        );
+
+
+        /*
+         * No liberamos el bloqueo
+         * en éxito.
+         *
+         * Durante el pequeño tiempo hasta
+         * la redirección no queremos otro PUT.
+         */
+        setTimeout(() => {
+          navigate(
+            '/gestion/gastos'
+          );
+        }, 900);
+
+      } catch (error: any) {
+        liberarActualizacion();
+
+        mostrarFeedback(
+          'error',
+          error.message
+        );
+      }
+    };
+
+
+  /* =========================================================
+     CARGANDO
+     ========================================================= */
+
+  if (cargando) {
+    return (
+      <div className="pedidos-page">
+
+        <FeedbackToast
+          tipo={feedback.tipo}
+          mensaje={feedback.mensaje}
+          onClose={() =>
+            setFeedback({
+              ...feedback,
+              mensaje: ''
+            })
+          }
+        />
+
+
+        <Link
+          className="btn-volver"
+          to="/gestion/gastos"
+        >
+          ← Volver a gastos
+        </Link>
+
+
+        <div className="pedidos-card">
+          <p>
+            Cargando gasto...
+          </p>
+        </div>
+
+      </div>
+    );
+  }
+
+
+  /* =========================================================
+     NO ENCONTRADO
+     ========================================================= */
+
+  if (!gasto) {
+    return (
+      <div className="pedidos-page">
+
+        <FeedbackToast
+          tipo={feedback.tipo}
+          mensaje={feedback.mensaje}
+          onClose={() =>
+            setFeedback({
+              ...feedback,
+              mensaje: ''
+            })
+          }
+        />
+
+
+        <Link
+          className="btn-volver"
+          to="/gestion/gastos"
+        >
+          ← Volver a gastos
+        </Link>
+
+
+        <div className="pedidos-card">
+          <h3>
+            Gasto no disponible
+          </h3>
+
+          <p>
+            El gasto no existe o fue
+            eliminado.
+          </p>
+        </div>
+
+      </div>
+    );
+  }
+
+
+  return (
+    <div className="pedidos-page">
+
+      <FeedbackToast
+        tipo={feedback.tipo}
+        mensaje={feedback.mensaje}
+        onClose={() =>
+          setFeedback({
+            ...feedback,
+            mensaje: ''
+          })
+        }
+      />
+
+
+      <div>
+        <Link
+          className="btn-volver"
+          to="/gestion/gastos"
+        >
+          ← Volver a gastos
+        </Link>
+      </div>
+
+
+      <div className="pedidos-header">
+        <div>
+          <h1>
+            Editar gasto #{gasto.gasto_id}
+          </h1>
+
+          <p>
+            Modifica los datos del gasto.
+            La última modificación quedará
+            registrada en la base de datos.
+          </p>
+        </div>
+      </div>
+
+
+      <div className="gasto-auditoria-card">
+
+        <div>
+          <span>
+            Registrado por
+          </span>
+
+          <strong>
+            {
+              gasto.registrado_por ||
+              '-'
+            }
+          </strong>
+        </div>
+
+
+        <div>
+          <span>
+            Fecha de registro
+          </span>
+
+          <strong>
+            {
+              gasto.created_at
+                ?.slice(
+                  0,
+                  10
+                ) ||
+              '-'
+            }
+          </strong>
+        </div>
+
+
+        <div>
+          <span>
+            Última modificación
+          </span>
+
+          <strong>
+            {
+              gasto.updated_at
+                ?.slice(
+                  0,
+                  10
+                ) ||
+              'Sin modificaciones'
+            }
+          </strong>
+        </div>
+
+
+        <div>
+          <span>
+            Modificado por
+          </span>
+
+          <strong>
+            {
+              gasto.actualizado_por ||
+              '-'
+            }
+          </strong>
+        </div>
+
+      </div>
+
+
+      <GastoForm
+        titulo={`Datos del gasto #${gasto.gasto_id}`}
+        form={form}
+        tiposGasto={tiposGasto}
+        proveedores={proveedores}
+        procesando={actualizandoGasto}
+        textoBoton="Guardar cambios"
+        textoProcesando="Actualizando gasto..."
+        onChange={handleChange}
+        onSubmit={actualizarGasto}
+      />
+
+    </div>
+  );
+}
+
+
+export default EditarGasto;
 
 <<<END OF FILE>>>
 
@@ -6214,135 +9214,956 @@ export default Pedidos;
 
 <<<START OF FILE>>>
 
-import { useEffect, useState } from 'react';
-import type { ChangeEvent, FormEvent } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import {
+  useCallback,
+  useEffect,
+  useState
+} from 'react';
 
-import { apiFetch } from '../../services/api';
+import type {
+  ChangeEvent,
+  FormEvent
+} from 'react';
 
-import FeedbackToast from '../../components/common/FeedbackToast';
-import ConfirmDialog from '../../components/common/ConfirmDialog';
+import {
+  Link,
+  useNavigate,
+  useParams
+} from 'react-router-dom';
+
+import {
+  apiFetch
+} from '../../services/api';
+
+import FeedbackToast
+  from '../../components/common/FeedbackToast';
+
+import ConfirmDialog
+  from '../../components/common/ConfirmDialog';
 
 import PedidoItemsEditor, {
   detallePedidoVacio,
   type DetallePedidoForm
 } from '../../components/pedidos/PedidoItemsEditor';
 
-import { useBloqueoAccion } from '../../hooks/useBloqueoAccion';
+import {
+  useBloqueoAccion
+} from '../../hooks/useBloqueoAccion';
+
+
+type FeedbackTipo =
+  | 'success'
+  | 'error'
+  | 'info'
+  | 'warning';
+
+
+/* =========================================================
+   CONVERTIR DETALLE DEL BACKEND AL FORMULARIO
+   ========================================================= */
+
+const convertirDetalleExistente = (
+  detalle: any
+): DetallePedidoForm => {
+  return {
+    pedido_detalle_id:
+      Number(
+        detalle.pedido_detalle_id
+      ),
+
+    cantidad_entregada:
+      Number(
+        detalle.cantidad_entregada ||
+        0
+      ),
+
+    cantidad_pendiente:
+      Number(
+        detalle.cantidad_pendiente ||
+        0
+      ),
+
+    estado_entrega:
+      detalle.estado_entrega ||
+      'PENDIENTE',
+
+    unidad:
+      detalle.unidad ||
+      '',
+
+
+    tipo_producto_id:
+      detalle.tipo_producto_id
+        ? String(
+            detalle.tipo_producto_id
+          )
+        : '',
+
+
+    medida_id:
+      detalle.medida_id
+        ? String(
+            detalle.medida_id
+          )
+        : '',
+
+
+    color_id:
+      detalle.color_id
+        ? String(
+            detalle.color_id
+          )
+        : '',
+
+
+    material_id:
+      detalle.material_id
+        ? String(
+            detalle.material_id
+          )
+        : '',
+
+
+    cantidad_pedida:
+      detalle.cantidad_pedida !==
+        null &&
+      detalle.cantidad_pedida !==
+        undefined
+        ? String(
+            detalle.cantidad_pedida
+          )
+        : '',
+
+
+    unidad_medida_id:
+      detalle.unidad_medida_id
+        ? String(
+            detalle.unidad_medida_id
+          )
+        : '',
+
+
+    cantidad_presentacion:
+      detalle.cantidad_presentacion !==
+        null &&
+      detalle.cantidad_presentacion !==
+        undefined
+        ? String(
+            detalle.cantidad_presentacion
+          )
+        : '',
+
+
+    unidad_presentacion_id:
+      detalle.unidad_presentacion_id
+        ? String(
+            detalle.unidad_presentacion_id
+          )
+        : '',
+
+
+    precio_unitario:
+      detalle.precio_unitario !==
+        null &&
+      detalle.precio_unitario !==
+        undefined
+        ? String(
+            detalle.precio_unitario
+          )
+        : '',
+
+
+    moneda_codigo:
+      detalle.moneda_codigo ||
+      'PEN',
+
+
+    descripcion_item:
+      detalle.descripcion_item ||
+      '',
+
+
+    observacion:
+      detalle.observacion ||
+      ''
+  };
+};
+
+
+/* =========================================================
+   SABER SI UN PRODUCTO NUEVO FUE UTILIZADO
+   ========================================================= */
+
+const detalleNuevoTieneDatos = (
+  item: DetallePedidoForm
+) => {
+  return Boolean(
+    item.tipo_producto_id ||
+
+    item.medida_id ||
+
+    item.color_id ||
+
+    item.material_id ||
+
+    item.cantidad_pedida ||
+
+    item.unidad_medida_id ||
+
+    item.cantidad_presentacion ||
+
+    item.precio_unitario ||
+
+    item.descripcion_item.trim() ||
+
+    item.observacion.trim()
+  );
+};
+
+
+/* =========================================================
+   VALIDAR UN DETALLE
+   ========================================================= */
+
+const validarDetalle = (
+  item: DetallePedidoForm,
+  nombre: string,
+  validarCantidadEntregada = false
+) => {
+
+  /* =======================================================
+     TIPO / MEDIDA / COLOR / MATERIAL
+     ======================================================= */
+
+  if (
+    !item.tipo_producto_id ||
+    !item.medida_id ||
+    !item.color_id ||
+    !item.material_id
+  ) {
+    return (
+      `${nombre} debe tener tipo, medida, color y material`
+    );
+  }
+
+
+  /* =======================================================
+     CANTIDAD
+     ======================================================= */
+
+  const cantidad =
+    Number(
+      item.cantidad_pedida
+    );
+
+
+  if (
+    !Number.isFinite(
+      cantidad
+    ) ||
+    cantidad <= 0
+  ) {
+    return (
+      `${nombre} debe tener una cantidad mayor a 0`
+    );
+  }
+
+
+  /*
+   * REGLA PRINCIPAL:
+   *
+   * Si ya se entregaron 80 KG:
+   *
+   * 100 → 90 ✅
+   * 100 → 80 ✅
+   * 100 → 79 ❌
+   */
+  if (
+    validarCantidadEntregada
+  ) {
+    const cantidadEntregada =
+      Number(
+        item.cantidad_entregada ||
+        0
+      );
+
+
+    if (
+      cantidad <
+      cantidadEntregada
+    ) {
+      return (
+        `${nombre} no puede tener una cantidad menor a lo ya entregado (${cantidadEntregada} ${item.unidad || ''})`
+      );
+    }
+  }
+
+
+  /* =======================================================
+     UNIDAD
+     ======================================================= */
+
+  if (
+    !item.unidad_medida_id
+  ) {
+    return (
+      `${nombre} debe tener una unidad de medida`
+    );
+  }
+
+
+  /* =======================================================
+     PRESENTACIÓN
+     ======================================================= */
+
+  if (
+    item.cantidad_presentacion !==
+    ''
+  ) {
+    const presentacion =
+      Number(
+        item.cantidad_presentacion
+      );
+
+
+    if (
+      !Number.isFinite(
+        presentacion
+      ) ||
+      presentacion <= 0
+    ) {
+      return (
+        `${nombre} debe tener una presentación mayor a 0`
+      );
+    }
+
+
+    if (
+      !item.unidad_presentacion_id
+    ) {
+      return (
+        `${nombre} debe tener una unidad de presentación`
+      );
+    }
+  }
+
+
+  /* =======================================================
+     PRECIO
+     ======================================================= */
+
+  const precio =
+    Number(
+      item.precio_unitario
+    );
+
+
+  if (
+    !Number.isFinite(
+      precio
+    ) ||
+    precio <= 0
+  ) {
+    return (
+      `${nombre} debe tener un precio mayor a 0`
+    );
+  }
+
+
+  /* =======================================================
+     MONEDA
+     ======================================================= */
+
+  if (
+    ![
+      'PEN',
+      'USD'
+    ].includes(
+      item.moneda_codigo
+    )
+  ) {
+    return (
+      `${nombre} debe tener una moneda válida`
+    );
+  }
+
+
+  return null;
+};
+
+
+/* =========================================================
+   CONVERTIR DETALLE DEL FORMULARIO AL BODY DE LA API
+   ========================================================= */
+
+const convertirDetalleParaApi = (
+  item: DetallePedidoForm,
+  incluirId = false
+) => {
+  return {
+    ...(incluirId
+      ? {
+          pedido_detalle_id:
+            Number(
+              item.pedido_detalle_id
+            )
+        }
+      : {}
+    ),
+
+
+    tipo_producto_id:
+      Number(
+        item.tipo_producto_id
+      ),
+
+
+    medida_id:
+      Number(
+        item.medida_id
+      ),
+
+
+    color_id:
+      Number(
+        item.color_id
+      ),
+
+
+    material_id:
+      Number(
+        item.material_id
+      ),
+
+
+    cantidad_pedida:
+      Number(
+        item.cantidad_pedida
+      ),
+
+
+    unidad_medida_id:
+      Number(
+        item.unidad_medida_id
+      ),
+
+
+    cantidad_presentacion:
+      item.cantidad_presentacion
+        ? Number(
+            item.cantidad_presentacion
+          )
+        : null,
+
+
+    unidad_presentacion_id:
+      item.cantidad_presentacion &&
+      item.unidad_presentacion_id
+        ? Number(
+            item.unidad_presentacion_id
+          )
+        : null,
+
+
+    precio_unitario:
+      Number(
+        item.precio_unitario
+      ),
+
+
+    moneda_codigo:
+      item.moneda_codigo,
+
+
+    descripcion_item:
+      item.descripcion_item.trim(),
+
+
+    observacion:
+      item.observacion.trim()
+  };
+};
+
+
+/* =========================================================
+   COMPONENTE
+   ========================================================= */
 
 function EditarPedido() {
-  const { pedido_id } = useParams();
-  const navigate = useNavigate();
 
-  const [pedido, setPedido] = useState<any | null>(null);
+  const {
+    pedido_id
+  } = useParams();
 
-  const [clientes, setClientes] = useState<any[]>([]);
-  const [tipos, setTipos] = useState<any[]>([]);
-  const [medidas, setMedidas] = useState<any[]>([]);
-  const [colores, setColores] = useState<any[]>([]);
-  const [materiales, setMateriales] = useState<any[]>([]);
-  const [unidades, setUnidades] = useState<any[]>([]);
 
-  const [dialogAbierto, setDialogAbierto] = useState(false);
+  const navigate =
+    useNavigate();
 
-  const [feedback, setFeedback] = useState({
-    tipo: 'info' as 'success' | 'error' | 'info' | 'warning',
-    mensaje: ''
-  });
 
-  const [form, setForm] = useState({
+  /* =========================================================
+     PEDIDO
+     ========================================================= */
+
+  const [
+    pedido,
+    setPedido
+  ] = useState<any | null>(
+    null
+  );
+
+
+  const [
+    cargando,
+    setCargando
+  ] = useState(true);
+
+
+  const [
+    errorCarga,
+    setErrorCarga
+  ] = useState('');
+
+
+  /* =========================================================
+     CATÁLOGOS
+     ========================================================= */
+
+  const [
+    clientes,
+    setClientes
+  ] = useState<any[]>([]);
+
+
+  const [
+    tipos,
+    setTipos
+  ] = useState<any[]>([]);
+
+
+  const [
+    medidas,
+    setMedidas
+  ] = useState<any[]>([]);
+
+
+  const [
+    colores,
+    setColores
+  ] = useState<any[]>([]);
+
+
+  const [
+    materiales,
+    setMateriales
+  ] = useState<any[]>([]);
+
+
+  const [
+    unidades,
+    setUnidades
+  ] = useState<any[]>([]);
+
+
+  /* =========================================================
+     CABECERA DEL PEDIDO
+     ========================================================= */
+
+  const [
+    form,
+    setForm
+  ] = useState({
     cliente_id: '',
+
     codigo_pedido: '',
+
     fecha_pedido: '',
+
     fecha_entrega_estimada: '',
+
     descripcion_pedido: '',
+
     motivo_cambio: ''
   });
 
-  const [nuevosDetalles, setNuevosDetalles] = useState<
+
+  /* =========================================================
+     PRODUCTOS EXISTENTES
+     ========================================================= */
+
+  const [
+    detallesEditados,
+    setDetallesEditados
+  ] = useState<
+    DetallePedidoForm[]
+  >([]);
+
+
+  /* =========================================================
+     PRODUCTOS NUEVOS
+     ========================================================= */
+
+  const [
+    nuevosDetalles,
+    setNuevosDetalles
+  ] = useState<
     DetallePedidoForm[]
   >([
-    { ...detallePedidoVacio }
+    {
+      ...detallePedidoVacio
+    }
   ]);
 
-  /*
-   * Protección contra múltiples actualizaciones.
-   *
-   * useBloqueoAccion utiliza:
-   * - useRef para bloquear inmediatamente.
-   * - useState para reflejar el estado en la interfaz.
-   */
-  const {
-    procesando: actualizandoPedido,
-    intentarBloquear: bloquearActualizacion,
-    liberar: liberarActualizacion
-  } = useBloqueoAccion();
 
-  const cargarDatos = async () => {
-    const [
-      pedidoData,
-      clientesData,
-      tiposData,
-      medidasData,
-      coloresData,
-      materialesData,
-      unidadesData
-    ] = await Promise.all([
-      apiFetch(`/pedidos/${pedido_id}`),
-      apiFetch('/clientes'),
-      apiFetch('/catalogos/tiposProducto'),
-      apiFetch('/catalogos/medidas'),
-      apiFetch('/catalogos/colores'),
-      apiFetch('/catalogos/materiales'),
-      apiFetch('/catalogos/unidades-medida')
-    ]);
+  /* =========================================================
+     DIÁLOGO DE CONFIRMACIÓN
+     ========================================================= */
 
-    const pedidoActual = pedidoData.pedido;
+  const [
+    dialogAbierto,
+    setDialogAbierto
+  ] = useState(false);
 
-    setPedido(pedidoActual);
 
-    setClientes(clientesData.clientes);
+  /* =========================================================
+     FEEDBACK
+     ========================================================= */
 
-    setTipos(tiposData.items);
-    setMedidas(medidasData.items);
-    setColores(coloresData.items);
-    setMateriales(materialesData.items);
-    setUnidades(unidadesData.unidades);
+  const [
+    feedback,
+    setFeedback
+  ] = useState<{
+    tipo: FeedbackTipo;
+    mensaje: string;
+  }>({
+    tipo: 'info',
 
-    setForm({
-      cliente_id: String(pedidoActual.cliente_id),
+    mensaje: ''
+  });
 
-      codigo_pedido:
-        pedidoActual.codigo_pedido || '',
 
-      fecha_pedido:
-        pedidoActual.fecha_pedido?.slice(0, 10) || '',
-
-      fecha_entrega_estimada:
-        pedidoActual.fecha_entrega_estimada?.slice(0, 10) || '',
-
-      descripcion_pedido:
-        pedidoActual.descripcion_pedido || '',
-
-      motivo_cambio: ''
+  const mostrarFeedback = (
+    tipo: FeedbackTipo,
+    mensaje: string
+  ) => {
+    setFeedback({
+      tipo,
+      mensaje
     });
   };
 
-  useEffect(() => {
-    const iniciar = async () => {
-      try {
-        await cargarDatos();
 
-      } catch (error: any) {
-        setFeedback({
-          tipo: 'error',
-          mensaje: error.message
+  /* =========================================================
+     PROTECCIÓN CONTRA MÚLTIPLES PUT
+     ========================================================= */
+
+  const {
+    procesando:
+      actualizandoPedido,
+
+    intentarBloquear:
+      bloquearActualizacion,
+
+    liberar:
+      liberarActualizacion
+
+  } = useBloqueoAccion();
+
+
+  /* =========================================================
+     CARGAR PEDIDO Y CATÁLOGOS
+     ========================================================= */
+
+  const cargarDatos =
+    useCallback(
+      async () => {
+
+        if (!pedido_id) {
+          throw new Error(
+            'ID de pedido no válido'
+          );
+        }
+
+
+        const [
+          pedidoData,
+          clientesData,
+          tiposData,
+          medidasData,
+          coloresData,
+          materialesData,
+          unidadesData
+        ] = await Promise.all([
+
+          apiFetch(
+            `/pedidos/${pedido_id}`
+          ),
+
+          apiFetch(
+            '/clientes'
+          ),
+
+          apiFetch(
+            '/catalogos/tiposProducto'
+          ),
+
+          apiFetch(
+            '/catalogos/medidas'
+          ),
+
+          apiFetch(
+            '/catalogos/colores'
+          ),
+
+          apiFetch(
+            '/catalogos/materiales'
+          ),
+
+          apiFetch(
+            '/catalogos/unidades-medida'
+          )
+        ]);
+
+
+        const pedidoActual =
+          pedidoData.pedido;
+
+
+        if (!pedidoActual) {
+          throw new Error(
+            'Pedido no encontrado'
+          );
+        }
+
+
+        /* ===================================================
+           PEDIDO
+           =================================================== */
+
+        setPedido(
+          pedidoActual
+        );
+
+
+        /* ===================================================
+           CLIENTES
+           =================================================== */
+
+        const listaClientes = [
+          ...(clientesData.clientes || [])
+        ];
+
+
+        /*
+         * Clientes está paginado.
+         *
+         * Puede ocurrir que el cliente del
+         * pedido no se encuentre en la primera
+         * página del endpoint /clientes.
+         *
+         * Lo agregamos manualmente al select.
+         */
+        const clienteActualExiste =
+          listaClientes.some(
+            (cliente) =>
+              Number(
+                cliente.cliente_id
+              ) ===
+              Number(
+                pedidoActual.cliente_id
+              )
+          );
+
+
+        if (
+          !clienteActualExiste
+        ) {
+          listaClientes.push({
+            cliente_id:
+              pedidoActual.cliente_id,
+
+            razon_social:
+              pedidoActual.razon_social,
+
+            ruc:
+              pedidoActual.ruc
+          });
+        }
+
+
+        setClientes(
+          listaClientes
+        );
+
+
+        /* ===================================================
+           CATÁLOGOS
+           =================================================== */
+
+        setTipos(
+          tiposData.items ||
+          []
+        );
+
+
+        setMedidas(
+          medidasData.items ||
+          []
+        );
+
+
+        setColores(
+          coloresData.items ||
+          []
+        );
+
+
+        setMateriales(
+          materialesData.items ||
+          []
+        );
+
+
+        setUnidades(
+          unidadesData.unidades ||
+          []
+        );
+
+
+        /* ===================================================
+           CABECERA
+           =================================================== */
+
+        setForm({
+          cliente_id:
+            String(
+              pedidoActual.cliente_id
+            ),
+
+
+          codigo_pedido:
+            pedidoActual.codigo_pedido ||
+            '',
+
+
+          fecha_pedido:
+            pedidoActual.fecha_pedido
+              ?.slice(
+                0,
+                10
+              ) ||
+            '',
+
+
+          fecha_entrega_estimada:
+            pedidoActual
+              .fecha_entrega_estimada
+              ?.slice(
+                0,
+                10
+              ) ||
+            '',
+
+
+          descripcion_pedido:
+            pedidoActual
+              .descripcion_pedido ||
+            '',
+
+
+          motivo_cambio:
+            ''
         });
-      }
-    };
+
+
+        /* ===================================================
+           PRODUCTOS EXISTENTES
+           =================================================== */
+
+        setDetallesEditados(
+          (
+            pedidoActual.detalles ||
+            []
+          ).map(
+            convertirDetalleExistente
+          )
+        );
+
+
+        /* ===================================================
+           NUEVOS PRODUCTOS
+           =================================================== */
+
+        setNuevosDetalles([
+          {
+            ...detallePedidoVacio
+          }
+        ]);
+      },
+
+      [
+        pedido_id
+      ]
+    );
+
+
+  /* =========================================================
+     USE EFFECT DE CARGA
+     ========================================================= */
+
+  useEffect(() => {
+
+    const iniciar =
+      async () => {
+
+        try {
+          setCargando(
+            true
+          );
+
+
+          setErrorCarga(
+            ''
+          );
+
+
+          await cargarDatos();
+
+        } catch (error: any) {
+
+          const mensaje =
+            error.message ||
+            'No se pudo cargar el pedido';
+
+
+          setErrorCarga(
+            mensaje
+          );
+
+
+          mostrarFeedback(
+            'error',
+            mensaje
+          );
+
+        } finally {
+
+          setCargando(
+            false
+          );
+        }
+      };
+
 
     iniciar();
-  }, [pedido_id]);
+
+  }, [
+    cargarDatos
+  ]);
+
+
+  /* =========================================================
+     CAMBIO DE CABECERA
+     ========================================================= */
 
   const handleChange = (
     e: ChangeEvent<
@@ -6351,321 +10172,453 @@ function EditarPedido() {
       HTMLTextAreaElement
     >
   ) => {
+
+    if (
+      actualizandoPedido
+    ) {
+      return;
+    }
+
+
     setForm({
       ...form,
-      [e.target.name]: e.target.value
+
+      [e.target.name]:
+        e.target.value
     });
   };
 
-  /*
-   * Primer paso:
-   * el usuario pulsa "Actualizar pedido".
-   *
-   * Todavía NO actualizamos.
-   * Abrimos el diálogo de confirmación.
-   */
-  const prepararEdicion = (e: FormEvent) => {
-    e.preventDefault();
 
-    /*
-     * Si ya existe una actualización en curso,
-     * ignoramos cualquier nuevo submit.
-     */
-    if (actualizandoPedido) {
-      return;
-    }
+  /* =========================================================
+     VALIDAR FORMULARIO COMPLETO
+     ========================================================= */
 
-    if (!form.cliente_id) {
-      setFeedback({
-        tipo: 'error',
-        mensaje: 'Debes seleccionar un cliente'
-      });
+  const validarFormulario = () => {
 
-      return;
-    }
+    /* =======================================================
+       PEDIDO ENTREGADO
+       ======================================================= */
 
-    if (!form.fecha_pedido) {
-      setFeedback({
-        tipo: 'error',
-        mensaje: 'Debes ingresar la fecha del pedido'
-      });
-
-      return;
-    }
-
-    if (!form.motivo_cambio.trim()) {
-      setFeedback({
-        tipo: 'error',
-        mensaje: 'Debes ingresar el motivo del cambio'
-      });
-
-      return;
-    }
-
-    setDialogAbierto(true);
-  };
-
-  /*
-   * Segundo paso:
-   * el usuario confirma la edición.
-   *
-   * Aquí sí hacemos el PUT.
-   */
-  const confirmarEdicion = async () => {
-    /*
-     * BLOQUEO INMEDIATO.
-     *
-     * Primer clic:
-     * bloquearActualizacion() -> true
-     *
-     * Segundo, tercero, cuarto clic:
-     * bloquearActualizacion() -> false
-     *
-     * Por lo tanto solo puede existir un PUT.
-     */
-    if (!bloquearActualizacion()) {
-      return;
-    }
-
-    try {
-      /*
-       * El editor siempre tiene inicialmente una fila vacía.
-       *
-       * Solo enviamos elementos que tengan algún dato.
-       */
-      const detallesValidos = nuevosDetalles.filter(
-        (item) => {
-          return (
-            item.tipo_producto_id ||
-            item.medida_id ||
-            item.color_id ||
-            item.material_id ||
-            item.cantidad_pedida ||
-            item.precio_unitario ||
-            item.descripcion_item
-          );
-        }
+    if (
+      pedido?.estado_pedido ===
+      'ENTREGADO'
+    ) {
+      return (
+        'Un pedido completamente entregado ya no puede editarse'
       );
+    }
 
-      /*
-       * Si el usuario comenzó a llenar un producto nuevo,
-       * debemos asegurarnos de que esté completo.
-       */
-      for (
-        let index = 0;
-        index < detallesValidos.length;
-        index++
+
+    /* =======================================================
+       PEDIDO CANCELADO
+       ======================================================= */
+
+    if (
+      pedido?.estado_pedido ===
+      'CANCELADO'
+    ) {
+      return (
+        'Un pedido cancelado no puede editarse'
+      );
+    }
+
+
+    /* =======================================================
+       CLIENTE
+       ======================================================= */
+
+    if (
+      !form.cliente_id
+    ) {
+      return (
+        'Debes seleccionar un cliente'
+      );
+    }
+
+
+    /* =======================================================
+       FECHA
+       ======================================================= */
+
+    if (
+      !form.fecha_pedido
+    ) {
+      return (
+        'Debes ingresar la fecha del pedido'
+      );
+    }
+
+
+    /* =======================================================
+       MOTIVO
+       ======================================================= */
+
+    if (
+      !form.motivo_cambio.trim()
+    ) {
+      return (
+        'Debes ingresar el motivo del cambio'
+      );
+    }
+
+
+    /* =======================================================
+       DEBE EXISTIR AL MENOS UN PRODUCTO REGISTRADO
+       ======================================================= */
+
+    if (
+      detallesEditados.length ===
+      0
+    ) {
+      return (
+        'El pedido debe tener al menos un producto'
+      );
+    }
+
+
+    /* =======================================================
+       PRODUCTOS EXISTENTES
+       ======================================================= */
+
+    for (
+      let index = 0;
+      index <
+      detallesEditados.length;
+      index++
+    ) {
+
+      const item =
+        detallesEditados[index];
+
+
+      if (
+        !item.pedido_detalle_id
       ) {
-        const item = detallesValidos[index];
-
-        if (
-          !item.tipo_producto_id ||
-          !item.medida_id ||
-          !item.color_id ||
-          !item.material_id
-        ) {
-          setFeedback({
-            tipo: 'error',
-            mensaje:
-              `El nuevo producto ${index + 1} debe tener tipo, medida, color y material`
-          });
-
-          liberarActualizacion();
-          return;
-        }
-
-        if (
-          !item.cantidad_pedida ||
-          Number(item.cantidad_pedida) <= 0
-        ) {
-          setFeedback({
-            tipo: 'error',
-            mensaje:
-              `El nuevo producto ${index + 1} debe tener una cantidad mayor a 0`
-          });
-
-          liberarActualizacion();
-          return;
-        }
-
-        if (!item.unidad_medida_id) {
-          setFeedback({
-            tipo: 'error',
-            mensaje:
-              `El nuevo producto ${index + 1} debe tener una unidad de medida`
-          });
-
-          liberarActualizacion();
-          return;
-        }
-
-        if (
-          item.precio_unitario === '' ||
-          Number(item.precio_unitario) < 0
-        ) {
-          setFeedback({
-            tipo: 'error',
-            mensaje:
-              `El nuevo producto ${index + 1} debe tener un precio válido`
-          });
-
-          liberarActualizacion();
-          return;
-        }
-
-        if (!item.moneda_codigo) {
-          setFeedback({
-            tipo: 'error',
-            mensaje:
-              `El nuevo producto ${index + 1} debe tener una moneda`
-          });
-
-          liberarActualizacion();
-          return;
-        }
+        return (
+          `El producto registrado ${index + 1} no tiene un identificador válido`
+        );
       }
 
-      const body = {
-        cliente_id:
-          Number(form.cliente_id),
 
-        codigo_pedido:
-          form.codigo_pedido || null,
+      const error =
+        validarDetalle(
+          item,
 
-        fecha_pedido:
-          form.fecha_pedido,
+          `El producto registrado ${index + 1}`,
 
-        fecha_entrega_estimada:
-          form.fecha_entrega_estimada || null,
+          true
+        );
 
-        descripcion_pedido:
-          form.descripcion_pedido,
 
-        motivo_cambio:
-          form.motivo_cambio,
+      if (error) {
+        return error;
+      }
+    }
 
-        nuevos_detalles:
-          detallesValidos.map((item) => ({
-            tipo_producto_id:
-              Number(item.tipo_producto_id),
 
-            medida_id:
-              Number(item.medida_id),
+    /* =======================================================
+       PRODUCTOS NUEVOS
+       ======================================================= */
 
-            color_id:
-              Number(item.color_id),
-
-            material_id:
-              Number(item.material_id),
-
-            cantidad_pedida:
-              Number(item.cantidad_pedida),
-
-            unidad_medida_id:
-              Number(item.unidad_medida_id),
-
-            cantidad_presentacion:
-              item.cantidad_presentacion
-                ? Number(item.cantidad_presentacion)
-                : null,
-
-            unidad_presentacion_id:
-              item.unidad_presentacion_id
-                ? Number(item.unidad_presentacion_id)
-                : null,
-
-            precio_unitario:
-              Number(item.precio_unitario),
-
-            moneda_codigo:
-              item.moneda_codigo,
-
-            descripcion_item:
-              item.descripcion_item,
-
-            observacion:
-              item.observacion
-          }))
-      };
-
-      await apiFetch(
-        `/pedidos/${pedido_id}`,
-        {
-          method: 'PUT',
-          body: JSON.stringify(body)
-        }
+    const nuevosValidos =
+      nuevosDetalles.filter(
+        detalleNuevoTieneDatos
       );
 
-      /*
-       * Cerramos el diálogo solo cuando el backend
-       * confirmó correctamente la actualización.
-       */
-      setDialogAbierto(false);
 
-      setFeedback({
-        tipo: 'success',
-        mensaje: 'Pedido actualizado correctamente'
-      });
+    for (
+      let index = 0;
+      index <
+      nuevosValidos.length;
+      index++
+    ) {
 
-      /*
-       * NO liberamos actualizandoPedido aquí.
-       *
-       * Esto es intencional.
-       *
-       * Durante estos 800 ms el usuario tampoco
-       * podrá generar otro PUT.
-       */
-      setTimeout(() => {
-        navigate(
-          `/gestion/pedidos/${pedido_id}`
+      const error =
+        validarDetalle(
+          nuevosValidos[index],
+
+          `El nuevo producto ${index + 1}`,
+
+          false
         );
-      }, 800);
 
-    } catch (error: any) {
-      /*
-       * Si falló el backend sí permitimos
-       * que el usuario vuelva a intentarlo.
-       */
-      liberarActualizacion();
 
-      setFeedback({
-        tipo: 'error',
-        mensaje: error.message
-      });
+      if (error) {
+        return error;
+      }
     }
+
+
+    return null;
   };
 
-  const claseEstadoEntrega = (
-    estado: string
+
+  /* =========================================================
+     PREPARAR EDICIÓN
+     ========================================================= */
+
+  const prepararEdicion = (
+    e: FormEvent
   ) => {
-    if (estado === 'COMPLETO') {
-      return 'estado estado-completo';
+
+    e.preventDefault();
+
+
+    if (
+      actualizandoPedido
+    ) {
+      return;
     }
 
-    if (estado === 'PARCIAL') {
-      return 'estado estado-parcial';
+
+    const error =
+      validarFormulario();
+
+
+    if (error) {
+
+      mostrarFeedback(
+        'error',
+        error
+      );
+
+
+      return;
     }
 
-    return 'estado estado-pendiente';
+
+    setDialogAbierto(
+      true
+    );
   };
 
-  /*
-   * Estado inicial mientras cargamos
-   * pedido + clientes + catálogos.
-   */
-  if (!pedido) {
+
+  /* =========================================================
+     CONFIRMAR EDICIÓN
+     ========================================================= */
+
+  const confirmarEdicion =
+    async () => {
+
+      /*
+       * useBloqueoAccion utiliza useRef.
+       *
+       * Por eso aunque el usuario haga
+       * varios clics muy rápidos, solo
+       * entra la primera llamada.
+       */
+      if (
+        !bloquearActualizacion()
+      ) {
+        return;
+      }
+
+
+      /*
+       * Validamos nuevamente antes del PUT.
+       */
+      const error =
+        validarFormulario();
+
+
+      if (error) {
+
+        liberarActualizacion();
+
+
+        setDialogAbierto(
+          false
+        );
+
+
+        mostrarFeedback(
+          'error',
+          error
+        );
+
+
+        return;
+      }
+
+
+      try {
+
+        /* ===================================================
+           FILTRAR PRODUCTOS NUEVOS VACÍOS
+           =================================================== */
+
+        const nuevosValidos =
+          nuevosDetalles.filter(
+            detalleNuevoTieneDatos
+          );
+
+
+        /* ===================================================
+           CONSTRUIR BODY
+           =================================================== */
+
+        const body = {
+
+          /* =================================================
+             CABECERA
+             ================================================= */
+
+          cliente_id:
+            Number(
+              form.cliente_id
+            ),
+
+
+          codigo_pedido:
+            form.codigo_pedido
+              .trim() ||
+            null,
+
+
+          descripcion_pedido:
+            form.descripcion_pedido
+              .trim(),
+
+
+          fecha_pedido:
+            form.fecha_pedido,
+
+
+          fecha_entrega_estimada:
+            form
+              .fecha_entrega_estimada ||
+            null,
+
+
+          motivo_cambio:
+            form.motivo_cambio
+              .trim(),
+
+
+          /* =================================================
+             PRODUCTOS EXISTENTES
+             ================================================= */
+
+          detalles_editados:
+            detallesEditados.map(
+              (item) =>
+                convertirDetalleParaApi(
+                  item,
+                  true
+                )
+            ),
+
+
+          /* =================================================
+             PRODUCTOS NUEVOS
+             ================================================= */
+
+          nuevos_detalles:
+            nuevosValidos.map(
+              (item) =>
+                convertirDetalleParaApi(
+                  item,
+                  false
+                )
+            )
+        };
+
+
+        /* ===================================================
+           PUT
+           =================================================== */
+
+        await apiFetch(
+          `/pedidos/${pedido_id}`,
+          {
+            method: 'PUT',
+
+            body:
+              JSON.stringify(
+                body
+              )
+          }
+        );
+
+
+        /* ===================================================
+           ÉXITO
+           =================================================== */
+
+        setDialogAbierto(
+          false
+        );
+
+
+        mostrarFeedback(
+          'success',
+          'Pedido actualizado correctamente'
+        );
+
+
+        /*
+         * NO liberamos el bloqueo aquí.
+         *
+         * Si lo liberáramos durante estos
+         * milisegundos el usuario podría
+         * volver a generar otro PUT.
+         *
+         * Navegamos con el bloqueo activo.
+         */
+        setTimeout(() => {
+
+          navigate(
+            `/gestion/pedidos/${pedido_id}`
+          );
+
+        }, 900);
+
+
+      } catch (error: any) {
+
+        /*
+         * Si el backend rechazó la edición,
+         * permitimos volver a intentarlo.
+         */
+        liberarActualizacion();
+
+
+        mostrarFeedback(
+          'error',
+          error.message
+        );
+      }
+    };
+
+
+  /* =========================================================
+     CARGANDO
+     ========================================================= */
+
+  if (
+    cargando
+  ) {
     return (
-      <div>
+      <div className="pedidos-page">
+
         <FeedbackToast
-          tipo={feedback.tipo}
-          mensaje={feedback.mensaje}
+          tipo={
+            feedback.tipo
+          }
+
+          mensaje={
+            feedback.mensaje
+          }
+
           onClose={() =>
             setFeedback({
               ...feedback,
+
               mensaje: ''
             })
           }
         />
+
 
         <Link
           to="/gestion/pedidos"
@@ -6674,255 +10627,710 @@ function EditarPedido() {
           ← Volver a pedidos
         </Link>
 
-        <p>Cargando pedido...</p>
+
+        <div className="pedidos-card">
+
+          <p>
+            Cargando pedido...
+          </p>
+
+        </div>
+
       </div>
     );
   }
 
+
+  /* =========================================================
+     ERROR DE CARGA
+     ========================================================= */
+
+  if (
+    !pedido ||
+    errorCarga
+  ) {
+    return (
+      <div className="pedidos-page">
+
+        <FeedbackToast
+          tipo={
+            feedback.tipo
+          }
+
+          mensaje={
+            feedback.mensaje
+          }
+
+          onClose={() =>
+            setFeedback({
+              ...feedback,
+
+              mensaje: ''
+            })
+          }
+        />
+
+
+        <Link
+          to="/gestion/pedidos"
+          className="btn-volver"
+        >
+          ← Volver a pedidos
+        </Link>
+
+
+        <div className="pedidos-card">
+
+          <h3>
+            Pedido no disponible
+          </h3>
+
+
+          <p>
+            {
+              errorCarga ||
+              'No se pudo cargar el pedido.'
+            }
+          </p>
+
+        </div>
+
+      </div>
+    );
+  }
+
+
+  /* =========================================================
+     PEDIDO ENTREGADO
+     ========================================================= */
+
+  if (
+    pedido.estado_pedido ===
+    'ENTREGADO'
+  ) {
+    return (
+      <div className="pedidos-page">
+
+        <FeedbackToast
+          tipo={
+            feedback.tipo
+          }
+
+          mensaje={
+            feedback.mensaje
+          }
+
+          onClose={() =>
+            setFeedback({
+              ...feedback,
+
+              mensaje: ''
+            })
+          }
+        />
+
+
+        <Link
+          to={
+            `/gestion/pedidos/${pedido_id}`
+          }
+
+          className="btn-volver"
+        >
+          ← Volver al detalle
+        </Link>
+
+
+        <div className="pedidos-header">
+
+          <div>
+
+            <h1>
+              Pedido #{pedido.pedido_id}
+            </h1>
+
+
+            <p>
+              El pedido ya está completamente
+              entregado.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div className="pedidos-card">
+
+          <div className="pedido-item-aviso-entrega">
+
+            Este pedido ya se encuentra{' '}
+
+            <strong>
+              completamente entregado
+            </strong>.
+
+            {' '}
+
+            Por seguridad ya no puede
+            modificarse.
+
+          </div>
+
+
+          <Link
+            to={
+              `/gestion/pedidos/${pedido_id}`
+            }
+
+            className="btn-outline"
+          >
+            Ver detalle del pedido
+          </Link>
+
+        </div>
+
+      </div>
+    );
+  }
+
+
+  /* =========================================================
+     PEDIDO CANCELADO
+     ========================================================= */
+
+  if (
+    pedido.estado_pedido ===
+    'CANCELADO'
+  ) {
+    return (
+      <div className="pedidos-page">
+
+        <Link
+          to={
+            `/gestion/pedidos/${pedido_id}`
+          }
+
+          className="btn-volver"
+        >
+          ← Volver al detalle
+        </Link>
+
+
+        <div className="pedidos-card">
+
+          <h3>
+            Pedido cancelado
+          </h3>
+
+
+          <p>
+            Un pedido cancelado no puede
+            modificarse.
+          </p>
+
+        </div>
+
+      </div>
+    );
+  }
+
+
+  /* =========================================================
+     FORMULARIO PRINCIPAL
+     ========================================================= */
+
   return (
     <div className="pedidos-page">
+
+
+      {/* =====================================================
+          FEEDBACK
+          ===================================================== */}
+
       <FeedbackToast
-        tipo={feedback.tipo}
-        mensaje={feedback.mensaje}
+        tipo={
+          feedback.tipo
+        }
+
+        mensaje={
+          feedback.mensaje
+        }
+
         onClose={() =>
           setFeedback({
             ...feedback,
+
             mensaje: ''
           })
         }
       />
 
+
+      {/* =====================================================
+          CONFIRMACIÓN
+          ===================================================== */}
+
       <ConfirmDialog
-        abierto={dialogAbierto}
-        titulo="Confirmar edición"
-        descripcion="Se actualizará la cabecera del pedido y se registrará el motivo del cambio. Si agregaste productos nuevos, quedarán añadidos al pedido."
-        textoConfirmar="Actualizar pedido"
-        textoProcesando="Actualizando pedido..."
-        procesando={actualizandoPedido}
-        onConfirmar={confirmarEdicion}
+        abierto={
+          dialogAbierto
+        }
+
+        titulo=
+          "Confirmar edición del pedido"
+
+        descripcion={
+          'Se actualizarán los datos del pedido y sus productos. ' +
+          'Las cantidades no pueden quedar por debajo de lo ya entregado. ' +
+          'Los cambios quedarán registrados en el historial.'
+        }
+
+        textoConfirmar=
+          "Actualizar pedido"
+
+        textoProcesando=
+          "Actualizando pedido..."
+
+        procesando={
+          actualizandoPedido
+        }
+
+        onConfirmar={
+          confirmarEdicion
+        }
+
         onCerrar={() => {
-          /*
-           * El diálogo tampoco puede cerrarse
-           * mientras el PUT está ejecutándose.
-           */
-          if (!actualizandoPedido) {
-            setDialogAbierto(false);
+
+          if (
+            !actualizandoPedido
+          ) {
+            setDialogAbierto(
+              false
+            );
           }
         }}
       />
 
+
+      {/* =====================================================
+          VOLVER
+          ===================================================== */}
+
       <Link
-        to={`/gestion/pedidos/${pedido_id}`}
+        to={
+          `/gestion/pedidos/${pedido_id}`
+        }
+
         className="btn-volver"
       >
         ← Volver al detalle
       </Link>
 
+
+      {/* =====================================================
+          CABECERA
+          ===================================================== */}
+
       <div className="pedidos-header">
+
         <div>
+
           <h1>
             Editar pedido #{pedido.pedido_id}
           </h1>
 
+
           <p>
-            Edita la cabecera del pedido o agrega
-            nuevos productos con motivo.
+            Modifica la información del pedido,
+            los productos registrados o agrega
+            nuevos productos.
           </p>
+
         </div>
+
       </div>
+
+
+      {/* =====================================================
+          FORMULARIO
+          ===================================================== */}
 
       <form
         className="form-card pedido-form"
-        onSubmit={prepararEdicion}
-      >
-        <h3>Datos actuales del pedido</h3>
 
-        <label>Cliente</label>
+        onSubmit={
+          prepararEdicion
+        }
+      >
+
+
+        {/* ===================================================
+            DATOS DEL PEDIDO
+            =================================================== */}
+
+        <h3>
+          Datos del pedido
+        </h3>
+
+
+        {/* CLIENTE */}
+
+        <label>
+          Cliente
+        </label>
+
 
         <select
           name="cliente_id"
-          value={form.cliente_id}
-          onChange={handleChange}
-          disabled={actualizandoPedido}
+
+          value={
+            form.cliente_id
+          }
+
+          onChange={
+            handleChange
+          }
+
+          disabled={
+            actualizandoPedido
+          }
         >
+
           <option value="">
             Seleccione cliente
           </option>
 
-          {clientes.map((cliente) => (
-            <option
-              key={cliente.cliente_id}
-              value={cliente.cliente_id}
-            >
-              {cliente.razon_social} - {cliente.ruc}
-            </option>
-          ))}
+
+          {clientes.map(
+            (cliente) => (
+
+              <option
+                key={
+                  cliente.cliente_id
+                }
+
+                value={
+                  cliente.cliente_id
+                }
+              >
+                {
+                  cliente.razon_social
+                }
+
+                {' - '}
+
+                {
+                  cliente.ruc
+                }
+              </option>
+
+            )
+          )}
+
         </select>
 
-        <label>Código de pedido</label>
+
+        {/* CÓDIGO */}
+
+        <label>
+          Código de pedido
+        </label>
+
 
         <input
           name="codigo_pedido"
-          value={form.codigo_pedido}
-          onChange={handleChange}
+
+          value={
+            form.codigo_pedido
+          }
+
+          onChange={
+            handleChange
+          }
+
           placeholder="Ejemplo: PED-001"
-          disabled={actualizandoPedido}
-        />
 
-        <label>Fecha de pedido</label>
-
-        <input
-          type="date"
-          name="fecha_pedido"
-          value={form.fecha_pedido}
-          onChange={handleChange}
-          disabled={actualizandoPedido}
-        />
-
-        <label>Fecha de entrega estimada</label>
-
-        <input
-          type="date"
-          name="fecha_entrega_estimada"
-          value={form.fecha_entrega_estimada}
-          onChange={handleChange}
-          disabled={actualizandoPedido}
-        />
-
-        <label>Descripción del pedido</label>
-
-        <textarea
-          name="descripcion_pedido"
-          value={form.descripcion_pedido}
-          onChange={handleChange}
-          rows={3}
-          disabled={actualizandoPedido}
-        />
-
-        <label>Motivo del cambio</label>
-
-        <textarea
-          name="motivo_cambio"
-          value={form.motivo_cambio}
-          onChange={handleChange}
-          rows={3}
-          placeholder="Ejemplo: El cliente solicitó aumentar productos al pedido"
-          disabled={actualizandoPedido}
-        />
-
-        <div className="tabla-card">
-          <h3>Productos ya registrados</h3>
-
-          <table>
-            <thead>
-              <tr>
-                <th>Producto</th>
-                <th>Cantidad</th>
-                <th>Entregado</th>
-                <th>Pendiente</th>
-                <th>Precio</th>
-                <th>Estado entrega</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {pedido.detalles.map(
-                (detalle: any) => (
-                  <tr
-                    key={
-                      detalle.pedido_detalle_id
-                    }
-                  >
-                    <td>
-                      <strong>
-                        {detalle.tipo_producto}{' '}
-                        {detalle.material}{' '}
-                        {detalle.medida}{' '}
-                        {detalle.color}
-                      </strong>
-
-                      <br />
-
-                      <span className="muted">
-                        {
-                          detalle.descripcion_item ||
-                          '-'
-                        }
-                      </span>
-                    </td>
-
-                    <td>
-                      {detalle.cantidad_pedida}{' '}
-                      {detalle.unidad}
-                    </td>
-
-                    <td>
-                      {detalle.cantidad_entregada}{' '}
-                      {detalle.unidad}
-                    </td>
-
-                    <td>
-                      {detalle.cantidad_pendiente}{' '}
-                      {detalle.unidad}
-                    </td>
-
-                    <td>
-                      {Number(
-                        detalle.precio_unitario
-                      ).toFixed(2)}{' '}
-                      {detalle.moneda_codigo}
-                    </td>
-
-                    <td>
-                      <span
-                        className={
-                          claseEstadoEntrega(
-                            detalle.estado_entrega
-                          )
-                        }
-                      >
-                        {detalle.estado_entrega}
-                      </span>
-                    </td>
-                  </tr>
-                )
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        <PedidoItemsEditor
-          detalles={nuevosDetalles}
-          setDetalles={setNuevosDetalles}
-          tipos={tipos}
-          medidas={medidas}
-          colores={colores}
-          materiales={materiales}
-          unidades={unidades}
-          titulo="Agregar nuevos productos opcionales"
-          textoBotonAgregar="+ Agregar otro producto nuevo"
-          onFeedback={(tipo, mensaje) =>
-            setFeedback({
-              tipo,
-              mensaje
-            })
+          disabled={
+            actualizandoPedido
           }
         />
 
-        <br />
 
-        <button
-          type="submit"
-          disabled={actualizandoPedido}
-        >
-          {actualizandoPedido
-            ? 'Actualizando pedido...'
-            : 'Actualizar pedido'}
-        </button>
+        {/* FECHA PEDIDO */}
+
+        <label>
+          Fecha de pedido
+        </label>
+
+
+        <input
+          type="date"
+
+          name="fecha_pedido"
+
+          value={
+            form.fecha_pedido
+          }
+
+          onChange={
+            handleChange
+          }
+
+          disabled={
+            actualizandoPedido
+          }
+        />
+
+
+        {/* FECHA ENTREGA */}
+
+        <label>
+          Fecha de entrega estimada
+        </label>
+
+
+        <input
+          type="date"
+
+          name="fecha_entrega_estimada"
+
+          value={
+            form.fecha_entrega_estimada
+          }
+
+          onChange={
+            handleChange
+          }
+
+          disabled={
+            actualizandoPedido
+          }
+        />
+
+
+        {/* DESCRIPCIÓN PEDIDO */}
+
+        <label>
+          Descripción del pedido
+        </label>
+
+
+        <textarea
+          name="descripcion_pedido"
+
+          value={
+            form.descripcion_pedido
+          }
+
+          onChange={
+            handleChange
+          }
+
+          rows={3}
+
+          disabled={
+            actualizandoPedido
+          }
+        />
+
+
+        {/* ===================================================
+            PRODUCTOS EXISTENTES
+            =================================================== */}
+
+        <PedidoItemsEditor
+          detalles={
+            detallesEditados
+          }
+
+          setDetalles={
+            setDetallesEditados
+          }
+
+          tipos={
+            tipos
+          }
+
+          medidas={
+            medidas
+          }
+
+          colores={
+            colores
+          }
+
+          materiales={
+            materiales
+          }
+
+          unidades={
+            unidades
+          }
+
+          titulo=
+            "Editar productos registrados"
+
+          permitirAgregar={
+            false
+          }
+
+          permitirQuitar={
+            false
+          }
+
+          bloquearEstructuraConEntrega={
+            true
+          }
+
+          mostrarResumenEntrega={
+            true
+          }
+
+          procesando={
+            actualizandoPedido
+          }
+
+          onFeedback={
+            mostrarFeedback
+          }
+        />
+
+
+        {/* ===================================================
+            PRODUCTOS NUEVOS
+            =================================================== */}
+
+        <PedidoItemsEditor
+          detalles={
+            nuevosDetalles
+          }
+
+          setDetalles={
+            setNuevosDetalles
+          }
+
+          tipos={
+            tipos
+          }
+
+          medidas={
+            medidas
+          }
+
+          colores={
+            colores
+          }
+
+          materiales={
+            materiales
+          }
+
+          unidades={
+            unidades
+          }
+
+          titulo=
+            "Agregar nuevos productos opcionales"
+
+          textoBotonAgregar=
+            "+ Agregar otro producto nuevo"
+
+          permitirAgregar={
+            true
+          }
+
+          permitirQuitar={
+            true
+          }
+
+          bloquearEstructuraConEntrega={
+            false
+          }
+
+          mostrarResumenEntrega={
+            false
+          }
+
+          procesando={
+            actualizandoPedido
+          }
+
+          onFeedback={
+            mostrarFeedback
+          }
+        />
+
+
+        {/* ===================================================
+            MOTIVO DEL CAMBIO
+            =================================================== */}
+
+        <div className="pedido-motivo-edicion">
+
+          <label>
+            Motivo del cambio
+          </label>
+
+
+          <textarea
+            name="motivo_cambio"
+
+            value={
+              form.motivo_cambio
+            }
+
+            onChange={
+              handleChange
+            }
+
+            rows={3}
+
+            placeholder="Ejemplo: El cliente solicitó modificar la cantidad y el precio acordado."
+
+            disabled={
+              actualizandoPedido
+            }
+          />
+
+
+          <span className="muted">
+
+            El motivo quedará registrado
+            en el historial del pedido.
+
+          </span>
+
+        </div>
+
+
+        {/* ===================================================
+            GUARDAR
+            =================================================== */}
+
+        <div className="pedido-edicion-actions">
+
+          <button
+            type="submit"
+
+            disabled={
+              actualizandoPedido
+            }
+          >
+            {
+              actualizandoPedido
+                ? 'Actualizando pedido...'
+                : 'Actualizar pedido'
+            }
+          </button>
+
+        </div>
+
       </form>
+
     </div>
   );
 }
+
 
 export default EditarPedido;
 
@@ -6935,258 +11343,1028 @@ export default EditarPedido;
 
 <<<START OF FILE>>>
 
-import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { apiFetch } from '../../services/api';
-import FeedbackToast from '../../components/common/FeedbackToast';
+import {
+  useEffect,
+  useState
+} from 'react';
+
+import {
+  Link,
+  useParams
+} from 'react-router-dom';
+
+import {
+  apiFetch
+} from '../../services/api';
+
+import FeedbackToast
+  from '../../components/common/FeedbackToast';
+
 
 function PedidoDetalle() {
-  const { pedido_id } = useParams();
+  const {
+    pedido_id
+  } = useParams();
 
-  const [pedido, setPedido] = useState<any | null>(null);
 
-  const [feedback, setFeedback] = useState({
-    tipo: 'info' as 'success' | 'error' | 'info',
+  const [
+    pedido,
+    setPedido
+  ] = useState<any | null>(
+    null
+  );
+
+
+  const [
+    feedback,
+    setFeedback
+  ] = useState({
+    tipo:
+      'info' as
+        | 'success'
+        | 'error'
+        | 'info',
+
     mensaje: ''
   });
 
-  const cargarPedido = async () => {
-    const data = await apiFetch(`/pedidos/${pedido_id}`);
-    setPedido(data.pedido);
-  };
 
-  useEffect(() => {
-    const iniciar = async () => {
-      try {
-        await cargarPedido();
-      } catch (error: any) {
-        setFeedback({
-          tipo: 'error',
-          mensaje: error.message
-        });
-      }
+  /* =========================================================
+     CARGAR PEDIDO
+     ========================================================= */
+
+  const cargarPedido =
+    async () => {
+      const data =
+        await apiFetch(
+          `/pedidos/${pedido_id}`
+        );
+
+
+      setPedido(
+        data.pedido
+      );
     };
 
+
+  useEffect(() => {
+    const iniciar =
+      async () => {
+        try {
+          await cargarPedido();
+
+        } catch (
+          error: any
+        ) {
+          setFeedback({
+            tipo: 'error',
+
+            mensaje:
+              error.message
+          });
+        }
+      };
+
+
     iniciar();
-  }, [pedido_id]);
 
-  const claseEstadoPedido = (estado: string) => {
-    if (estado === 'ENTREGADO') return 'estado-pill estado-entregado';
-    if (estado === 'PARCIAL') return 'estado-pill estado-parcial';
-    if (estado === 'CANCELADO') return 'estado-pill estado-cancelado';
-    return 'estado-pill estado-registrado';
+  }, [
+    pedido_id
+  ]);
+
+
+  /* =========================================================
+     ESTADO DEL PEDIDO
+     ========================================================= */
+
+  const claseEstadoPedido = (
+    estado: string
+  ) => {
+    if (
+      estado === 'ENTREGADO'
+    ) {
+      return (
+        'estado-pill estado-entregado'
+      );
+    }
+
+
+    if (
+      estado === 'PARCIAL'
+    ) {
+      return (
+        'estado-pill estado-parcial'
+      );
+    }
+
+
+    if (
+      estado === 'CANCELADO'
+    ) {
+      return (
+        'estado-pill estado-cancelado'
+      );
+    }
+
+
+    return (
+      'estado-pill estado-registrado'
+    );
   };
 
-  const claseEstadoEntrega = (estado: string) => {
-    if (estado === 'COMPLETO') return 'estado estado-completo';
-    if (estado === 'PARCIAL') return 'estado estado-parcial';
-    return 'estado estado-pendiente';
+
+  /* =========================================================
+     ESTADO DE PRODUCTO
+     ========================================================= */
+
+  const claseEstadoEntrega = (
+    estado: string
+  ) => {
+    if (
+      estado === 'COMPLETO'
+    ) {
+      return (
+        'estado estado-completo'
+      );
+    }
+
+
+    if (
+      estado === 'PARCIAL'
+    ) {
+      return (
+        'estado estado-parcial'
+      );
+    }
+
+
+    return (
+      'estado estado-pendiente'
+    );
   };
+
+
+  /* =========================================================
+     REGLA DE EDICIÓN
+     ========================================================= */
+
+  const puedeEditarPedido = (
+    estado: string
+  ) => {
+    return (
+      estado === 'REGISTRADO' ||
+      estado === 'PARCIAL'
+    );
+  };
+
+
+  /* =========================================================
+     TOTALES POR MONEDA
+     ========================================================= */
 
   const totalesPorMoneda = () => {
-    if (!pedido) return [];
+    if (
+      !pedido
+    ) {
+      return [];
+    }
 
-    const mapa = new Map<string, number>();
 
-    pedido.detalles.forEach((detalle: any) => {
-      const moneda = detalle.moneda_codigo;
-      const subtotal = Number(detalle.subtotal || 0);
+    const mapa =
+      new Map<
+        string,
+        number
+      >();
 
-      mapa.set(moneda, (mapa.get(moneda) || 0) + subtotal);
-    });
 
-    return Array.from(mapa.entries()).map(([moneda, total]) => ({
-      moneda,
-      total
-    }));
+    pedido.detalles.forEach(
+      (
+        detalle: any
+      ) => {
+        const moneda =
+          detalle.moneda_codigo;
+
+
+        const subtotal =
+          Number(
+            detalle.subtotal ||
+            0
+          );
+
+
+        mapa.set(
+          moneda,
+
+          (
+            mapa.get(
+              moneda
+            ) ||
+            0
+          ) +
+          subtotal
+        );
+      }
+    );
+
+
+    return (
+      Array
+        .from(
+          mapa.entries()
+        )
+        .map(
+          ([
+            moneda,
+            total
+          ]) => ({
+            moneda,
+            total
+          })
+        )
+    );
   };
 
-  if (!pedido) {
+
+  /* =========================================================
+     CARGANDO
+     ========================================================= */
+
+  if (
+    !pedido
+  ) {
     return (
-      <div>
+      <div className="pedidos-page">
+
         <FeedbackToast
-          tipo={feedback.tipo}
-          mensaje={feedback.mensaje}
-          onClose={() => setFeedback({ ...feedback, mensaje: '' })}
+          tipo={
+            feedback.tipo
+          }
+
+          mensaje={
+            feedback.mensaje
+          }
+
+          onClose={() =>
+            setFeedback({
+              ...feedback,
+
+              mensaje: ''
+            })
+          }
         />
 
-        <Link to="/gestion/pedidos" className="btn-volver">
+
+        <Link
+          to="/gestion/pedidos"
+
+          className="btn-volver"
+        >
           ← Volver a pedidos
         </Link>
 
-        <p>Cargando pedido...</p>
+
+        <div className="pedidos-card">
+
+          <p>
+            Cargando pedido...
+          </p>
+
+        </div>
+
       </div>
     );
   }
 
+
+  const editable =
+    puedeEditarPedido(
+      pedido.estado_pedido
+    );
+
+
+  /* =========================================================
+     RENDER
+     ========================================================= */
+
   return (
     <div className="pedidos-page">
+
+
+      {/* =====================================================
+          FEEDBACK
+          ===================================================== */}
+
       <FeedbackToast
-        tipo={feedback.tipo}
-        mensaje={feedback.mensaje}
-        onClose={() => setFeedback({ ...feedback, mensaje: '' })}
+        tipo={
+          feedback.tipo
+        }
+
+        mensaje={
+          feedback.mensaje
+        }
+
+        onClose={() =>
+          setFeedback({
+            ...feedback,
+
+            mensaje: ''
+          })
+        }
       />
 
-      <Link to="/gestion/pedidos" className="btn-volver">
+
+      {/* =====================================================
+          VOLVER
+          ===================================================== */}
+
+      <Link
+        to="/gestion/pedidos"
+
+        className="btn-volver"
+      >
         ← Volver a pedidos
       </Link>
 
+
+      {/* =====================================================
+          CABECERA
+          ===================================================== */}
+
       <div className="pedido-detalle-header">
+
         <div>
-          <h1>Pedido #{pedido.pedido_id}</h1>
-          <p>{pedido.razon_social} - {pedido.ruc}</p>
+
+          <h1>
+            Pedido #{pedido.pedido_id}
+          </h1>
+
+
+          <p>
+            {
+              pedido.razon_social
+            }
+
+            {' - '}
+
+            {
+              pedido.ruc
+            }
+          </p>
+
         </div>
 
-        <span className={claseEstadoPedido(pedido.estado_pedido)}>
-          {pedido.estado_pedido}
+
+        <span
+          className={
+            claseEstadoPedido(
+              pedido.estado_pedido
+            )
+          }
+        >
+          {
+            pedido.estado_pedido
+          }
         </span>
+
       </div>
+
+
+      {/* =====================================================
+          ACCIONES
+          ===================================================== */}
 
       <div className="pedidos-actions">
-        <Link
-          className="btn-link"
-          to={`/gestion/pedidos/${pedido.pedido_id}/editar`}
-        >
-          Editar pedido
-        </Link>
+
+        {editable ? (
+
+          <Link
+            className="btn-link"
+
+            to={
+              `/gestion/pedidos/${pedido.pedido_id}/editar`
+            }
+          >
+            Editar pedido
+          </Link>
+
+        ) : (
+
+          <div className="pedido-item-aviso-entrega">
+
+            {pedido.estado_pedido ===
+            'ENTREGADO' ? (
+
+              <>
+                Este pedido está{' '}
+
+                <strong>
+                  completamente entregado
+                </strong>
+
+                {' '}y ya no puede editarse.
+              </>
+
+            ) : (
+
+              <>
+                Este pedido está{' '}
+
+                <strong>
+                  cancelado
+                </strong>
+
+                {' '}y ya no puede editarse.
+              </>
+
+            )}
+
+          </div>
+
+        )}
+
       </div>
+
+
+      {/* =====================================================
+          RESUMEN
+          ===================================================== */}
 
       <div className="pedido-resumen-grid">
-        <div className="resumen-card">
-          <span>Cliente</span>
-          <strong>{pedido.razon_social}</strong>
-        </div>
+
 
         <div className="resumen-card">
-          <span>Fecha pedido</span>
-          <strong>{pedido.fecha_pedido?.slice(0, 10)}</strong>
+
+          <span>
+            Cliente
+          </span>
+
+
+          <strong>
+            {
+              pedido.razon_social
+            }
+          </strong>
+
         </div>
 
-        <div className="resumen-card">
-          <span>Entrega estimada</span>
-          <strong>{pedido.fecha_entrega_estimada?.slice(0, 10) || '-'}</strong>
-        </div>
 
         <div className="resumen-card">
-          <span>Registrado por</span>
-          <strong>{pedido.registrado_por}</strong>
+
+          <span>
+            Fecha pedido
+          </span>
+
+
+          <strong>
+            {
+              pedido.fecha_pedido
+                ?.slice(
+                  0,
+                  10
+                )
+            }
+          </strong>
+
         </div>
+
+
+        <div className="resumen-card">
+
+          <span>
+            Entrega estimada
+          </span>
+
+
+          <strong>
+            {
+              pedido
+                .fecha_entrega_estimada
+                ?.slice(
+                  0,
+                  10
+                ) ||
+              '-'
+            }
+          </strong>
+
+        </div>
+
+
+        <div className="resumen-card">
+
+          <span>
+            Registrado por
+          </span>
+
+
+          <strong>
+            {
+              pedido.registrado_por
+            }
+          </strong>
+
+        </div>
+
       </div>
+
+
+      {/* =====================================================
+          DESCRIPCIÓN
+          ===================================================== */}
 
       <div className="descripcion-card">
-        <strong>Descripción del pedido:</strong>
-        <p>{pedido.descripcion_pedido || 'Sin descripción'}</p>
+
+        <strong>
+          Descripción del pedido:
+        </strong>
+
+
+        <p>
+          {
+            pedido.descripcion_pedido ||
+            'Sin descripción'
+          }
+        </p>
+
       </div>
 
-      <div className="tabla-card">
-        <h3>Totales por moneda</h3>
 
-        <table>
-          <thead>
-            <tr>
-              <th>Moneda</th>
-              <th>Total</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {totalesPorMoneda().map((item) => (
-              <tr key={item.moneda}>
-                <td>{item.moneda}</td>
-                <td>{item.total.toFixed(2)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {/* =====================================================
+          TOTALES
+          ===================================================== */}
 
       <div className="tabla-card">
-        <h3>Productos del pedido</h3>
 
-        <table>
-          <thead>
-            <tr>
-              <th>Producto</th>
-              <th>Cantidad</th>
-              <th>Entregado</th>
-              <th>Pendiente</th>
-              <th>Presentación</th>
-              <th>Precio</th>
-              <th>Subtotal</th>
-              <th>Estado entrega</th>
-            </tr>
-          </thead>
+        <h3>
+          Totales por moneda
+        </h3>
 
-          <tbody>
-            {pedido.detalles.map((detalle: any) => (
-              <tr key={detalle.pedido_detalle_id}>
-                <td>
-                  <strong>
-                    {detalle.tipo_producto} {detalle.material} {detalle.medida} {detalle.color}
-                  </strong>
-                  <br />
-                  <span className="muted">{detalle.descripcion_item || '-'}</span>
-                </td>
 
-                <td>{detalle.cantidad_pedida} {detalle.unidad}</td>
-                <td>{detalle.cantidad_entregada} {detalle.unidad}</td>
-                <td>{detalle.cantidad_pendiente} {detalle.unidad}</td>
+        <div className="tabla-responsive">
 
-                <td>
-                  {detalle.cantidad_presentacion || '-'} {detalle.unidad_presentacion || ''}
-                </td>
-
-                <td>
-                  {Number(detalle.precio_unitario).toFixed(2)} {detalle.moneda_codigo}
-                </td>
-
-                <td>
-                  {Number(detalle.subtotal).toFixed(2)} {detalle.moneda_codigo}
-                </td>
-
-                <td>
-                  <span className={claseEstadoEntrega(detalle.estado_entrega)}>
-                    {detalle.estado_entrega}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      <div className="tabla-card">
-        <h3>Historial de cambios</h3>
-
-        {pedido.historial_cambios.length === 0 ? (
-          <p>No hay cambios registrados.</p>
-        ) : (
           <table>
+
             <thead>
+
               <tr>
-                <th>Tipo</th>
-                <th>Motivo</th>
-                <th>Registrado por</th>
-                <th>Fecha</th>
+
+                <th>
+                  Moneda
+                </th>
+
+                <th>
+                  Total
+                </th>
+
               </tr>
+
             </thead>
 
+
             <tbody>
-              {pedido.historial_cambios.map((cambio: any) => (
-                <tr key={cambio.pedido_cambio_id}>
-                  <td>{cambio.tipo_cambio}</td>
-                  <td>{cambio.descripcion_motivo}</td>
-                  <td>{cambio.registrado_por}</td>
-                  <td>{cambio.created_at?.slice(0, 10)}</td>
-                </tr>
-              ))}
+
+              {
+                totalesPorMoneda()
+                  .map(
+                    (
+                      item
+                    ) => (
+
+                      <tr
+                        key={
+                          item.moneda
+                        }
+                      >
+
+                        <td>
+                          {
+                            item.moneda
+                          }
+                        </td>
+
+
+                        <td>
+                          {
+                            item.total
+                              .toFixed(
+                                2
+                              )
+                          }
+                        </td>
+
+                      </tr>
+
+                    )
+                  )
+              }
+
             </tbody>
+
           </table>
-        )}
+
+        </div>
+
       </div>
+
+
+      {/* =====================================================
+          PRODUCTOS
+          ===================================================== */}
+
+      <div className="tabla-card">
+
+        <h3>
+          Productos del pedido
+        </h3>
+
+
+        <div className="tabla-responsive">
+
+          <table>
+
+            <thead>
+
+              <tr>
+
+                <th>
+                  Producto
+                </th>
+
+                <th>
+                  Cantidad
+                </th>
+
+                <th>
+                  Entregado
+                </th>
+
+                <th>
+                  Pendiente
+                </th>
+
+                <th>
+                  Presentación
+                </th>
+
+                <th>
+                  Precio
+                </th>
+
+                <th>
+                  Subtotal
+                </th>
+
+                <th>
+                  Estado entrega
+                </th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody>
+
+              {
+                pedido.detalles.map(
+                  (
+                    detalle: any
+                  ) => (
+
+                    <tr
+                      key={
+                        detalle
+                          .pedido_detalle_id
+                      }
+                    >
+
+
+                      {/* PRODUCTO */}
+
+                      <td>
+
+                        <strong>
+
+                          {
+                            detalle.tipo_producto
+                          }
+
+                          {' '}
+
+                          {
+                            detalle.material
+                          }
+
+                          {' '}
+
+                          {
+                            detalle.medida
+                          }
+
+                          {' '}
+
+                          {
+                            detalle.color
+                          }
+
+                        </strong>
+
+
+                        <br />
+
+
+                        <span className="muted">
+                          {
+                            detalle
+                              .descripcion_item ||
+                            '-'
+                          }
+                        </span>
+
+                      </td>
+
+
+                      {/* CANTIDAD */}
+
+                      <td>
+
+                        {
+                          detalle
+                            .cantidad_pedida
+                        }
+
+                        {' '}
+
+                        {
+                          detalle.unidad
+                        }
+
+                      </td>
+
+
+                      {/* ENTREGADO */}
+
+                      <td>
+
+                        {
+                          detalle
+                            .cantidad_entregada
+                        }
+
+                        {' '}
+
+                        {
+                          detalle.unidad
+                        }
+
+                      </td>
+
+
+                      {/* PENDIENTE */}
+
+                      <td>
+
+                        {
+                          detalle
+                            .cantidad_pendiente
+                        }
+
+                        {' '}
+
+                        {
+                          detalle.unidad
+                        }
+
+                      </td>
+
+
+                      {/* PRESENTACIÓN */}
+
+                      <td>
+
+                        {
+                          detalle
+                            .cantidad_presentacion ||
+                          '-'
+                        }
+
+                        {' '}
+
+                        {
+                          detalle
+                            .unidad_presentacion ||
+                          ''
+                        }
+
+                      </td>
+
+
+                      {/* PRECIO */}
+
+                      <td>
+
+                        {
+                          Number(
+                            detalle
+                              .precio_unitario
+                          ).toFixed(
+                            2
+                          )
+                        }
+
+                        {' '}
+
+                        {
+                          detalle
+                            .moneda_codigo
+                        }
+
+                      </td>
+
+
+                      {/* SUBTOTAL */}
+
+                      <td>
+
+                        {
+                          Number(
+                            detalle.subtotal
+                          ).toFixed(
+                            2
+                          )
+                        }
+
+                        {' '}
+
+                        {
+                          detalle
+                            .moneda_codigo
+                        }
+
+                      </td>
+
+
+                      {/* ESTADO */}
+
+                      <td>
+
+                        <span
+                          className={
+                            claseEstadoEntrega(
+                              detalle
+                                .estado_entrega
+                            )
+                          }
+                        >
+                          {
+                            detalle
+                              .estado_entrega
+                          }
+                        </span>
+
+                      </td>
+
+                    </tr>
+
+                  )
+                )
+              }
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+
+      {/* =====================================================
+          HISTORIAL DE CAMBIOS
+          ===================================================== */}
+
+      <div className="tabla-card">
+
+        <h3>
+          Historial de cambios
+        </h3>
+
+
+        {
+          pedido
+            .historial_cambios
+            .length === 0
+            ? (
+
+              <p>
+                No hay cambios registrados.
+              </p>
+
+            )
+            : (
+
+              <div className="tabla-responsive">
+
+                <table>
+
+                  <thead>
+
+                    <tr>
+
+                      <th>
+                        Tipo
+                      </th>
+
+                      <th>
+                        Motivo
+                      </th>
+
+                      <th>
+                        Registrado por
+                      </th>
+
+                      <th>
+                        Fecha
+                      </th>
+
+                    </tr>
+
+                  </thead>
+
+
+                  <tbody>
+
+                    {
+                      pedido
+                        .historial_cambios
+                        .map(
+                          (
+                            cambio: any
+                          ) => (
+
+                            <tr
+                              key={
+                                cambio
+                                  .pedido_cambio_id
+                              }
+                            >
+
+                              <td>
+                                {
+                                  cambio
+                                    .tipo_cambio
+                                }
+                              </td>
+
+
+                              <td>
+                                {
+                                  cambio
+                                    .descripcion_motivo
+                                }
+                              </td>
+
+
+                              <td>
+                                {
+                                  cambio
+                                    .registrado_por
+                                }
+                              </td>
+
+
+                              <td>
+                                {
+                                  cambio
+                                    .created_at
+                                    ?.slice(
+                                      0,
+                                      10
+                                    )
+                                }
+                              </td>
+
+                            </tr>
+
+                          )
+                        )
+                    }
+
+                  </tbody>
+
+                </table>
+
+              </div>
+
+            )
+        }
+
+      </div>
+
     </div>
   );
 }
+
 
 export default PedidoDetalle;
 
@@ -7199,362 +12377,1140 @@ export default PedidoDetalle;
 
 <<<START OF FILE>>>
 
-import { useEffect, useState } from 'react';
-import type { FormEvent } from 'react';
-import { Link } from 'react-router-dom';
-import { apiFetch } from '../../services/api';
-import FeedbackToast from '../../components/common/FeedbackToast';
+import {
+  useEffect,
+  useState
+} from 'react';
+
+import type {
+  FormEvent
+} from 'react';
+
+import {
+  Link
+} from 'react-router-dom';
+
+import {
+  apiFetch
+} from '../../services/api';
+
+import FeedbackToast
+  from '../../components/common/FeedbackToast';
+
 
 function PedidosLista() {
-  const [pedidos, setPedidos] = useState<any[]>([]);
-  const [clientes, setClientes] = useState<any[]>([]);
+  /* =========================================================
+     DATOS
+     ========================================================= */
 
-  const [clienteId, setClienteId] = useState('');
-  const [estadoPedido, setEstadoPedido] = useState('');
-  const [busqueda, setBusqueda] = useState('');
+  const [
+    pedidos,
+    setPedidos
+  ] = useState<any[]>([]);
 
-  const [page, setPage] = useState(1);
-  const [paginacion, setPaginacion] = useState({
+
+  const [
+    clientes,
+    setClientes
+  ] = useState<any[]>([]);
+
+
+  /* =========================================================
+     FILTROS
+     ========================================================= */
+
+  const [
+    clienteId,
+    setClienteId
+  ] = useState('');
+
+
+  const [
+    estadoPedido,
+    setEstadoPedido
+  ] = useState('');
+
+
+  const [
+    busqueda,
+    setBusqueda
+  ] = useState('');
+
+
+  /* =========================================================
+     PAGINACIÓN
+     ========================================================= */
+
+  const [
+    page,
+    setPage
+  ] = useState(1);
+
+
+  const [
+    paginacion,
+    setPaginacion
+  ] = useState({
     page: 1,
     limit: 10,
     total: 0,
     totalPaginas: 1
   });
 
-  const [feedback, setFeedback] = useState({
-    tipo: 'info' as 'success' | 'error' | 'info',
+
+  /* =========================================================
+     FEEDBACK
+     ========================================================= */
+
+  const [
+    feedback,
+    setFeedback
+  ] = useState({
+    tipo:
+      'info' as
+        | 'success'
+        | 'error'
+        | 'info',
+
     mensaje: ''
   });
 
-  const cargarClientes = async () => {
-    const data = await apiFetch('/clientes/select');
-    setClientes(data.clientes);
-  };
 
-  const cargarPedidos = async (
-    paginaActual = page,
-    clienteActual = clienteId,
-    estadoActual = estadoPedido,
-    busquedaActual = busqueda
-  ) => {
-    const params = new URLSearchParams();
+  /* =========================================================
+     CARGAR CLIENTES
+     ========================================================= */
 
-    params.append('page', String(paginaActual));
-    params.append('limit', '10');
+  const cargarClientes =
+    async () => {
+      const data =
+        await apiFetch(
+          '/clientes/select'
+        );
 
-    if (clienteActual) {
-      params.append('cliente_id', clienteActual);
-    }
 
-    if (estadoActual) {
-      params.append('estado_pedido', estadoActual);
-    }
+      setClientes(
+        data.clientes
+      );
+    };
 
-    if (busquedaActual.trim()) {
-      params.append('q', busquedaActual.trim());
-    }
 
-    const data = await apiFetch(`/pedidos?${params.toString()}`);
+  /* =========================================================
+     CARGAR PEDIDOS
+     ========================================================= */
 
-    setPedidos(data.pedidos);
-    setPaginacion(data.paginacion);
-  };
+  const cargarPedidos =
+    async (
+      paginaActual = page,
+
+      clienteActual = clienteId,
+
+      estadoActual = estadoPedido,
+
+      busquedaActual = busqueda
+    ) => {
+      const params =
+        new URLSearchParams();
+
+
+      params.append(
+        'page',
+        String(
+          paginaActual
+        )
+      );
+
+
+      params.append(
+        'limit',
+        '10'
+      );
+
+
+      if (
+        clienteActual
+      ) {
+        params.append(
+          'cliente_id',
+          clienteActual
+        );
+      }
+
+
+      if (
+        estadoActual
+      ) {
+        params.append(
+          'estado_pedido',
+          estadoActual
+        );
+      }
+
+
+      if (
+        busquedaActual.trim()
+      ) {
+        params.append(
+          'q',
+          busquedaActual.trim()
+        );
+      }
+
+
+      const data =
+        await apiFetch(
+          `/pedidos?${params.toString()}`
+        );
+
+
+      setPedidos(
+        data.pedidos
+      );
+
+
+      setPaginacion(
+        data.paginacion
+      );
+    };
+
+
+  /* =========================================================
+     CARGA INICIAL
+     ========================================================= */
 
   useEffect(() => {
-    const iniciar = async () => {
-      try {
-        await cargarClientes();
-        await cargarPedidos(1);
-      } catch (error: any) {
-        setFeedback({
-          tipo: 'error',
-          mensaje: error.message
-        });
-      }
-    };
+    const iniciar =
+      async () => {
+        try {
+          await cargarClientes();
+
+          await cargarPedidos(
+            1
+          );
+
+        } catch (
+          error: any
+        ) {
+          setFeedback({
+            tipo: 'error',
+
+            mensaje:
+              error.message
+          });
+        }
+      };
+
 
     iniciar();
+
   }, []);
 
+
+  /* =========================================================
+     RECARGAR POR PAGINACIÓN / FILTROS SELECT
+     ========================================================= */
+
   useEffect(() => {
-    const cargar = async () => {
+    const cargar =
+      async () => {
+        try {
+          await cargarPedidos(
+            page
+          );
+
+        } catch (
+          error: any
+        ) {
+          setFeedback({
+            tipo: 'error',
+
+            mensaje:
+              error.message
+          });
+        }
+      };
+
+
+    cargar();
+
+  }, [
+    page,
+    clienteId,
+    estadoPedido
+  ]);
+
+
+  /* =========================================================
+     BUSCAR
+     ========================================================= */
+
+  const aplicarBusqueda =
+    async (
+      e: FormEvent
+    ) => {
+      e.preventDefault();
+
+
+      setPage(
+        1
+      );
+
+
       try {
-        await cargarPedidos(page);
-      } catch (error: any) {
+        await cargarPedidos(
+          1
+        );
+
+      } catch (
+        error: any
+      ) {
         setFeedback({
           tipo: 'error',
-          mensaje: error.message
+
+          mensaje:
+            error.message
         });
       }
     };
 
-    cargar();
-  }, [page, clienteId, estadoPedido]);
 
-  const aplicarBusqueda = async (e: FormEvent) => {
-    e.preventDefault();
+  /* =========================================================
+     LIMPIAR FILTROS
+     ========================================================= */
 
-    setPage(1);
+  const limpiarFiltros =
+    async () => {
+      setClienteId(
+        ''
+      );
 
-    try {
-      await cargarPedidos(1);
-    } catch (error: any) {
-      setFeedback({
-        tipo: 'error',
-        mensaje: error.message
-      });
+
+      setEstadoPedido(
+        ''
+      );
+
+
+      setBusqueda(
+        ''
+      );
+
+
+      setPage(
+        1
+      );
+
+
+      try {
+        await cargarPedidos(
+          1,
+          '',
+          '',
+          ''
+        );
+
+      } catch (
+        error: any
+      ) {
+        setFeedback({
+          tipo: 'error',
+
+          mensaje:
+            error.message
+        });
+      }
+    };
+
+
+  /* =========================================================
+     CLASE DE ESTADO
+     ========================================================= */
+
+  const claseEstado = (
+    estado: string
+  ) => {
+    if (
+      estado ===
+      'ENTREGADO'
+    ) {
+      return (
+        'estado-pill estado-entregado'
+      );
     }
-  };
 
-  const limpiarFiltros = async () => {
-    setClienteId('');
-    setEstadoPedido('');
-    setBusqueda('');
-    setPage(1);
 
-    try {
-      await cargarPedidos(1, '', '', '');
-    } catch (error: any) {
-      setFeedback({
-        tipo: 'error',
-        mensaje: error.message
-      });
+    if (
+      estado ===
+      'PARCIAL'
+    ) {
+      return (
+        'estado-pill estado-parcial'
+      );
     }
+
+
+    if (
+      estado ===
+      'CANCELADO'
+    ) {
+      return (
+        'estado-pill estado-cancelado'
+      );
+    }
+
+
+    return (
+      'estado-pill estado-registrado'
+    );
   };
 
-  const claseEstado = (estado: string) => {
-    if (estado === 'ENTREGADO') return 'estado-pill estado-entregado';
-    if (estado === 'PARCIAL') return 'estado-pill estado-parcial';
-    if (estado === 'CANCELADO') return 'estado-pill estado-cancelado';
-    return 'estado-pill estado-registrado';
+
+  /* =========================================================
+     REGLA DE EDICIÓN
+     ========================================================= */
+
+  const puedeEditarPedido = (
+    estado: string
+  ) => {
+    return (
+      estado === 'REGISTRADO' ||
+      estado === 'PARCIAL'
+    );
   };
 
-  const obtenerCantidadesPedido = (resumen: string | null | undefined) => {
-    if (!resumen) return [];
+
+  /* =========================================================
+     CANTIDADES POR UNIDAD
+     ========================================================= */
+
+  const obtenerCantidadesPedido = (
+    resumen:
+      | string
+      | null
+      | undefined
+  ) => {
+    if (
+      !resumen
+    ) {
+      return [];
+    }
+
 
     return resumen
       .split('|')
-      .filter((item) => item.trim() !== '')
-      .map((item) => {
-        const partes = item.trim().split(' ');
-        const cantidad = Number(partes[0]);
-        const unidad = partes.slice(1).join(' ');
 
-        return {
-          cantidad: Number.isNaN(cantidad) ? partes[0] : cantidad,
-          unidad
-        };
-      });
+      .filter(
+        (item) =>
+          item.trim() !== ''
+      )
+
+      .map(
+        (item) => {
+          const partes =
+            item
+              .trim()
+              .split(' ');
+
+
+          const cantidad =
+            Number(
+              partes[0]
+            );
+
+
+          const unidad =
+            partes
+              .slice(1)
+              .join(' ');
+
+
+          return {
+            cantidad:
+              Number.isNaN(
+                cantidad
+              )
+                ? partes[0]
+                : cantidad,
+
+            unidad
+          };
+        }
+      );
   };
 
-  const formatearCantidad = (cantidad: number | string) => {
-    if (typeof cantidad === 'string') return cantidad;
 
-    return cantidad.toLocaleString('es-PE', {
-      minimumFractionDigits: cantidad % 1 === 0 ? 0 : 2,
-      maximumFractionDigits: 3
-    });
+  /* =========================================================
+     FORMATO CANTIDAD
+     ========================================================= */
+
+  const formatearCantidad = (
+    cantidad:
+      | number
+      | string
+  ) => {
+    if (
+      typeof cantidad ===
+      'string'
+    ) {
+      return cantidad;
+    }
+
+
+    return (
+      cantidad.toLocaleString(
+        'es-PE',
+        {
+          minimumFractionDigits:
+            cantidad % 1 === 0
+              ? 0
+              : 2,
+
+          maximumFractionDigits:
+            3
+        }
+      )
+    );
   };
+
+
+  /* =========================================================
+     RENDER
+     ========================================================= */
 
   return (
     <div className="pedidos-page">
+
+
+      {/* =====================================================
+          FEEDBACK
+          ===================================================== */}
+
       <FeedbackToast
-        tipo={feedback.tipo}
-        mensaje={feedback.mensaje}
-        onClose={() => setFeedback({ ...feedback, mensaje: '' })}
+        tipo={
+          feedback.tipo
+        }
+
+        mensaje={
+          feedback.mensaje
+        }
+
+        onClose={() =>
+          setFeedback({
+            ...feedback,
+
+            mensaje: ''
+          })
+        }
       />
 
+
+      {/* =====================================================
+          CABECERA
+          ===================================================== */}
+
       <div className="pedidos-header">
+
         <div>
-          <h1>Pedidos totales</h1>
-          <p>Consulta, filtra, revisa y edita los pedidos registrados.</p>
+
+          <h1>
+            Pedidos totales
+          </h1>
+
+
+          <p>
+            Consulta, filtra, revisa
+            y edita los pedidos registrados.
+          </p>
+
         </div>
+
 
         <div className="pedidos-actions">
-          <Link className="btn-link" to="/gestion/pedidos/registrar">
+
+          <Link
+            className="btn-link"
+
+            to="/gestion/pedidos/registrar"
+          >
             + Registrar pedido
           </Link>
+
         </div>
+
       </div>
 
-      <form className="pedidos-filtros" onSubmit={aplicarBusqueda}>
-        <div>
-          <label>Cliente</label>
-          <select
-            value={clienteId}
-            onChange={(e) => {
-              setClienteId(e.target.value);
-              setPage(1);
-            }}
-          >
-            <option value="">Todos los clientes</option>
-            {clientes.map((cliente) => (
-              <option key={cliente.cliente_id} value={cliente.cliente_id}>
-                {cliente.razon_social} - {cliente.ruc}
-              </option>
-            ))}
-          </select>
-        </div>
+
+      {/* =====================================================
+          FILTROS
+          ===================================================== */}
+
+      <form
+        className="pedidos-filtros"
+
+        onSubmit={
+          aplicarBusqueda
+        }
+      >
+
+
+        {/* CLIENTE */}
 
         <div>
-          <label>Estado</label>
+
+          <label>
+            Cliente
+          </label>
+
+
           <select
-            value={estadoPedido}
+            value={
+              clienteId
+            }
+
             onChange={(e) => {
-              setEstadoPedido(e.target.value);
-              setPage(1);
+
+              setClienteId(
+                e.target.value
+              );
+
+
+              setPage(
+                1
+              );
             }}
           >
-            <option value="">Todos</option>
-            <option value="REGISTRADO">Registrado</option>
-            <option value="PARCIAL">Parcial</option>
-            <option value="ENTREGADO">Entregado</option>
-            <option value="CANCELADO">Cancelado</option>
+
+            <option value="">
+              Todos los clientes
+            </option>
+
+
+            {clientes.map(
+              (cliente) => (
+
+                <option
+                  key={
+                    cliente.cliente_id
+                  }
+
+                  value={
+                    cliente.cliente_id
+                  }
+                >
+                  {
+                    cliente.razon_social
+                  }
+
+                  {' - '}
+
+                  {
+                    cliente.ruc
+                  }
+                </option>
+
+              )
+            )}
+
           </select>
+
         </div>
 
+
+        {/* ESTADO */}
+
         <div>
-          <label>Buscar</label>
+
+          <label>
+            Estado
+          </label>
+
+
+          <select
+            value={
+              estadoPedido
+            }
+
+            onChange={(e) => {
+
+              setEstadoPedido(
+                e.target.value
+              );
+
+
+              setPage(
+                1
+              );
+            }}
+          >
+
+            <option value="">
+              Todos
+            </option>
+
+            <option value="REGISTRADO">
+              Registrado
+            </option>
+
+            <option value="PARCIAL">
+              Parcial
+            </option>
+
+            <option value="ENTREGADO">
+              Entregado
+            </option>
+
+            <option value="CANCELADO">
+              Cancelado
+            </option>
+
+          </select>
+
+        </div>
+
+
+        {/* BUSCAR */}
+
+        <div>
+
+          <label>
+            Buscar
+          </label>
+
+
           <input
-            value={busqueda}
-            onChange={(e) => setBusqueda(e.target.value)}
+            value={
+              busqueda
+            }
+
+            onChange={(e) =>
+              setBusqueda(
+                e.target.value
+              )
+            }
+
             placeholder="Cliente, RUC, código o descripción"
           />
+
         </div>
 
+
+        {/* ACCIONES */}
+
         <div className="filtros-actions">
-          <button type="submit">Buscar</button>
+
+          <button
+            type="submit"
+          >
+            Buscar
+          </button>
+
 
           <button
             type="button"
+
             className="btn-secondary"
-            onClick={limpiarFiltros}
+
+            onClick={
+              limpiarFiltros
+            }
           >
             Limpiar
           </button>
+
         </div>
+
       </form>
 
+
+      {/* =====================================================
+          TABLA
+          ===================================================== */}
+
       <div className="pedidos-card">
-        <h3>Listado de pedidos</h3>
 
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Cliente</th>
-              <th>Fecha pedido</th>
-              <th>Entrega estimada</th>
-              <th>Estado</th>
-              <th>Items</th>
-              <th>Total ref.</th>
-              <th>Cantidad / unidad</th>
-              <th>Registrado por</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
+        <h3>
+          Listado de pedidos
+        </h3>
 
-          <tbody>
-            {pedidos.map((pedido) => (
-              <tr key={pedido.pedido_id}>
-                <td>#{pedido.pedido_id}</td>
 
-                <td>
-                  <strong>{pedido.razon_social}</strong>
-                  <br />
-                  <span className="muted">{pedido.ruc}</span>
-                </td>
+        <div className="tabla-responsive">
 
-                <td>{pedido.fecha_pedido?.slice(0, 10)}</td>
+          <table>
 
-                <td>{pedido.fecha_entrega_estimada?.slice(0, 10) || '-'}</td>
+            <thead>
 
-                <td>
-                  <span className={claseEstado(pedido.estado_pedido)}>
-                    {pedido.estado_pedido}
-                  </span>
-                </td>
-
-                <td>{pedido.cantidad_items}</td>
-
-                <td>
-                  <strong>{Number(pedido.total_referencial || 0).toFixed(2)}</strong>
-                </td>
-
-                <td>
-                  <div className="cantidades-resumen">
-                    {obtenerCantidadesPedido(pedido.resumen_cantidades).map(
-                      (item, index) => (
-                        <span key={index} className="cantidad-pill">
-                          <strong>{formatearCantidad(item.cantidad)}</strong>
-                          <small>{item.unidad}</small>
-                        </span>
-                      )
-                    )}
-
-                    {!pedido.resumen_cantidades && (
-                      <span className="muted">-</span>
-                    )}
-                  </div>
-                </td>
-
-                <td>{pedido.registrado_por}</td>
-
-                <td>
-                  <div className="tabla-acciones">
-                    <Link
-                      className="btn-link"
-                      to={`/gestion/pedidos/${pedido.pedido_id}`}
-                    >
-                      Ver
-                    </Link>
-
-                    <Link
-                      className="btn-outline"
-                      to={`/gestion/pedidos/${pedido.pedido_id}/editar`}
-                    >
-                      Editar
-                    </Link>
-                  </div>
-                </td>
-              </tr>
-            ))}
-
-            {pedidos.length === 0 && (
               <tr>
-                <td colSpan={10}>No hay pedidos registrados.</td>
+                <th>ID</th>
+
+                <th>
+                  Cliente
+                </th>
+
+                <th>
+                  Fecha pedido
+                </th>
+
+                <th>
+                  Entrega estimada
+                </th>
+
+                <th>
+                  Estado
+                </th>
+
+                <th>
+                  Items
+                </th>
+
+                <th>
+                  Total ref.
+                </th>
+
+                <th>
+                  Cantidad / unidad
+                </th>
+
+                <th>
+                  Registrado por
+                </th>
+
+                <th>
+                  Acciones
+                </th>
               </tr>
-            )}
-          </tbody>
-        </table>
+
+            </thead>
+
+
+            <tbody>
+
+              {pedidos.map(
+                (pedido) => {
+
+                  const editable =
+                    puedeEditarPedido(
+                      pedido.estado_pedido
+                    );
+
+
+                  return (
+                    <tr
+                      key={
+                        pedido.pedido_id
+                      }
+                    >
+
+                      {/* ID */}
+
+                      <td>
+                        #{pedido.pedido_id}
+                      </td>
+
+
+                      {/* CLIENTE */}
+
+                      <td>
+
+                        <strong>
+                          {
+                            pedido.razon_social
+                          }
+                        </strong>
+
+                        <br />
+
+                        <span className="muted">
+                          {
+                            pedido.ruc
+                          }
+                        </span>
+
+                      </td>
+
+
+                      {/* FECHA */}
+
+                      <td>
+                        {
+                          pedido.fecha_pedido
+                            ?.slice(
+                              0,
+                              10
+                            )
+                        }
+                      </td>
+
+
+                      {/* ENTREGA */}
+
+                      <td>
+                        {
+                          pedido
+                            .fecha_entrega_estimada
+                            ?.slice(
+                              0,
+                              10
+                            ) ||
+                          '-'
+                        }
+                      </td>
+
+
+                      {/* ESTADO */}
+
+                      <td>
+
+                        <span
+                          className={
+                            claseEstado(
+                              pedido.estado_pedido
+                            )
+                          }
+                        >
+                          {
+                            pedido.estado_pedido
+                          }
+                        </span>
+
+                      </td>
+
+
+                      {/* ITEMS */}
+
+                      <td>
+                        {
+                          pedido.cantidad_items
+                        }
+                      </td>
+
+
+                      {/* TOTAL */}
+
+                      <td>
+
+                        <strong>
+                          {
+                            Number(
+                              pedido.total_referencial ||
+                              0
+                            ).toFixed(
+                              2
+                            )
+                          }
+                        </strong>
+
+                      </td>
+
+
+                      {/* CANTIDADES */}
+
+                      <td>
+
+                        <div className="cantidades-resumen">
+
+                          {
+                            obtenerCantidadesPedido(
+                              pedido.resumen_cantidades
+                            ).map(
+                              (
+                                item,
+                                index
+                              ) => (
+
+                                <span
+                                  key={
+                                    index
+                                  }
+
+                                  className="cantidad-pill"
+                                >
+
+                                  <strong>
+                                    {
+                                      formatearCantidad(
+                                        item.cantidad
+                                      )
+                                    }
+                                  </strong>
+
+
+                                  <small>
+                                    {
+                                      item.unidad
+                                    }
+                                  </small>
+
+                                </span>
+
+                              )
+                            )
+                          }
+
+
+                          {!pedido.resumen_cantidades && (
+
+                            <span className="muted">
+                              -
+                            </span>
+
+                          )}
+
+                        </div>
+
+                      </td>
+
+
+                      {/* USUARIO */}
+
+                      <td>
+                        {
+                          pedido.registrado_por
+                        }
+                      </td>
+
+
+                      {/* ACCIONES */}
+
+                      <td>
+
+                        <div className="tabla-acciones">
+
+
+                          <Link
+                            className="btn-link"
+
+                            to={
+                              `/gestion/pedidos/${pedido.pedido_id}`
+                            }
+                          >
+                            Ver
+                          </Link>
+
+
+                          {editable ? (
+
+                            <Link
+                              className="btn-outline"
+
+                              to={
+                                `/gestion/pedidos/${pedido.pedido_id}/editar`
+                              }
+                            >
+                              Editar
+                            </Link>
+
+                          ) : (
+
+                            <span
+                              className="muted"
+
+                              title={
+                                pedido.estado_pedido ===
+                                'ENTREGADO'
+                                  ? 'El pedido ya fue entregado completamente'
+                                  : 'El pedido está cancelado'
+                              }
+                            >
+                              Cerrado
+                            </span>
+
+                          )}
+
+                        </div>
+
+                      </td>
+
+                    </tr>
+                  );
+                }
+              )}
+
+
+              {pedidos.length ===
+                0 && (
+
+                <tr>
+
+                  <td
+                    colSpan={
+                      10
+                    }
+                  >
+                    No hay pedidos registrados.
+                  </td>
+
+                </tr>
+
+              )}
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+
+        {/* ===================================================
+            PAGINACIÓN
+            =================================================== */}
 
         <div className="paginado">
+
           <button
             type="button"
-            disabled={page <= 1}
-            onClick={() => setPage(page - 1)}
+
+            disabled={
+              page <= 1
+            }
+
+            onClick={() =>
+              setPage(
+                page - 1
+              )
+            }
           >
             Anterior
           </button>
 
+
           <span>
-            Página {paginacion.page} de {paginacion.totalPaginas || 1}
+            Página{' '}
+            {
+              paginacion.page
+            }
+            {' de '}
+            {
+              paginacion.totalPaginas ||
+              1
+            }
           </span>
+
 
           <button
             type="button"
-            disabled={page >= paginacion.totalPaginas}
-            onClick={() => setPage(page + 1)}
+
+            disabled={
+              page >=
+              paginacion.totalPaginas
+            }
+
+            onClick={() =>
+              setPage(
+                page + 1
+              )
+            }
           >
             Siguiente
           </button>
+
         </div>
+
       </div>
+
     </div>
   );
 }
 
-export default PedidosLista;  
+
+export default PedidosLista;
 
 <<<END OF FILE>>>
 
@@ -8926,6 +14882,232 @@ export default API_URL;
   font-size: 12px;
   font-weight: 700;
   color: #475569;
+}
+/* =========================================================
+   FEEDBACK WARNING
+   ========================================================= */
+
+.feedback-warning {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+
+/* =========================================================
+   GASTOS
+   ========================================================= */
+
+.gastos-config-grid {
+  display: grid;
+  grid-template-columns:
+    minmax(260px, 0.7fr)
+    minmax(0, 1.8fr);
+  gap: 20px;
+  align-items: start;
+}
+
+
+.gasto-tipo-card {
+  max-width: 100%;
+  margin-bottom: 0;
+}
+
+
+.gasto-form-card {
+  max-width: 100%;
+  margin-bottom: 0;
+}
+
+
+.gasto-form-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+  gap: 4px 16px;
+}
+
+
+.gasto-campo-completo {
+  grid-column: 1 / -1;
+}
+
+
+.gasto-form-actions {
+  margin-top: 14px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+
+.gasto-form-actions button {
+  min-width: 180px;
+}
+
+
+.gasto-auditoria-card {
+  background: white;
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow:
+    0 8px 20px
+    rgba(15, 23, 42, 0.06);
+
+  display: grid;
+  grid-template-columns:
+    repeat(
+      4,
+      minmax(0, 1fr)
+    );
+  gap: 14px;
+}
+
+
+.gasto-auditoria-card > div {
+  padding: 12px;
+  background: #f8fafc;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+}
+
+
+.gasto-auditoria-card span {
+  display: block;
+  color: #64748b;
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+
+.gasto-auditoria-card strong {
+  display: block;
+  color: #111827;
+}
+
+
+.tabla-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+
+.tabla-acciones {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+
+.tabla-acciones .btn-danger {
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   RESPONSIVE GASTOS
+   ========================================================= */
+
+@media (max-width: 1000px) {
+
+  .gastos-config-grid {
+    grid-template-columns: 1fr;
+  }
+
+
+  .gasto-auditoria-card {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+
+}
+
+
+@media (max-width: 650px) {
+
+  .gasto-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+
+  .gasto-campo-completo {
+    grid-column: auto;
+  }
+
+
+  .gasto-auditoria-card {
+    grid-template-columns: 1fr;
+  }
+
+
+  .gasto-form-actions {
+    justify-content: stretch;
+  }
+
+
+  .gasto-form-actions button {
+    width: 100%;
+  }
+
+}
+/* =========================================================
+   EDICIÓN DE PRODUCTOS DEL PEDIDO
+   ========================================================= */
+
+.pedido-item-entrega-info {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+
+.pedido-item-entrega-info > div {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 12px;
+}
+
+
+.pedido-item-entrega-info span {
+  display: block;
+  color: #6b7280;
+  font-size: 13px;
+  margin-bottom: 5px;
+}
+
+
+.pedido-item-entrega-info strong {
+  display: block;
+  color: #111827;
+}
+
+
+.pedido-item-aviso-entrega {
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  border-radius: 10px;
+
+  background: #fef3c7;
+  color: #92400e;
+
+  border: 1px solid #fde68a;
+
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+
+@media (max-width: 750px) {
+  .pedido-item-entrega-info {
+    grid-template-columns: 1fr;
+  }
 }
 
 <<<END OF FILE>>>

@@ -7,10 +7,10 @@
 
 - **Proyecto:** GestionDriza
 - **Componente:** Backend
-- **Fecha de generación:** 2026-08-23 14:52:42
+- **Fecha de generación:** 2026-08-30 21:06:54
 - **Branch Git:** main
-- **Commit Git:** b910c5f68611c176b67f80b23b3d8fc7e3a265c5
-- **Cantidad de archivos incluidos:** 37
+- **Commit Git:** 3b73029d9df34a565ac9242ca90d03932cd5b897
+- **Cantidad de archivos incluidos:** 39
 
 ---
 
@@ -18,6 +18,7 @@
 
 `	ext
 package.json
+scripts\run-migrations.js
 src\app.js
 src\config\db.js
 src\middlewares\auth.middleware.js
@@ -44,6 +45,7 @@ src\modules\gastos\gasto.controller.js
 src\modules\gastos\gasto.model.js
 src\modules\gastos\gasto.routes.js
 src\modules\pedidos\pedido.controller.js
+src\modules\pedidos\pedido.edicion.model.js
 src\modules\pedidos\pedido.model.js
 src\modules\pedidos\pedido.routes.js
 src\modules\productos\producto.controller.js
@@ -83,6 +85,348 @@ src\utils\generarToken.js~~~
     "nodemon": "^3.1.0"
   }
 }
+~~~
+
+---
+
+## scripts\run-migrations.js
+
+~~~javascript
+const fs = require('fs');
+const path = require('path');
+const crypto = require('crypto');
+
+require('dotenv').config();
+
+const {
+  sql,
+  getConnection
+} = require('../src/config/db');
+
+
+const MIGRATIONS_DIR = path.resolve(
+  __dirname,
+  '../../database/migrations'
+);
+
+
+/*
+ * Genera un SHA-256 del contenido de la migración.
+ *
+ * Esto permite detectar si alguien modifica
+ * posteriormente un script que ya fue aplicado.
+ */
+const calcularChecksum = (contenido) => {
+  return crypto
+    .createHash('sha256')
+    .update(contenido, 'utf8')
+    .digest('hex');
+};
+
+
+/*
+ * SQL Server utiliza GO como separador de batches
+ * en SSMS/sqlcmd, pero GO no forma parte realmente
+ * del lenguaje T-SQL.
+ *
+ * Permitimos que las migraciones futuras puedan
+ * utilizar GO separando manualmente los batches.
+ */
+const separarBatches = (contenido) => {
+  return contenido
+    .split(/^\s*GO\s*;?\s*$/gim)
+    .map((batch) => batch.trim())
+    .filter(Boolean);
+};
+
+
+/*
+ * La tabla se crea automáticamente la primera vez.
+ */
+const asegurarTablaMigraciones = async (pool) => {
+  await pool.request().query(`
+    IF OBJECT_ID('dbo.MigracionBD', 'U') IS NULL
+    BEGIN
+      CREATE TABLE dbo.MigracionBD (
+        migracion_id INT IDENTITY(1,1) NOT NULL
+          CONSTRAINT PK_MigracionBD PRIMARY KEY,
+
+        archivo NVARCHAR(260) NOT NULL,
+
+        checksum CHAR(64) NOT NULL,
+
+        aplicado_at DATETIME2(7) NOT NULL
+          CONSTRAINT DF_MigracionBD_AplicadoAt
+          DEFAULT SYSDATETIME(),
+
+        CONSTRAINT UQ_MigracionBD_Archivo
+          UNIQUE (archivo)
+      );
+    END;
+  `);
+};
+
+
+const obtenerMigracionesAplicadas = async (pool) => {
+  const result = await pool.request().query(`
+    SELECT
+      archivo,
+      checksum,
+      aplicado_at
+    FROM dbo.MigracionBD;
+  `);
+
+  return new Map(
+    result.recordset.map((row) => [
+      row.archivo,
+      {
+        checksum: row.checksum,
+        aplicado_at: row.aplicado_at
+      }
+    ])
+  );
+};
+
+
+const ejecutarMigracion = async ({
+  pool,
+  archivo,
+  contenido,
+  checksum
+}) => {
+  const transaction = new sql.Transaction(pool);
+
+  try {
+    await transaction.begin();
+
+    const batches = separarBatches(contenido);
+
+    for (const batch of batches) {
+      const request = new sql.Request(transaction);
+
+      await request.query(batch);
+    }
+
+    /*
+     * Solo registramos la migración después
+     * de que TODO el SQL terminó correctamente.
+     */
+    const requestRegistro = new sql.Request(transaction);
+
+    await requestRegistro
+      .input(
+        'archivo',
+        sql.NVarChar(260),
+        archivo
+      )
+      .input(
+        'checksum',
+        sql.Char(64),
+        checksum
+      )
+      .query(`
+        INSERT INTO dbo.MigracionBD (
+          archivo,
+          checksum
+        )
+        VALUES (
+          @archivo,
+          @checksum
+        );
+      `);
+
+    await transaction.commit();
+
+  } catch (error) {
+    if (transaction._aborted !== true) {
+      try {
+        await transaction.rollback();
+      } catch (_) {
+        // No ocultamos el error original.
+      }
+    }
+
+    throw error;
+  }
+};
+
+
+const ejecutarMigraciones = async () => {
+  console.log('');
+  console.log('========================================');
+  console.log(' GestionDriza - Migraciones de BBDD');
+  console.log('========================================');
+  console.log('');
+
+  if (!fs.existsSync(MIGRATIONS_DIR)) {
+    throw new Error(
+      `No existe la carpeta de migraciones: ${MIGRATIONS_DIR}`
+    );
+  }
+
+  /*
+   * Solo se ejecutan archivos .sql de migrations.
+   *
+   * GestionDriza_SCHEMA.sql u otros archivos
+   * que estén fuera de esta carpeta se ignoran.
+   */
+  const archivos = fs
+    .readdirSync(MIGRATIONS_DIR)
+    .filter((archivo) =>
+      archivo.toLowerCase().endsWith('.sql')
+    )
+    .sort((a, b) =>
+      a.localeCompare(
+        b,
+        undefined,
+        {
+          numeric: true,
+          sensitivity: 'base'
+        }
+      )
+    );
+
+  if (archivos.length === 0) {
+    console.log(
+      'No hay archivos de migración.'
+    );
+
+    return;
+  }
+
+  console.log(
+    `Base de datos: ${process.env.DB_DATABASE}`
+  );
+
+  console.log(
+    `Servidor: ${process.env.DB_SERVER}`
+  );
+
+  console.log('');
+
+  const pool = await getConnection();
+
+  await asegurarTablaMigraciones(pool);
+
+  const aplicadas =
+    await obtenerMigracionesAplicadas(pool);
+
+  let ejecutadas = 0;
+  let omitidas = 0;
+
+  for (const archivo of archivos) {
+    const ruta = path.join(
+      MIGRATIONS_DIR,
+      archivo
+    );
+
+    const contenido = fs.readFileSync(
+      ruta,
+      'utf8'
+    );
+
+    const checksum =
+      calcularChecksum(contenido);
+
+    const anterior =
+      aplicadas.get(archivo);
+
+    /*
+     * La migración ya existe en la BD.
+     */
+    if (anterior) {
+      /*
+       * Si alguien modificó el SQL después
+       * de haberlo aplicado, detenemos todo.
+       *
+       * Nunca debemos modificar migraciones
+       * históricas.
+       */
+      if (
+        anterior.checksum.trim() !== checksum
+      ) {
+        throw new Error(
+          [
+            '',
+            `La migración ${archivo} ya fue aplicada,`,
+            'pero su contenido fue modificado.',
+            '',
+            'No modifiques migraciones antiguas.',
+            'Crea una migración nueva.'
+          ].join('\n')
+        );
+      }
+
+      console.log(
+        `[OK] ${archivo} - ya aplicada`
+      );
+
+      omitidas++;
+
+      continue;
+    }
+
+    console.log(
+      `[>>] Ejecutando ${archivo}...`
+    );
+
+    await ejecutarMigracion({
+      pool,
+      archivo,
+      contenido,
+      checksum
+    });
+
+    console.log(
+      `[OK] ${archivo} - aplicada correctamente`
+    );
+
+    ejecutadas++;
+  }
+
+  console.log('');
+  console.log('----------------------------------------');
+  console.log(
+    `Nuevas aplicadas: ${ejecutadas}`
+  );
+  console.log(
+    `Ya existentes:    ${omitidas}`
+  );
+  console.log('----------------------------------------');
+  console.log('');
+  console.log(
+    'Base de datos actualizada correctamente.'
+  );
+};
+
+
+ejecutarMigraciones()
+  .then(async () => {
+    try {
+      await sql.close();
+    } catch (_) {
+      // Nada que hacer.
+    }
+
+    process.exit(0);
+  })
+  .catch(async (error) => {
+    console.error('');
+    console.error(
+      'ERROR AL ACTUALIZAR LA BASE DE DATOS'
+    );
+    console.error('');
+    console.error(error.message);
+    console.error('');
+
+    try {
+      await sql.close();
+    } catch (_) {
+      // Nada que hacer.
+    }
+
+    process.exit(1);
+  });
 ~~~
 
 ---
@@ -3751,73 +4095,261 @@ const {
   listarTiposGasto,
   buscarTipoGastoPorNombre,
   crearTipoGasto,
+
   listarGastos,
   obtenerGastoPorId,
-  crearGasto
+
+  crearGasto,
+  actualizarGasto,
+  eliminarGasto
 } = require('./gasto.model');
 
+
 const fechaActual = () => {
-  return new Date().toISOString().slice(0, 10);
+  return new Date()
+    .toISOString()
+    .slice(0, 10);
 };
 
-const obtenerTiposGasto = async (req, res) => {
+
+/* =========================================================
+   NORMALIZACIÓN Y VALIDACIÓN
+   ========================================================= */
+
+const prepararDatosGasto = ({
+  tipo_gasto_id,
+  proveedor_id,
+  fecha_gasto,
+  monto,
+  moneda_codigo,
+  descripcion,
+  comprobante,
+  usarFechaActual = false
+}) => {
+  if (!tipo_gasto_id) {
+    return {
+      error: 'El tipo de gasto es obligatorio'
+    };
+  }
+
+  const tipoGastoId = Number(tipo_gasto_id);
+
+  if (
+    !Number.isInteger(tipoGastoId) ||
+    tipoGastoId <= 0
+  ) {
+    return {
+      error: 'El tipo de gasto no es válido'
+    };
+  }
+
+
+  const montoNumerico = Number(monto);
+
+  if (
+    !Number.isFinite(montoNumerico) ||
+    montoNumerico <= 0
+  ) {
+    return {
+      error: 'El monto debe ser mayor a 0'
+    };
+  }
+
+
+  if (!moneda_codigo) {
+    return {
+      error: 'La moneda es obligatoria'
+    };
+  }
+
+  const monedaNormalizada =
+    String(moneda_codigo)
+      .trim()
+      .toUpperCase();
+
+  if (
+    !['PEN', 'USD'].includes(
+      monedaNormalizada
+    )
+  ) {
+    return {
+      error: 'La moneda debe ser PEN o USD'
+    };
+  }
+
+
+  let proveedorId = null;
+
+  if (
+    proveedor_id !== null &&
+    proveedor_id !== undefined &&
+    proveedor_id !== ''
+  ) {
+    proveedorId = Number(proveedor_id);
+
+    if (
+      !Number.isInteger(proveedorId) ||
+      proveedorId <= 0
+    ) {
+      return {
+        error: 'El proveedor no es válido'
+      };
+    }
+  }
+
+
+  let fechaNormalizada = fecha_gasto;
+
+  if (!fechaNormalizada && usarFechaActual) {
+    fechaNormalizada = fechaActual();
+  }
+
+  if (!fechaNormalizada) {
+    return {
+      error: 'La fecha del gasto es obligatoria'
+    };
+  }
+
+
+  const descripcionNormalizada =
+    descripcion &&
+    String(descripcion).trim()
+      ? String(descripcion).trim()
+      : null;
+
+
+  const comprobanteNormalizado =
+    comprobante &&
+    String(comprobante).trim()
+      ? String(comprobante)
+          .trim()
+          .toUpperCase()
+      : null;
+
+
+  return {
+    datos: {
+      tipo_gasto_id: tipoGastoId,
+      proveedor_id: proveedorId,
+      fecha_gasto: fechaNormalizada,
+      monto: montoNumerico,
+      moneda_codigo:
+        monedaNormalizada,
+      descripcion:
+        descripcionNormalizada,
+      comprobante:
+        comprobanteNormalizado
+    }
+  };
+};
+
+
+/* =========================================================
+   TIPOS DE GASTO
+   ========================================================= */
+
+const obtenerTiposGasto = async (
+  req,
+  res
+) => {
   try {
-    const tipos = await listarTiposGasto();
+    const tipos =
+      await listarTiposGasto();
 
     res.json({
-      mensaje: 'Tipos de gasto obtenidos correctamente',
+      mensaje:
+        'Tipos de gasto obtenidos correctamente',
+
       tipos
     });
 
   } catch (error) {
-    console.error('Error listar tipos de gasto:', error.message);
+    console.error(
+      'Error listar tipos de gasto:',
+      error.message
+    );
 
     res.status(500).json({
-      mensaje: 'Error interno al listar tipos de gasto'
+      mensaje:
+        'Error interno al listar tipos de gasto'
     });
   }
 };
 
-const registrarTipoGasto = async (req, res) => {
-  try {
-    let { nombre } = req.body;
 
-    if (!nombre || nombre.trim() === '') {
+const registrarTipoGasto = async (
+  req,
+  res
+) => {
+  try {
+    let {
+      nombre
+    } = req.body;
+
+    if (
+      !nombre ||
+      nombre.trim() === ''
+    ) {
       return res.status(400).json({
-        mensaje: 'El nombre del tipo de gasto es obligatorio'
+        mensaje:
+          'El nombre del tipo de gasto es obligatorio'
       });
     }
 
-    nombre = nombre.trim().toUpperCase();
+    nombre =
+      nombre
+        .trim()
+        .toUpperCase();
 
-    const existente = await buscarTipoGastoPorNombre(nombre);
+    const existente =
+      await buscarTipoGastoPorNombre(
+        nombre
+      );
 
     if (existente) {
       return res.status(409).json({
-        mensaje: 'Ya existe un tipo de gasto con ese nombre'
+        mensaje:
+          'Ya existe un tipo de gasto con ese nombre'
       });
     }
 
-    const tipo = await crearTipoGasto({
-      nombre,
-      created_by_usuario_id: req.usuario.usuario_id
-    });
+    const tipo =
+      await crearTipoGasto({
+        nombre,
+
+        created_by_usuario_id:
+          req.usuario.usuario_id
+      });
 
     res.status(201).json({
-      mensaje: 'Tipo de gasto registrado correctamente',
+      mensaje:
+        'Tipo de gasto registrado correctamente',
+
       tipo
     });
 
   } catch (error) {
-    console.error('Error registrar tipo de gasto:', error.message);
+    console.error(
+      'Error registrar tipo de gasto:',
+      error.message
+    );
 
     res.status(500).json({
-      mensaje: 'Error interno al registrar tipo de gasto'
+      mensaje:
+        'Error interno al registrar tipo de gasto'
     });
   }
 };
 
-const obtenerGastos = async (req, res) => {
+
+/* =========================================================
+   LISTAR GASTOS
+   ========================================================= */
+
+const obtenerGastos = async (
+  req,
+  res
+) => {
   try {
     const {
       tipo_gasto_id,
@@ -3828,135 +4360,376 @@ const obtenerGastos = async (req, res) => {
       limit = 10
     } = req.query;
 
-    const resultado = await listarGastos({
-      tipo_gasto_id: tipo_gasto_id ? Number(tipo_gasto_id) : null,
-      proveedor_id: proveedor_id ? Number(proveedor_id) : null,
-      moneda_codigo: moneda_codigo || null,
-      q: q || null,
-      page: Number(page),
-      limit: Number(limit)
-    });
+
+    const pagina = Math.max(
+      1,
+      Number(page) || 1
+    );
+
+    const limite = Math.min(
+      100,
+      Math.max(
+        1,
+        Number(limit) || 10
+      )
+    );
+
+
+    const resultado =
+      await listarGastos({
+        tipo_gasto_id:
+          tipo_gasto_id
+            ? Number(tipo_gasto_id)
+            : null,
+
+        proveedor_id:
+          proveedor_id
+            ? Number(proveedor_id)
+            : null,
+
+        moneda_codigo:
+          moneda_codigo
+            ? String(moneda_codigo)
+                .toUpperCase()
+            : null,
+
+        q:
+          q
+            ? String(q).trim()
+            : null,
+
+        page: pagina,
+        limit: limite
+      });
+
 
     res.json({
-      mensaje: 'Gastos obtenidos correctamente',
-      gastos: resultado.gastos,
-      paginacion: resultado.paginacion
+      mensaje:
+        'Gastos obtenidos correctamente',
+
+      gastos:
+        resultado.gastos,
+
+      paginacion:
+        resultado.paginacion
     });
 
   } catch (error) {
-    console.error('Error listar gastos:', error.message);
+    console.error(
+      'Error listar gastos:',
+      error.message
+    );
 
     res.status(500).json({
-      mensaje: 'Error interno al listar gastos'
+      mensaje:
+        'Error interno al listar gastos'
     });
   }
 };
 
-const obtenerGasto = async (req, res) => {
-  try {
-    const { gasto_id } = req.params;
 
-    const gasto = await obtenerGastoPorId(gasto_id);
+/* =========================================================
+   OBTENER GASTO
+   ========================================================= */
+
+const obtenerGasto = async (
+  req,
+  res
+) => {
+  try {
+    const gasto_id =
+      Number(req.params.gasto_id);
+
+    if (
+      !Number.isInteger(gasto_id) ||
+      gasto_id <= 0
+    ) {
+      return res.status(400).json({
+        mensaje:
+          'El ID del gasto no es válido'
+      });
+    }
+
+
+    const gasto =
+      await obtenerGastoPorId(
+        gasto_id
+      );
+
 
     if (!gasto) {
       return res.status(404).json({
-        mensaje: 'Gasto no encontrado'
+        mensaje:
+          'Gasto no encontrado'
       });
     }
+
 
     res.json({
-      mensaje: 'Gasto obtenido correctamente',
+      mensaje:
+        'Gasto obtenido correctamente',
+
       gasto
     });
 
   } catch (error) {
-    console.error('Error obtener gasto:', error.message);
+    console.error(
+      'Error obtener gasto:',
+      error.message
+    );
 
     res.status(500).json({
-      mensaje: 'Error interno al obtener gasto'
+      mensaje:
+        'Error interno al obtener gasto'
     });
   }
 };
 
-const registrarGasto = async (req, res) => {
+
+/* =========================================================
+   REGISTRAR GASTO
+   ========================================================= */
+
+const registrarGasto = async (
+  req,
+  res
+) => {
   try {
-    let {
-      tipo_gasto_id,
-      proveedor_id,
-      fecha_gasto,
-      monto,
-      moneda_codigo,
-      descripcion,
-      comprobante
-    } = req.body;
+    const preparacion =
+      prepararDatosGasto({
+        ...req.body,
+        usarFechaActual: true
+      });
 
-    if (!tipo_gasto_id) {
+
+    if (preparacion.error) {
       return res.status(400).json({
-        mensaje: 'El tipo de gasto es obligatorio'
+        mensaje:
+          preparacion.error
       });
     }
 
-    if (!monto || Number(monto) <= 0) {
-      return res.status(400).json({
-        mensaje: 'El monto debe ser mayor a 0'
+
+    const gasto =
+      await crearGasto({
+        ...preparacion.datos,
+
+        created_by_usuario_id:
+          req.usuario.usuario_id
       });
-    }
 
-    if (!moneda_codigo) {
-      return res.status(400).json({
-        mensaje: 'La moneda es obligatoria'
-      });
-    }
-
-    moneda_codigo = moneda_codigo.toUpperCase();
-
-    if (!['PEN', 'USD'].includes(moneda_codigo)) {
-      return res.status(400).json({
-        mensaje: 'La moneda debe ser PEN o USD'
-      });
-    }
-
-    fecha_gasto = fecha_gasto || fechaActual();
-
-    descripcion = descripcion
-      ? descripcion.trim()
-      : null;
-
-    comprobante = comprobante
-      ? comprobante.trim().toUpperCase()
-      : null;
-
-    const gasto = await crearGasto({
-      tipo_gasto_id,
-      proveedor_id,
-      fecha_gasto,
-      monto,
-      moneda_codigo,
-      descripcion,
-      comprobante,
-      created_by_usuario_id: req.usuario.usuario_id
-    });
 
     res.status(201).json({
-      mensaje: 'Gasto registrado correctamente',
+      mensaje:
+        'Gasto registrado correctamente',
+
       gasto
     });
 
   } catch (error) {
-    console.error('Error registrar gasto:', error.message);
+    console.error(
+      'Error registrar gasto:',
+      error.message
+    );
+
+
+    if (error.number === 547) {
+      return res.status(400).json({
+        mensaje:
+          'El tipo de gasto, proveedor o moneda seleccionados no son válidos'
+      });
+    }
+
 
     res.status(500).json({
-      mensaje: 'Error interno al registrar gasto'
+      mensaje:
+        'Error interno al registrar gasto'
     });
   }
 };
+
+
+/* =========================================================
+   EDITAR GASTO
+   ========================================================= */
+
+const editarGasto = async (
+  req,
+  res
+) => {
+  try {
+    const gasto_id =
+      Number(req.params.gasto_id);
+
+
+    if (
+      !Number.isInteger(gasto_id) ||
+      gasto_id <= 0
+    ) {
+      return res.status(400).json({
+        mensaje:
+          'El ID del gasto no es válido'
+      });
+    }
+
+
+    /*
+     * Primero comprobamos que siga activo.
+     *
+     * Un gasto eliminado lógicamente
+     * ya no debe poder editarse.
+     */
+    const gastoActual =
+      await obtenerGastoPorId(
+        gasto_id
+      );
+
+
+    if (!gastoActual) {
+      return res.status(404).json({
+        mensaje:
+          'Gasto no encontrado'
+      });
+    }
+
+
+    const preparacion =
+      prepararDatosGasto({
+        ...req.body,
+        usarFechaActual: false
+      });
+
+
+    if (preparacion.error) {
+      return res.status(400).json({
+        mensaje:
+          preparacion.error
+      });
+    }
+
+
+    const gasto =
+      await actualizarGasto({
+        gasto_id,
+
+        ...preparacion.datos,
+
+        updated_by_usuario_id:
+          req.usuario.usuario_id
+      });
+
+
+    if (!gasto) {
+      return res.status(404).json({
+        mensaje:
+          'Gasto no encontrado o ya eliminado'
+      });
+    }
+
+
+    res.json({
+      mensaje:
+        'Gasto actualizado correctamente',
+
+      gasto
+    });
+
+  } catch (error) {
+    console.error(
+      'Error editar gasto:',
+      error.message
+    );
+
+
+    if (error.number === 547) {
+      return res.status(400).json({
+        mensaje:
+          'El tipo de gasto, proveedor o moneda seleccionados no son válidos'
+      });
+    }
+
+
+    res.status(500).json({
+      mensaje:
+        'Error interno al actualizar gasto'
+    });
+  }
+};
+
+
+/* =========================================================
+   ELIMINAR GASTO
+   BAJA LÓGICA
+   ========================================================= */
+
+const darBajaGasto = async (
+  req,
+  res
+) => {
+  try {
+    const gasto_id =
+      Number(req.params.gasto_id);
+
+
+    if (
+      !Number.isInteger(gasto_id) ||
+      gasto_id <= 0
+    ) {
+      return res.status(400).json({
+        mensaje:
+          'El ID del gasto no es válido'
+      });
+    }
+
+
+    const gasto =
+      await eliminarGasto({
+        gasto_id,
+
+        updated_by_usuario_id:
+          req.usuario.usuario_id
+      });
+
+
+    if (!gasto) {
+      return res.status(404).json({
+        mensaje:
+          'Gasto no encontrado o ya eliminado'
+      });
+    }
+
+
+    res.json({
+      mensaje:
+        'Gasto eliminado correctamente',
+
+      gasto
+    });
+
+  } catch (error) {
+    console.error(
+      'Error eliminar gasto:',
+      error.message
+    );
+
+    res.status(500).json({
+      mensaje:
+        'Error interno al eliminar gasto'
+    });
+  }
+};
+
 
 module.exports = {
   obtenerTiposGasto,
   registrarTipoGasto,
+
   obtenerGastos,
   obtenerGasto,
-  registrarGasto
+
+  registrarGasto,
+  editarGasto,
+  darBajaGasto
 };
 ~~~
 
@@ -3965,7 +4738,15 @@ module.exports = {
 ## src\modules\gastos\gasto.model.js
 
 ~~~javascript
-const { getConnection, sql } = require('../../config/db');
+const {
+  getConnection,
+  sql
+} = require('../../config/db');
+
+
+/* =========================================================
+   TIPOS DE GASTO
+   ========================================================= */
 
 const listarTiposGasto = async () => {
   const pool = await getConnection();
@@ -3983,11 +4764,16 @@ const listarTiposGasto = async () => {
   return result.recordset;
 };
 
+
 const buscarTipoGastoPorNombre = async (nombre) => {
   const pool = await getConnection();
 
   const result = await pool.request()
-    .input('nombre', sql.NVarChar(100), nombre)
+    .input(
+      'nombre',
+      sql.NVarChar(100),
+      nombre
+    )
     .query(`
       SELECT
         tipo_gasto_id,
@@ -4000,6 +4786,7 @@ const buscarTipoGastoPorNombre = async (nombre) => {
   return result.recordset[0];
 };
 
+
 const crearTipoGasto = async ({
   nombre,
   created_by_usuario_id
@@ -4007,8 +4794,16 @@ const crearTipoGasto = async ({
   const pool = await getConnection();
 
   const result = await pool.request()
-    .input('nombre', sql.NVarChar(100), nombre)
-    .input('created_by_usuario_id', sql.Int, created_by_usuario_id)
+    .input(
+      'nombre',
+      sql.NVarChar(100),
+      nombre
+    )
+    .input(
+      'created_by_usuario_id',
+      sql.Int,
+      created_by_usuario_id
+    )
     .query(`
       INSERT INTO finance.TipoGasto (
         nombre,
@@ -4028,6 +4823,11 @@ const crearTipoGasto = async ({
   return result.recordset[0];
 };
 
+
+/* =========================================================
+   LISTAR GASTOS
+   ========================================================= */
+
 const listarGastos = async ({
   tipo_gasto_id,
   proveedor_id,
@@ -4041,16 +4841,41 @@ const listarGastos = async ({
   const offset = (page - 1) * limit;
 
   const result = await pool.request()
-    .input('tipo_gasto_id', sql.Int, tipo_gasto_id || null)
-    .input('proveedor_id', sql.Int, proveedor_id || null)
-    .input('moneda_codigo', sql.Char(3), moneda_codigo || null)
-    .input('q', sql.NVarChar(150), q ? `%${q}%` : null)
-    .input('offset', sql.Int, offset)
-    .input('limit', sql.Int, limit)
+    .input(
+      'tipo_gasto_id',
+      sql.Int,
+      tipo_gasto_id || null
+    )
+    .input(
+      'proveedor_id',
+      sql.Int,
+      proveedor_id || null
+    )
+    .input(
+      'moneda_codigo',
+      sql.Char(3),
+      moneda_codigo || null
+    )
+    .input(
+      'q',
+      sql.NVarChar(150),
+      q ? `%${q}%` : null
+    )
+    .input(
+      'offset',
+      sql.Int,
+      offset
+    )
+    .input(
+      'limit',
+      sql.Int,
+      limit
+    )
     .query(`
       WITH GastosResumen AS (
         SELECT
           g.gasto_id,
+
           g.tipo_gasto_id,
           tg.nombre AS tipo_gasto,
 
@@ -4063,29 +4888,65 @@ const listarGastos = async ({
           g.moneda_codigo,
           g.descripcion,
           g.comprobante,
-          g.created_at,
 
-          u.nombre_completo AS registrado_por
+          g.activo,
+
+          g.created_at,
+          g.created_by_usuario_id,
+          creador.nombre_completo AS registrado_por,
+
+          g.updated_at,
+          g.updated_by_usuario_id,
+          actualizador.nombre_completo AS actualizado_por
+
         FROM finance.Gasto g
+
         INNER JOIN finance.TipoGasto tg
           ON g.tipo_gasto_id = tg.tipo_gasto_id
+
         LEFT JOIN compras.Proveedor p
           ON g.proveedor_id = p.proveedor_id
-        INNER JOIN auth.Usuario u
-          ON g.created_by_usuario_id = u.usuario_id
-        WHERE
-          (@tipo_gasto_id IS NULL OR g.tipo_gasto_id = @tipo_gasto_id)
-          AND (@proveedor_id IS NULL OR g.proveedor_id = @proveedor_id)
-          AND (@moneda_codigo IS NULL OR g.moneda_codigo = @moneda_codigo)
+
+        INNER JOIN auth.Usuario creador
+          ON g.created_by_usuario_id =
+             creador.usuario_id
+
+        LEFT JOIN auth.Usuario actualizador
+          ON g.updated_by_usuario_id =
+             actualizador.usuario_id
+
+        WHERE g.activo = 1
+
+          AND (
+            @tipo_gasto_id IS NULL
+            OR g.tipo_gasto_id = @tipo_gasto_id
+          )
+
+          AND (
+            @proveedor_id IS NULL
+            OR g.proveedor_id = @proveedor_id
+          )
+
+          AND (
+            @moneda_codigo IS NULL
+            OR g.moneda_codigo = @moneda_codigo
+          )
+
           AND (
             @q IS NULL
+
             OR tg.nombre LIKE @q
+
             OR p.razon_social LIKE @q
+
             OR p.ruc LIKE @q
+
             OR g.descripcion LIKE @q
+
             OR g.comprobante LIKE @q
           )
       )
+
       SELECT
         *,
         COUNT(*) OVER() AS total_registros
@@ -4097,12 +4958,14 @@ const listarGastos = async ({
 
   const gastos = result.recordset;
 
-  const total = gastos.length > 0
-    ? gastos[0].total_registros
-    : 0;
+  const total =
+    gastos.length > 0
+      ? Number(gastos[0].total_registros)
+      : 0;
 
   return {
     gastos,
+
     paginacion: {
       page,
       limit,
@@ -4112,14 +4975,24 @@ const listarGastos = async ({
   };
 };
 
+
+/* =========================================================
+   OBTENER GASTO POR ID
+   ========================================================= */
+
 const obtenerGastoPorId = async (gasto_id) => {
   const pool = await getConnection();
 
   const result = await pool.request()
-    .input('gasto_id', sql.Int, gasto_id)
+    .input(
+      'gasto_id',
+      sql.Int,
+      gasto_id
+    )
     .query(`
       SELECT
         g.gasto_id,
+
         g.tipo_gasto_id,
         tg.nombre AS tipo_gasto,
 
@@ -4132,21 +5005,44 @@ const obtenerGastoPorId = async (gasto_id) => {
         g.moneda_codigo,
         g.descripcion,
         g.comprobante,
-        g.created_at,
 
-        u.nombre_completo AS registrado_por
+        g.activo,
+
+        g.created_at,
+        g.created_by_usuario_id,
+        creador.nombre_completo AS registrado_por,
+
+        g.updated_at,
+        g.updated_by_usuario_id,
+        actualizador.nombre_completo AS actualizado_por
+
       FROM finance.Gasto g
+
       INNER JOIN finance.TipoGasto tg
         ON g.tipo_gasto_id = tg.tipo_gasto_id
+
       LEFT JOIN compras.Proveedor p
         ON g.proveedor_id = p.proveedor_id
-      INNER JOIN auth.Usuario u
-        ON g.created_by_usuario_id = u.usuario_id
-      WHERE g.gasto_id = @gasto_id;
+
+      INNER JOIN auth.Usuario creador
+        ON g.created_by_usuario_id =
+           creador.usuario_id
+
+      LEFT JOIN auth.Usuario actualizador
+        ON g.updated_by_usuario_id =
+           actualizador.usuario_id
+
+      WHERE g.gasto_id = @gasto_id
+        AND g.activo = 1;
     `);
 
   return result.recordset[0];
 };
+
+
+/* =========================================================
+   CREAR GASTO
+   ========================================================= */
 
 const crearGasto = async ({
   tipo_gasto_id,
@@ -4161,14 +5057,46 @@ const crearGasto = async ({
   const pool = await getConnection();
 
   const result = await pool.request()
-    .input('tipo_gasto_id', sql.Int, tipo_gasto_id)
-    .input('proveedor_id', sql.Int, proveedor_id || null)
-    .input('fecha_gasto', sql.Date, fecha_gasto)
-    .input('monto', sql.Decimal(18, 2), monto)
-    .input('moneda_codigo', sql.Char(3), moneda_codigo)
-    .input('descripcion', sql.NVarChar(400), descripcion || null)
-    .input('comprobante', sql.VarChar(100), comprobante || null)
-    .input('created_by_usuario_id', sql.Int, created_by_usuario_id)
+    .input(
+      'tipo_gasto_id',
+      sql.Int,
+      tipo_gasto_id
+    )
+    .input(
+      'proveedor_id',
+      sql.Int,
+      proveedor_id || null
+    )
+    .input(
+      'fecha_gasto',
+      sql.Date,
+      fecha_gasto
+    )
+    .input(
+      'monto',
+      sql.Decimal(18, 2),
+      monto
+    )
+    .input(
+      'moneda_codigo',
+      sql.Char(3),
+      moneda_codigo
+    )
+    .input(
+      'descripcion',
+      sql.NVarChar(400),
+      descripcion || null
+    )
+    .input(
+      'comprobante',
+      sql.VarChar(100),
+      comprobante || null
+    )
+    .input(
+      'created_by_usuario_id',
+      sql.Int,
+      created_by_usuario_id
+    )
     .query(`
       INSERT INTO finance.Gasto (
         tipo_gasto_id,
@@ -4189,6 +5117,7 @@ const crearGasto = async ({
         INSERTED.moneda_codigo,
         INSERTED.descripcion,
         INSERTED.comprobante,
+        INSERTED.activo,
         INSERTED.created_at
       VALUES (
         @tipo_gasto_id,
@@ -4205,13 +5134,169 @@ const crearGasto = async ({
   return result.recordset[0];
 };
 
+
+/* =========================================================
+   ACTUALIZAR GASTO
+   ========================================================= */
+
+const actualizarGasto = async ({
+  gasto_id,
+  tipo_gasto_id,
+  proveedor_id,
+  fecha_gasto,
+  monto,
+  moneda_codigo,
+  descripcion,
+  comprobante,
+  updated_by_usuario_id
+}) => {
+  const pool = await getConnection();
+
+  const result = await pool.request()
+    .input(
+      'gasto_id',
+      sql.Int,
+      gasto_id
+    )
+    .input(
+      'tipo_gasto_id',
+      sql.Int,
+      tipo_gasto_id
+    )
+    .input(
+      'proveedor_id',
+      sql.Int,
+      proveedor_id || null
+    )
+    .input(
+      'fecha_gasto',
+      sql.Date,
+      fecha_gasto
+    )
+    .input(
+      'monto',
+      sql.Decimal(18, 2),
+      monto
+    )
+    .input(
+      'moneda_codigo',
+      sql.Char(3),
+      moneda_codigo
+    )
+    .input(
+      'descripcion',
+      sql.NVarChar(400),
+      descripcion || null
+    )
+    .input(
+      'comprobante',
+      sql.VarChar(100),
+      comprobante || null
+    )
+    .input(
+      'updated_by_usuario_id',
+      sql.Int,
+      updated_by_usuario_id
+    )
+    .query(`
+      UPDATE finance.Gasto
+
+      SET
+        tipo_gasto_id = @tipo_gasto_id,
+        proveedor_id = @proveedor_id,
+        fecha_gasto = @fecha_gasto,
+        monto = @monto,
+        moneda_codigo = @moneda_codigo,
+        descripcion = @descripcion,
+        comprobante = @comprobante,
+
+        updated_at = SYSDATETIME(),
+        updated_by_usuario_id =
+          @updated_by_usuario_id
+
+      OUTPUT
+        INSERTED.gasto_id,
+        INSERTED.tipo_gasto_id,
+        INSERTED.proveedor_id,
+        INSERTED.fecha_gasto,
+        INSERTED.monto,
+        INSERTED.moneda_codigo,
+        INSERTED.descripcion,
+        INSERTED.comprobante,
+        INSERTED.activo,
+        INSERTED.updated_at,
+        INSERTED.updated_by_usuario_id
+
+      WHERE gasto_id = @gasto_id
+        AND activo = 1;
+    `);
+
+  return result.recordset[0];
+};
+
+
+/* =========================================================
+   ELIMINACIÓN LÓGICA
+   ========================================================= */
+
+const eliminarGasto = async ({
+  gasto_id,
+  updated_by_usuario_id
+}) => {
+  const pool = await getConnection();
+
+  const result = await pool.request()
+    .input(
+      'gasto_id',
+      sql.Int,
+      gasto_id
+    )
+    .input(
+      'updated_by_usuario_id',
+      sql.Int,
+      updated_by_usuario_id
+    )
+    .query(`
+      UPDATE finance.Gasto
+
+      SET
+        activo = 0,
+        updated_at = SYSDATETIME(),
+        updated_by_usuario_id =
+          @updated_by_usuario_id
+
+      OUTPUT
+        INSERTED.gasto_id,
+        INSERTED.tipo_gasto_id,
+        INSERTED.proveedor_id,
+        INSERTED.fecha_gasto,
+        INSERTED.monto,
+        INSERTED.moneda_codigo,
+        INSERTED.descripcion,
+        INSERTED.comprobante,
+        INSERTED.activo,
+        INSERTED.updated_at,
+        INSERTED.updated_by_usuario_id
+
+      WHERE gasto_id = @gasto_id
+        AND activo = 1;
+    `);
+
+  return result.recordset[0];
+};
+
+
 module.exports = {
   listarTiposGasto,
   buscarTipoGastoPorNombre,
   crearTipoGasto,
+
   listarGastos,
   obtenerGastoPorId,
-  crearGasto
+
+  crearGasto,
+  actualizarGasto,
+  eliminarGasto
 };
 ~~~
 
@@ -4225,16 +5310,29 @@ const express = require('express');
 const {
   obtenerTiposGasto,
   registrarTipoGasto,
+
   obtenerGastos,
   obtenerGasto,
-  registrarGasto
+
+  registrarGasto,
+  editarGasto,
+  darBajaGasto
 } = require('./gasto.controller');
+
 
 const {
   verificarToken
-} = require('../../middlewares/auth.middleware');
+} = require(
+  '../../middlewares/auth.middleware'
+);
+
 
 const router = express.Router();
+
+
+/* =========================================================
+   TIPOS DE GASTO
+   ========================================================= */
 
 router.get(
   '/tipos',
@@ -4242,11 +5340,17 @@ router.get(
   obtenerTiposGasto
 );
 
+
 router.post(
   '/tipos',
   verificarToken,
   registrarTipoGasto
 );
+
+
+/* =========================================================
+   GASTOS
+   ========================================================= */
 
 router.get(
   '/',
@@ -4254,17 +5358,34 @@ router.get(
   obtenerGastos
 );
 
-router.get(
-  '/:gasto_id',
-  verificarToken,
-  obtenerGasto
-);
 
 router.post(
   '/',
   verificarToken,
   registrarGasto
 );
+
+
+router.get(
+  '/:gasto_id',
+  verificarToken,
+  obtenerGasto
+);
+
+
+router.put(
+  '/:gasto_id',
+  verificarToken,
+  editarGasto
+);
+
+
+router.delete(
+  '/:gasto_id',
+  verificarToken,
+  darBajaGasto
+);
+
 
 module.exports = router;
 ~~~
@@ -4277,65 +5398,269 @@ module.exports = router;
 const {
   listarPedidos,
   obtenerPedidoPorId,
-  crearPedidoConDetalles,
-  actualizarPedidoYAgregarDetalles
+  crearPedidoConDetalles
 } = require('./pedido.model');
 
+const {
+  actualizarPedidoConDetalles
+} = require('./pedido.edicion.model');
+
+
+/* =========================================================
+   FECHA ACTUAL
+   ========================================================= */
+
 const fechaActual = () => {
-  return new Date().toISOString().slice(0, 10);
+  return new Date()
+    .toISOString()
+    .slice(0, 10);
 };
+
+
+/* =========================================================
+   NORMALIZAR DETALLE
+   ========================================================= */
 
 const normalizarDetalle = (item) => {
   return {
     ...item,
-    moneda_codigo: item.moneda_codigo
-      ? item.moneda_codigo.toUpperCase()
-      : null,
-    descripcion_item: item.descripcion_item
-      ? item.descripcion_item.trim().toUpperCase()
-      : null,
-    observacion: item.observacion
-      ? item.observacion.trim()
-      : null
+
+    moneda_codigo:
+      item.moneda_codigo
+        ? String(
+            item.moneda_codigo
+          )
+            .trim()
+            .toUpperCase()
+        : null,
+
+    descripcion_item:
+      item.descripcion_item
+        ? String(
+            item.descripcion_item
+          )
+            .trim()
+            .toUpperCase()
+        : null,
+
+    observacion:
+      item.observacion
+        ? String(
+            item.observacion
+          ).trim()
+        : null
   };
 };
 
-const validarDetalles = (detalles, etiqueta = 'producto') => {
-  for (const [index, item] of detalles.entries()) {
+
+/* =========================================================
+   VALIDAR ID
+   ========================================================= */
+
+const validarIdPositivo = (valor) => {
+  const numero = Number(valor);
+
+  return (
+    Number.isInteger(numero) &&
+    numero > 0
+  );
+};
+
+
+/* =========================================================
+   VALIDACIÓN DE DETALLES
+   ========================================================= */
+
+const validarDetalles = (
+  detalles,
+  etiqueta = 'El producto',
+  {
+    exigirDetalleId = false
+  } = {}
+) => {
+  for (
+    const [index, item]
+    of detalles.entries()
+  ) {
+    const nombreItem =
+      `${etiqueta} ${index + 1}`;
+
+
+    /* -------------------------------------------------------
+       ID DEL DETALLE EXISTENTE
+       ------------------------------------------------------- */
+
     if (
-      !item.tipo_producto_id ||
-      !item.medida_id ||
-      !item.color_id ||
-      !item.material_id
+      exigirDetalleId &&
+      !validarIdPositivo(
+        item.pedido_detalle_id
+      )
     ) {
-      return `${etiqueta} ${index + 1} debe tener tipo, medida, color y material`;
+      return `${nombreItem} no tiene un identificador de detalle válido`;
     }
 
-    if (!item.cantidad_pedida || Number(item.cantidad_pedida) <= 0) {
-      return `${etiqueta} ${index + 1} debe tener una cantidad mayor a 0`;
+
+    /* -------------------------------------------------------
+       TIPO / MEDIDA / COLOR / MATERIAL
+       ------------------------------------------------------- */
+
+    if (
+      !validarIdPositivo(
+        item.tipo_producto_id
+      ) ||
+      !validarIdPositivo(
+        item.medida_id
+      ) ||
+      !validarIdPositivo(
+        item.color_id
+      ) ||
+      !validarIdPositivo(
+        item.material_id
+      )
+    ) {
+      return `${nombreItem} debe tener tipo, medida, color y material`;
     }
 
-    if (!item.unidad_medida_id) {
-      return `${etiqueta} ${index + 1} debe tener una unidad`;
+
+    /* -------------------------------------------------------
+       CANTIDAD
+       ------------------------------------------------------- */
+
+    const cantidad =
+      Number(
+        item.cantidad_pedida
+      );
+
+
+    if (
+      !Number.isFinite(
+        cantidad
+      ) ||
+      cantidad <= 0
+    ) {
+      return `${nombreItem} debe tener una cantidad mayor a 0`;
     }
 
-    if (!item.precio_unitario || Number(item.precio_unitario) < 0) {
-      return `${etiqueta} ${index + 1} debe tener precio ofrecido válido`;
+
+    /* -------------------------------------------------------
+       UNIDAD
+       ------------------------------------------------------- */
+
+    if (
+      !validarIdPositivo(
+        item.unidad_medida_id
+      )
+    ) {
+      return `${nombreItem} debe tener una unidad`;
     }
 
-    if (!item.moneda_codigo) {
-      return `${etiqueta} ${index + 1} debe tener moneda`;
+
+    /* -------------------------------------------------------
+       PRESENTACIÓN
+       ------------------------------------------------------- */
+
+    if (
+      item.cantidad_presentacion !==
+        null &&
+      item.cantidad_presentacion !==
+        undefined &&
+      item.cantidad_presentacion !==
+        ''
+    ) {
+      const cantidadPresentacion =
+        Number(
+          item.cantidad_presentacion
+        );
+
+
+      if (
+        !Number.isFinite(
+          cantidadPresentacion
+        ) ||
+        cantidadPresentacion <= 0
+      ) {
+        return `${nombreItem} debe tener una presentación mayor a 0`;
+      }
+
+
+      if (
+        !validarIdPositivo(
+          item.unidad_presentacion_id
+        )
+      ) {
+        return `${nombreItem} debe tener una unidad de presentación`;
+      }
     }
 
-    if (!['PEN', 'USD'].includes(item.moneda_codigo.toUpperCase())) {
-      return `${etiqueta} ${index + 1} debe tener moneda PEN o USD`;
+
+    /* -------------------------------------------------------
+       PRECIO
+       ------------------------------------------------------- */
+
+    const precio =
+      Number(
+        item.precio_unitario
+      );
+
+
+    /*
+     * Utilizamos > 0.
+     *
+     * El historial de precios también
+     * requiere precios mayores a cero.
+     */
+    if (
+      !Number.isFinite(
+        precio
+      ) ||
+      precio <= 0
+    ) {
+      return `${nombreItem} debe tener un precio mayor a 0`;
+    }
+
+
+    /* -------------------------------------------------------
+       MONEDA
+       ------------------------------------------------------- */
+
+    if (
+      !item.moneda_codigo
+    ) {
+      return `${nombreItem} debe tener moneda`;
+    }
+
+
+    const moneda =
+      String(
+        item.moneda_codigo
+      )
+        .trim()
+        .toUpperCase();
+
+
+    if (
+      ![
+        'PEN',
+        'USD'
+      ].includes(moneda)
+    ) {
+      return `${nombreItem} debe tener moneda PEN o USD`;
     }
   }
+
 
   return null;
 };
 
-const obtenerPedidos = async (req, res) => {
+
+/* =========================================================
+   LISTAR PEDIDOS
+   ========================================================= */
+
+const obtenerPedidos = async (
+  req,
+  res
+) => {
   try {
     const {
       cliente_id,
@@ -4345,56 +5670,151 @@ const obtenerPedidos = async (req, res) => {
       limit = 10
     } = req.query;
 
-    const resultado = await listarPedidos({
-      cliente_id: cliente_id ? Number(cliente_id) : null,
-      estado_pedido: estado_pedido || null,
-      q: q || null,
-      page: Number(page),
-      limit: Number(limit)
-    });
+
+    const pagina =
+      Math.max(
+        1,
+        Number(page) || 1
+      );
+
+
+    const limite =
+      Math.min(
+        100,
+        Math.max(
+          1,
+          Number(limit) || 10
+        )
+      );
+
+
+    const resultado =
+      await listarPedidos({
+        cliente_id:
+          cliente_id
+            ? Number(
+                cliente_id
+              )
+            : null,
+
+        estado_pedido:
+          estado_pedido ||
+          null,
+
+        q:
+          q
+            ? String(q).trim()
+            : null,
+
+        page:
+          pagina,
+
+        limit:
+          limite
+      });
+
 
     res.json({
-      mensaje: 'Pedidos obtenidos correctamente',
-      pedidos: resultado.pedidos,
-      paginacion: resultado.paginacion
+      mensaje:
+        'Pedidos obtenidos correctamente',
+
+      pedidos:
+        resultado.pedidos,
+
+      paginacion:
+        resultado.paginacion
     });
 
   } catch (error) {
-    console.error('Error listar pedidos:', error.message);
+    console.error(
+      'Error listar pedidos:',
+      error.message
+    );
+
 
     res.status(500).json({
-      mensaje: 'Error interno al listar pedidos'
+      mensaje:
+        'Error interno al listar pedidos'
     });
   }
 };
 
-const obtenerPedido = async (req, res) => {
+
+/* =========================================================
+   OBTENER PEDIDO
+   ========================================================= */
+
+const obtenerPedido = async (
+  req,
+  res
+) => {
   try {
-    const { pedido_id } = req.params;
+    const pedido_id =
+      Number(
+        req.params.pedido_id
+      );
 
-    const pedido = await obtenerPedidoPorId(pedido_id);
 
-    if (!pedido) {
-      return res.status(404).json({
-        mensaje: 'Pedido no encontrado'
-      });
+    if (
+      !validarIdPositivo(
+        pedido_id
+      )
+    ) {
+      return res
+        .status(400)
+        .json({
+          mensaje:
+            'El ID del pedido no es válido'
+        });
     }
 
+
+    const pedido =
+      await obtenerPedidoPorId(
+        pedido_id
+      );
+
+
+    if (!pedido) {
+      return res
+        .status(404)
+        .json({
+          mensaje:
+            'Pedido no encontrado'
+        });
+    }
+
+
     res.json({
-      mensaje: 'Pedido obtenido correctamente',
+      mensaje:
+        'Pedido obtenido correctamente',
+
       pedido
     });
 
   } catch (error) {
-    console.error('Error obtener pedido:', error.message);
+    console.error(
+      'Error obtener pedido:',
+      error.message
+    );
+
 
     res.status(500).json({
-      mensaje: 'Error interno al obtener pedido'
+      mensaje:
+        'Error interno al obtener pedido'
     });
   }
 };
 
-const registrarPedido = async (req, res) => {
+
+/* =========================================================
+   REGISTRAR PEDIDO
+   ========================================================= */
+
+const registrarPedido = async (
+  req,
+  res
+) => {
   try {
     let {
       cliente_id,
@@ -4405,157 +5825,2127 @@ const registrarPedido = async (req, res) => {
       detalles
     } = req.body;
 
-    if (!cliente_id) {
-      return res.status(400).json({
-        mensaje: 'El cliente es obligatorio'
-      });
+
+    /* -------------------------------------------------------
+       CLIENTE
+       ------------------------------------------------------- */
+
+    if (
+      !validarIdPositivo(
+        cliente_id
+      )
+    ) {
+      return res
+        .status(400)
+        .json({
+          mensaje:
+            'El cliente es obligatorio'
+        });
     }
 
-    if (!detalles || !Array.isArray(detalles) || detalles.length === 0) {
-      return res.status(400).json({
-        mensaje: 'El pedido debe tener al menos un producto'
-      });
+
+    /* -------------------------------------------------------
+       PRODUCTOS
+       ------------------------------------------------------- */
+
+    if (
+      !Array.isArray(
+        detalles
+      ) ||
+      detalles.length === 0
+    ) {
+      return res
+        .status(400)
+        .json({
+          mensaje:
+            'El pedido debe tener al menos un producto'
+        });
     }
 
-    fecha_pedido = fecha_pedido || fechaActual();
 
-    codigo_pedido = codigo_pedido
-      ? codigo_pedido.trim().toUpperCase()
-      : null;
+    /* -------------------------------------------------------
+       NORMALIZACIÓN CABECERA
+       ------------------------------------------------------- */
 
-    descripcion_pedido = descripcion_pedido
-      ? descripcion_pedido.trim()
-      : null;
+    fecha_pedido =
+      fecha_pedido ||
+      fechaActual();
 
-    detalles = detalles.map(normalizarDetalle);
 
-    const errorValidacion = validarDetalles(detalles, 'El producto');
+    codigo_pedido =
+      codigo_pedido
+        ? String(
+            codigo_pedido
+          )
+            .trim()
+            .toUpperCase()
+        : null;
 
-    if (errorValidacion) {
-      return res.status(400).json({
-        mensaje: errorValidacion
-      });
+
+    descripcion_pedido =
+      descripcion_pedido
+        ? String(
+            descripcion_pedido
+          ).trim()
+        : null;
+
+
+    fecha_entrega_estimada =
+      fecha_entrega_estimada ||
+      null;
+
+
+    /* -------------------------------------------------------
+       NORMALIZACIÓN PRODUCTOS
+       ------------------------------------------------------- */
+
+    detalles =
+      detalles.map(
+        normalizarDetalle
+      );
+
+
+    const errorValidacion =
+      validarDetalles(
+        detalles,
+        'El producto'
+      );
+
+
+    if (
+      errorValidacion
+    ) {
+      return res
+        .status(400)
+        .json({
+          mensaje:
+            errorValidacion
+        });
     }
 
-    const resultado = await crearPedidoConDetalles({
-      cliente_id,
-      codigo_pedido,
-      descripcion_pedido,
-      fecha_pedido,
-      fecha_entrega_estimada,
-      detalles,
-      created_by_usuario_id: req.usuario.usuario_id
-    });
 
-    res.status(201).json({
-      mensaje: 'Pedido registrado correctamente',
-      pedido: resultado.pedido,
-      detalles: resultado.detalles
-    });
+    /* -------------------------------------------------------
+       CREAR
+       ------------------------------------------------------- */
+
+    const resultado =
+      await crearPedidoConDetalles({
+        cliente_id:
+          Number(
+            cliente_id
+          ),
+
+        codigo_pedido,
+
+        descripcion_pedido,
+
+        fecha_pedido,
+
+        fecha_entrega_estimada,
+
+        detalles,
+
+        created_by_usuario_id:
+          req.usuario.usuario_id
+      });
+
+
+    res
+      .status(201)
+      .json({
+        mensaje:
+          'Pedido registrado correctamente',
+
+        pedido:
+          resultado.pedido,
+
+        detalles:
+          resultado.detalles
+      });
 
   } catch (error) {
-    console.error('Error registrar pedido:', error.message);
+    console.error(
+      'Error registrar pedido:',
+      error.message
+    );
 
-    res.status(500).json({
-      mensaje: 'Error interno al registrar pedido'
-    });
+
+    /*
+     * Código de pedido duplicado.
+     */
+    if (
+      error.number === 2601 ||
+      error.number === 2627
+    ) {
+      return res
+        .status(409)
+        .json({
+          mensaje:
+            'Ya existe un pedido con ese código'
+        });
+    }
+
+
+    /*
+     * FK inválida.
+     */
+    if (
+      error.number === 547
+    ) {
+      return res
+        .status(400)
+        .json({
+          mensaje:
+            'Uno de los datos seleccionados para el pedido no es válido'
+        });
+    }
+
+
+    res
+      .status(500)
+      .json({
+        mensaje:
+          'Error interno al registrar pedido'
+      });
   }
 };
 
-const editarPedido = async (req, res) => {
+
+/* =========================================================
+   EDITAR PEDIDO
+   ========================================================= */
+
+const editarPedido = async (
+  req,
+  res
+) => {
   try {
-    const { pedido_id } = req.params;
+    /* =====================================================
+       1. ID DEL PEDIDO
+       ===================================================== */
+
+    const pedido_id =
+      Number(
+        req.params.pedido_id
+      );
+
+
+    if (
+      !validarIdPositivo(
+        pedido_id
+      )
+    ) {
+      return res
+        .status(400)
+        .json({
+          mensaje:
+            'El ID del pedido no es válido'
+        });
+    }
+
+
+    /* =====================================================
+       2. BODY
+       ===================================================== */
 
     let {
       cliente_id,
+
       codigo_pedido,
+
       descripcion_pedido,
+
       fecha_pedido,
+
       fecha_entrega_estimada,
+
       motivo_cambio,
+
+      detalles_editados = [],
+
       nuevos_detalles = []
     } = req.body;
 
-    if (!cliente_id) {
-      return res.status(400).json({
-        mensaje: 'El cliente es obligatorio'
-      });
-    }
 
-    if (!fecha_pedido) {
-      return res.status(400).json({
-        mensaje: 'La fecha del pedido es obligatoria'
-      });
-    }
+    /* =====================================================
+       3. CABECERA
+       ===================================================== */
 
-    if (!motivo_cambio || motivo_cambio.trim() === '') {
-      return res.status(400).json({
-        mensaje: 'Debe ingresar el motivo del cambio'
-      });
-    }
-
-    codigo_pedido = codigo_pedido
-      ? codigo_pedido.trim().toUpperCase()
-      : null;
-
-    descripcion_pedido = descripcion_pedido
-      ? descripcion_pedido.trim()
-      : null;
-
-    motivo_cambio = motivo_cambio.trim();
-
-    nuevos_detalles = Array.isArray(nuevos_detalles)
-      ? nuevos_detalles.map(normalizarDetalle)
-      : [];
-
-    if (nuevos_detalles.length > 0) {
-      const errorValidacion = validarDetalles(nuevos_detalles, 'El nuevo producto');
-
-      if (errorValidacion) {
-        return res.status(400).json({
-          mensaje: errorValidacion
+    if (
+      !validarIdPositivo(
+        cliente_id
+      )
+    ) {
+      return res
+        .status(400)
+        .json({
+          mensaje:
+            'El cliente es obligatorio'
         });
+    }
+
+
+    if (
+      !fecha_pedido
+    ) {
+      return res
+        .status(400)
+        .json({
+          mensaje:
+            'La fecha del pedido es obligatoria'
+        });
+    }
+
+
+    if (
+      !motivo_cambio ||
+      String(
+        motivo_cambio
+      ).trim() === ''
+    ) {
+      return res
+        .status(400)
+        .json({
+          mensaje:
+            'Debe ingresar el motivo del cambio'
+        });
+    }
+
+
+    /* =====================================================
+       4. VALIDAR ARRAYS
+       ===================================================== */
+
+    if (
+      !Array.isArray(
+        detalles_editados
+      )
+    ) {
+      return res
+        .status(400)
+        .json({
+          mensaje:
+            'Los productos editados no tienen un formato válido'
+        });
+    }
+
+
+    if (
+      !Array.isArray(
+        nuevos_detalles
+      )
+    ) {
+      return res
+        .status(400)
+        .json({
+          mensaje:
+            'Los nuevos productos no tienen un formato válido'
+        });
+    }
+
+
+    /* =====================================================
+       5. NORMALIZAR CABECERA
+       ===================================================== */
+
+    codigo_pedido =
+      codigo_pedido
+        ? String(
+            codigo_pedido
+          )
+            .trim()
+            .toUpperCase()
+        : null;
+
+
+    descripcion_pedido =
+      descripcion_pedido
+        ? String(
+            descripcion_pedido
+          ).trim()
+        : null;
+
+
+    fecha_entrega_estimada =
+      fecha_entrega_estimada ||
+      null;
+
+
+    motivo_cambio =
+      String(
+        motivo_cambio
+      ).trim();
+
+
+    /* =====================================================
+       6. NORMALIZAR DETALLES EDITADOS
+       ===================================================== */
+
+    detalles_editados =
+      detalles_editados.map(
+        normalizarDetalle
+      );
+
+
+    nuevos_detalles =
+      nuevos_detalles.map(
+        normalizarDetalle
+      );
+
+
+    /* =====================================================
+       7. EVITAR IDs DUPLICADOS
+       ===================================================== */
+
+    const idsDetalles =
+      detalles_editados.map(
+        (item) =>
+          Number(
+            item.pedido_detalle_id
+          )
+      );
+
+
+    const idsUnicos =
+      new Set(
+        idsDetalles
+      );
+
+
+    if (
+      idsUnicos.size !==
+      idsDetalles.length
+    ) {
+      return res
+        .status(400)
+        .json({
+          mensaje:
+            'No se puede editar dos veces el mismo producto del pedido'
+        });
+    }
+
+
+    /* =====================================================
+       8. VALIDAR PRODUCTOS EXISTENTES
+       ===================================================== */
+
+    if (
+      detalles_editados.length >
+      0
+    ) {
+      const errorValidacion =
+        validarDetalles(
+          detalles_editados,
+          'El producto editado',
+          {
+            exigirDetalleId:
+              true
+          }
+        );
+
+
+      if (
+        errorValidacion
+      ) {
+        return res
+          .status(400)
+          .json({
+            mensaje:
+              errorValidacion
+          });
       }
     }
 
-    const resultado = await actualizarPedidoYAgregarDetalles({
-      pedido_id,
-      cliente_id,
-      codigo_pedido,
-      descripcion_pedido,
-      fecha_pedido,
-      fecha_entrega_estimada,
-      motivo_cambio,
-      nuevos_detalles,
-      updated_by_usuario_id: req.usuario.usuario_id
-    });
 
-    if (!resultado) {
-      return res.status(404).json({
-        mensaje: 'Pedido no encontrado o cancelado'
-      });
+    /* =====================================================
+       9. VALIDAR PRODUCTOS NUEVOS
+       ===================================================== */
+
+    if (
+      nuevos_detalles.length >
+      0
+    ) {
+      const errorValidacion =
+        validarDetalles(
+          nuevos_detalles,
+          'El nuevo producto'
+        );
+
+
+      if (
+        errorValidacion
+      ) {
+        return res
+          .status(400)
+          .json({
+            mensaje:
+              errorValidacion
+          });
+      }
     }
 
+
+    /* =====================================================
+       10. EJECUTAR TRANSACCIÓN
+       ===================================================== */
+
+    const resultado =
+      await actualizarPedidoConDetalles({
+        pedido_id,
+
+        cliente_id:
+          Number(
+            cliente_id
+          ),
+
+        codigo_pedido,
+
+        descripcion_pedido,
+
+        fecha_pedido,
+
+        fecha_entrega_estimada,
+
+        motivo_cambio,
+
+        detalles_editados,
+
+        nuevos_detalles,
+
+        updated_by_usuario_id:
+          req.usuario.usuario_id
+      });
+
+
+    /* =====================================================
+       11. PEDIDO NO ENCONTRADO
+       ===================================================== */
+
+    if (
+      !resultado
+    ) {
+      return res
+        .status(404)
+        .json({
+          mensaje:
+            'Pedido no encontrado o cancelado'
+        });
+    }
+
+
+    /* =====================================================
+       12. RESPUESTA
+       ===================================================== */
+
     res.json({
-      mensaje: 'Pedido actualizado correctamente',
-      pedido: resultado.pedido,
-      detalles_agregados: resultado.detalles_agregados
+      mensaje:
+        'Pedido actualizado correctamente',
+
+      pedido:
+        resultado.pedido,
+
+      detalles_actualizados:
+        resultado.detalles_actualizados,
+
+      detalles_agregados:
+        resultado.detalles_agregados
     });
 
   } catch (error) {
-    console.error('Error editar pedido:', error.message);
+    console.error(
+      'Error editar pedido:',
+      error.message
+    );
 
-    res.status(500).json({
-      mensaje: 'Error interno al editar pedido'
-    });
+
+    /* =====================================================
+       ERRORES DE NEGOCIO
+       ===================================================== */
+
+    /*
+     * Estos errores vienen de:
+     *
+     * pedido.edicion.model.js
+     *
+     * Ejemplos:
+     *
+     * - cantidad menor a lo entregado
+     * - producto con entrega y cambio estructural
+     * - total inferior a depósitos
+     * - pedido completamente entregado
+     */
+    if (
+      error.statusCode
+    ) {
+      return res
+        .status(
+          error.statusCode
+        )
+        .json({
+          mensaje:
+            error.message
+        });
+    }
+
+
+    /* =====================================================
+       CÓDIGO DE PEDIDO DUPLICADO
+       ===================================================== */
+
+    if (
+      error.number === 2601 ||
+      error.number === 2627
+    ) {
+      return res
+        .status(409)
+        .json({
+          mensaje:
+            'Ya existe otro pedido con ese código'
+        });
+    }
+
+
+    /* =====================================================
+       FOREIGN KEY / CHECK CONSTRAINT
+       ===================================================== */
+
+    if (
+      error.number === 547
+    ) {
+      return res
+        .status(400)
+        .json({
+          mensaje:
+            'Uno de los datos seleccionados para el pedido no es válido'
+        });
+    }
+
+
+    /* =====================================================
+       ERROR GENERAL
+       ===================================================== */
+
+    res
+      .status(500)
+      .json({
+        mensaje:
+          'Error interno al editar pedido'
+      });
   }
 };
+
+
+/* =========================================================
+   EXPORTS
+   ========================================================= */
 
 module.exports = {
   obtenerPedidos,
   obtenerPedido,
   registrarPedido,
   editarPedido
+};
+~~~
+
+---
+
+## src\modules\pedidos\pedido.edicion.model.js
+
+~~~javascript
+const {
+  getConnection,
+  sql
+} = require('../../config/db');
+
+const {
+  obtenerPedidoPorId,
+  registrarHistorialPrecioCliente
+} = require('./pedido.model');
+
+
+/* =========================================================
+   TIPOS DE CAMBIO PERMITIDOS POR LA BASE DE DATOS
+
+   CK_PedidoCambio_Tipo permite únicamente:
+
+   - CREACION
+   - EDICION
+   - AUMENTO_PRODUCTOS
+   - CANCELACION
+   ========================================================= */
+
+const TIPO_CAMBIO = Object.freeze({
+  EDICION: 'EDICION',
+  AUMENTO_PRODUCTOS: 'AUMENTO_PRODUCTOS'
+});
+
+
+/* =========================================================
+   ERROR DE NEGOCIO
+   ========================================================= */
+
+const crearErrorNegocio = (
+  mensaje,
+  statusCode = 400
+) => {
+  const error =
+    new Error(mensaje);
+
+  error.statusCode =
+    statusCode;
+
+  return error;
+};
+
+
+/* =========================================================
+   ACTUALIZAR PEDIDO CON DETALLES
+   ========================================================= */
+
+const actualizarPedidoConDetalles =
+  async ({
+    pedido_id,
+
+    cliente_id,
+
+    codigo_pedido,
+
+    descripcion_pedido,
+
+    fecha_pedido,
+
+    fecha_entrega_estimada,
+
+    motivo_cambio,
+
+    detalles_editados = [],
+
+    nuevos_detalles = [],
+
+    updated_by_usuario_id
+  }) => {
+
+    const pool =
+      await getConnection();
+
+
+    const transaction =
+      new sql.Transaction(
+        pool
+      );
+
+
+    try {
+
+      /* =====================================================
+         1. INICIAR TRANSACCIÓN
+         ===================================================== */
+
+      await transaction.begin(
+        sql.ISOLATION_LEVEL.SERIALIZABLE
+      );
+
+
+      /* =====================================================
+         2. OBTENER Y BLOQUEAR PEDIDO
+         ===================================================== */
+
+      const pedidoActualResult =
+        await new sql.Request(
+          transaction
+        )
+          .input(
+            'pedido_id',
+            sql.Int,
+            pedido_id
+          )
+          .query(`
+            SELECT
+              pedido_id,
+              cliente_id,
+              estado_pedido
+
+            FROM ventas.Pedido
+              WITH (
+                UPDLOCK,
+                HOLDLOCK
+              )
+
+            WHERE
+              pedido_id =
+                @pedido_id;
+          `);
+
+
+      const pedidoActual =
+        pedidoActualResult
+          .recordset[0];
+
+
+      if (!pedidoActual) {
+        throw crearErrorNegocio(
+          'Pedido no encontrado',
+          404
+        );
+      }
+
+
+      if (
+        pedidoActual.estado_pedido ===
+        'CANCELADO'
+      ) {
+        throw crearErrorNegocio(
+          'No se puede editar un pedido cancelado',
+          409
+        );
+      }
+
+
+      if (
+        pedidoActual.estado_pedido ===
+        'ENTREGADO'
+      ) {
+        throw crearErrorNegocio(
+          'No se puede editar un pedido completamente entregado',
+          409
+        );
+      }
+
+
+      /* =====================================================
+         3. OBTENER DETALLES Y CANTIDADES ENTREGADAS
+         ===================================================== */
+
+      const detallesActualesResult =
+        await new sql.Request(
+          transaction
+        )
+          .input(
+            'pedido_id',
+            sql.Int,
+            pedido_id
+          )
+          .query(`
+            SELECT
+              pd.pedido_detalle_id,
+
+              pd.tipo_producto_id,
+              pd.medida_id,
+              pd.color_id,
+              pd.material_id,
+
+              pd.cantidad_pedida,
+
+              pd.unidad_medida_id,
+
+              pd.cantidad_presentacion,
+              pd.unidad_presentacion_id,
+
+              pd.precio_unitario,
+              pd.moneda_codigo,
+
+              pd.descripcion_item,
+              pd.observacion,
+
+              ISNULL(
+                SUM(
+                  ed.cantidad_entregada
+                ),
+                0
+              ) AS cantidad_entregada
+
+            FROM ventas.PedidoDetalle pd
+              WITH (
+                UPDLOCK,
+                HOLDLOCK
+              )
+
+            LEFT JOIN ventas.EntregaDetalle ed
+              ON
+                pd.pedido_detalle_id =
+                ed.pedido_detalle_id
+
+            WHERE
+              pd.pedido_id =
+                @pedido_id
+
+              AND pd.activo = 1
+
+            GROUP BY
+              pd.pedido_detalle_id,
+
+              pd.tipo_producto_id,
+              pd.medida_id,
+              pd.color_id,
+              pd.material_id,
+
+              pd.cantidad_pedida,
+
+              pd.unidad_medida_id,
+
+              pd.cantidad_presentacion,
+              pd.unidad_presentacion_id,
+
+              pd.precio_unitario,
+              pd.moneda_codigo,
+
+              pd.descripcion_item,
+              pd.observacion;
+          `);
+
+
+      const detallesActuales =
+        detallesActualesResult
+          .recordset;
+
+
+      const detallesMap =
+        new Map(
+          detallesActuales.map(
+            (detalle) => [
+              Number(
+                detalle
+                  .pedido_detalle_id
+              ),
+
+              detalle
+            ]
+          )
+        );
+
+
+      /* =====================================================
+         4. VALIDAR TODOS LOS DETALLES ANTES DE MODIFICAR
+         ===================================================== */
+
+      for (
+        const item
+        of detalles_editados
+      ) {
+
+        const detalleActual =
+          detallesMap.get(
+            Number(
+              item
+                .pedido_detalle_id
+            )
+          );
+
+
+        if (!detalleActual) {
+          throw crearErrorNegocio(
+            `El producto ${item.pedido_detalle_id} no pertenece al pedido o ya no está activo`,
+            400
+          );
+        }
+
+
+        const cantidadEntregada =
+          Number(
+            detalleActual
+              .cantidad_entregada ||
+            0
+          );
+
+
+        const nuevaCantidad =
+          Number(
+            item.cantidad_pedida
+          );
+
+
+        /* ---------------------------------------------------
+           CANTIDAD VÁLIDA
+           --------------------------------------------------- */
+
+        if (
+          !Number.isFinite(
+            nuevaCantidad
+          ) ||
+          nuevaCantidad <= 0
+        ) {
+          throw crearErrorNegocio(
+            `La cantidad del producto ${item.pedido_detalle_id} debe ser mayor a 0`,
+            400
+          );
+        }
+
+
+        /* ---------------------------------------------------
+           NO MENOR A LO YA ENTREGADO
+           --------------------------------------------------- */
+
+        if (
+          nuevaCantidad <
+          cantidadEntregada
+        ) {
+          throw crearErrorNegocio(
+            `La cantidad del producto ${item.pedido_detalle_id} no puede ser menor a lo ya entregado (${cantidadEntregada})`,
+            409
+          );
+        }
+
+
+        /* ---------------------------------------------------
+           PRODUCTO CON ENTREGAS
+
+           Preservamos:
+           - tipo
+           - medida
+           - color
+           - material
+           - unidad
+           - moneda
+
+           Permitimos:
+           - cantidad
+           - presentación
+           - precio
+           - descripción
+           - observación
+           --------------------------------------------------- */
+
+        if (
+          cantidadEntregada > 0
+        ) {
+
+          const cambioEstructural =
+
+            Number(
+              item.tipo_producto_id
+            ) !==
+            Number(
+              detalleActual
+                .tipo_producto_id
+            )
+
+            ||
+
+            Number(
+              item.medida_id
+            ) !==
+            Number(
+              detalleActual
+                .medida_id
+            )
+
+            ||
+
+            Number(
+              item.color_id
+            ) !==
+            Number(
+              detalleActual
+                .color_id
+            )
+
+            ||
+
+            Number(
+              item.material_id
+            ) !==
+            Number(
+              detalleActual
+                .material_id
+            )
+
+            ||
+
+            Number(
+              item.unidad_medida_id
+            ) !==
+            Number(
+              detalleActual
+                .unidad_medida_id
+            )
+
+            ||
+
+            String(
+              item.moneda_codigo
+            ).toUpperCase() !==
+            String(
+              detalleActual
+                .moneda_codigo
+            ).toUpperCase();
+
+
+          if (
+            cambioEstructural
+          ) {
+            throw crearErrorNegocio(
+              `El producto ${item.pedido_detalle_id} ya tiene entregas. No se puede cambiar tipo, medida, color, material, unidad ni moneda`,
+              409
+            );
+          }
+        }
+      }
+
+
+      /* =====================================================
+         5. DETERMINAR TIPO DE CAMBIO
+         ===================================================== */
+
+      /*
+       * MUY IMPORTANTE:
+       *
+       * No volver a utilizar:
+       *
+       * EDICION_PRODUCTOS
+       * EDICION_Y_AUMENTO_PRODUCTOS
+       *
+       * porque NO existen en el CHECK de SQL Server.
+       */
+
+      let tipoCambio =
+        TIPO_CAMBIO.EDICION;
+
+
+      /*
+       * Este caso aplica cuando el endpoint
+       * únicamente añade productos.
+       *
+       * En la edición normal que estamos
+       * haciendo ahora habrá detalles_editados,
+       * así que será EDICION.
+       */
+      if (
+        detalles_editados.length ===
+          0 &&
+        nuevos_detalles.length >
+          0
+      ) {
+        tipoCambio =
+          TIPO_CAMBIO
+            .AUMENTO_PRODUCTOS;
+      }
+
+
+      /* =====================================================
+         6. REGISTRAR HISTORIAL DEL CAMBIO
+         ===================================================== */
+
+      const cambioResult =
+        await new sql.Request(
+          transaction
+        )
+          .input(
+            'pedido_id',
+            sql.Int,
+            pedido_id
+          )
+
+          .input(
+            'tipo_cambio',
+            sql.VarChar(40),
+            tipoCambio
+          )
+
+          .input(
+            'descripcion_motivo',
+            sql.NVarChar(500),
+            motivo_cambio
+          )
+
+          .input(
+            'created_by_usuario_id',
+            sql.Int,
+            updated_by_usuario_id
+          )
+
+          .query(`
+            INSERT INTO ventas.PedidoCambio (
+              pedido_id,
+              tipo_cambio,
+              descripcion_motivo,
+              created_by_usuario_id
+            )
+
+            OUTPUT
+              INSERTED.pedido_cambio_id
+
+            VALUES (
+              @pedido_id,
+              @tipo_cambio,
+              @descripcion_motivo,
+              @created_by_usuario_id
+            );
+          `);
+
+
+      const pedido_cambio_id =
+        cambioResult
+          .recordset[0]
+          .pedido_cambio_id;
+
+
+      /* =====================================================
+         7. ACTUALIZAR PRODUCTOS EXISTENTES
+         ===================================================== */
+
+      const detallesActualizados =
+        [];
+
+
+      for (
+        const item
+        of detalles_editados
+      ) {
+
+        const detalleActual =
+          detallesMap.get(
+            Number(
+              item
+                .pedido_detalle_id
+            )
+          );
+
+
+        /* ---------------------------------------------------
+           UNIDAD DE PRESENTACIÓN
+           --------------------------------------------------- */
+
+        const unidadPresentacionId =
+          item.cantidad_presentacion
+            ? (
+                item
+                  .unidad_presentacion_id ||
+                item
+                  .unidad_medida_id
+              )
+            : null;
+
+
+        /* ---------------------------------------------------
+           UPDATE
+           --------------------------------------------------- */
+
+        const detalleResult =
+          await new sql.Request(
+            transaction
+          )
+
+            .input(
+              'pedido_detalle_id',
+              sql.Int,
+              item
+                .pedido_detalle_id
+            )
+
+            .input(
+              'tipo_producto_id',
+              sql.Int,
+              item
+                .tipo_producto_id
+            )
+
+            .input(
+              'medida_id',
+              sql.Int,
+              item.medida_id
+            )
+
+            .input(
+              'color_id',
+              sql.Int,
+              item.color_id
+            )
+
+            .input(
+              'material_id',
+              sql.Int,
+              item.material_id
+            )
+
+            .input(
+              'cantidad_pedida',
+              sql.Decimal(
+                18,
+                3
+              ),
+              item.cantidad_pedida
+            )
+
+            .input(
+              'unidad_medida_id',
+              sql.Int,
+              item.unidad_medida_id
+            )
+
+            .input(
+              'cantidad_presentacion',
+              sql.Decimal(
+                18,
+                3
+              ),
+              item.cantidad_presentacion ||
+              null
+            )
+
+            .input(
+              'unidad_presentacion_id',
+              sql.Int,
+              unidadPresentacionId
+            )
+
+            .input(
+              'precio_unitario',
+              sql.Decimal(
+                18,
+                4
+              ),
+              item.precio_unitario
+            )
+
+            .input(
+              'moneda_codigo',
+              sql.Char(3),
+              item.moneda_codigo
+            )
+
+            .input(
+              'descripcion_item',
+              sql.NVarChar(300),
+              item.descripcion_item ||
+              null
+            )
+
+            .input(
+              'observacion',
+              sql.NVarChar(300),
+              item.observacion ||
+              null
+            )
+
+            .query(`
+              UPDATE ventas.PedidoDetalle
+
+              SET
+                tipo_producto_id =
+                  @tipo_producto_id,
+
+                medida_id =
+                  @medida_id,
+
+                color_id =
+                  @color_id,
+
+                material_id =
+                  @material_id,
+
+                cantidad_pedida =
+                  @cantidad_pedida,
+
+                unidad_medida_id =
+                  @unidad_medida_id,
+
+                cantidad_presentacion =
+                  @cantidad_presentacion,
+
+                unidad_presentacion_id =
+                  @unidad_presentacion_id,
+
+                precio_unitario =
+                  @precio_unitario,
+
+                moneda_codigo =
+                  @moneda_codigo,
+
+                descripcion_item =
+                  @descripcion_item,
+
+                observacion =
+                  @observacion
+
+              OUTPUT
+                INSERTED.pedido_detalle_id,
+                INSERTED.pedido_id,
+
+                INSERTED.tipo_producto_id,
+                INSERTED.medida_id,
+                INSERTED.color_id,
+                INSERTED.material_id,
+
+                INSERTED.cantidad_pedida,
+                INSERTED.unidad_medida_id,
+
+                INSERTED.cantidad_presentacion,
+                INSERTED.unidad_presentacion_id,
+
+                INSERTED.precio_unitario,
+                INSERTED.moneda_codigo,
+
+                INSERTED.descripcion_item,
+                INSERTED.observacion
+
+              WHERE
+                pedido_detalle_id =
+                  @pedido_detalle_id
+
+                AND activo = 1;
+            `);
+
+
+        const detalleActualizado =
+          detalleResult
+            .recordset[0];
+
+
+        if (
+          !detalleActualizado
+        ) {
+          throw crearErrorNegocio(
+            `No se pudo actualizar el producto ${item.pedido_detalle_id}`,
+            409
+          );
+        }
+
+
+        /* ===================================================
+           HISTORIAL DE PRECIOS
+           =================================================== */
+
+        const cambioCliente =
+          Number(
+            pedidoActual
+              .cliente_id
+          ) !==
+          Number(
+            cliente_id
+          );
+
+
+        const cambioPrecio =
+          Number(
+            detalleActual
+              .precio_unitario
+          ) !==
+          Number(
+            item.precio_unitario
+          );
+
+
+        const cambioTipo =
+          Number(
+            detalleActual
+              .tipo_producto_id
+          ) !==
+          Number(
+            item.tipo_producto_id
+          );
+
+
+        const cambioMedida =
+          Number(
+            detalleActual
+              .medida_id
+          ) !==
+          Number(
+            item.medida_id
+          );
+
+
+        const cambioColor =
+          Number(
+            detalleActual
+              .color_id
+          ) !==
+          Number(
+            item.color_id
+          );
+
+
+        const cambioMaterial =
+          Number(
+            detalleActual
+              .material_id
+          ) !==
+          Number(
+            item.material_id
+          );
+
+
+        const cambioMoneda =
+          String(
+            detalleActual
+              .moneda_codigo
+          ).toUpperCase() !==
+          String(
+            item.moneda_codigo
+          ).toUpperCase();
+
+
+        const debeRegistrarPrecio =
+          cambioCliente ||
+          cambioPrecio ||
+          cambioTipo ||
+          cambioMedida ||
+          cambioColor ||
+          cambioMaterial ||
+          cambioMoneda;
+
+
+        /*
+         * Ejemplo:
+         *
+         * 100 KG → 80 KG
+         *
+         * NO genera historial de precio.
+         *
+         * S/ 5 → S/ 16
+         *
+         * SÍ genera historial de precio.
+         */
+        if (
+          debeRegistrarPrecio
+        ) {
+
+          await registrarHistorialPrecioCliente({
+            transaction,
+
+            cliente_id,
+
+            pedido_id,
+
+            pedido_detalle_id:
+              detalleActualizado
+                .pedido_detalle_id,
+
+            item,
+
+            created_by_usuario_id:
+              updated_by_usuario_id
+          });
+        }
+
+
+        detallesActualizados.push(
+          detalleActualizado
+        );
+      }
+
+
+      /* =====================================================
+         8. AGREGAR PRODUCTOS NUEVOS
+         ===================================================== */
+
+      const detallesCreados =
+        [];
+
+
+      for (
+        const item
+        of nuevos_detalles
+      ) {
+
+        const unidadPresentacionId =
+          item.cantidad_presentacion
+            ? (
+                item
+                  .unidad_presentacion_id ||
+                item
+                  .unidad_medida_id
+              )
+            : null;
+
+
+        const detalleResult =
+          await new sql.Request(
+            transaction
+          )
+
+            .input(
+              'pedido_id',
+              sql.Int,
+              pedido_id
+            )
+
+            .input(
+              'pedido_cambio_id',
+              sql.Int,
+              pedido_cambio_id
+            )
+
+            .input(
+              'producto_id',
+              sql.Int,
+              null
+            )
+
+            .input(
+              'tipo_producto_id',
+              sql.Int,
+              item.tipo_producto_id
+            )
+
+            .input(
+              'medida_id',
+              sql.Int,
+              item.medida_id
+            )
+
+            .input(
+              'color_id',
+              sql.Int,
+              item.color_id
+            )
+
+            .input(
+              'material_id',
+              sql.Int,
+              item.material_id
+            )
+
+            .input(
+              'cantidad_pedida',
+              sql.Decimal(
+                18,
+                3
+              ),
+              item.cantidad_pedida
+            )
+
+            .input(
+              'unidad_medida_id',
+              sql.Int,
+              item.unidad_medida_id
+            )
+
+            .input(
+              'cantidad_presentacion',
+              sql.Decimal(
+                18,
+                3
+              ),
+              item.cantidad_presentacion ||
+              null
+            )
+
+            .input(
+              'unidad_presentacion_id',
+              sql.Int,
+              unidadPresentacionId
+            )
+
+            .input(
+              'precio_unitario',
+              sql.Decimal(
+                18,
+                4
+              ),
+              item.precio_unitario
+            )
+
+            .input(
+              'moneda_codigo',
+              sql.Char(3),
+              item.moneda_codigo
+            )
+
+            .input(
+              'descripcion_item',
+              sql.NVarChar(300),
+              item.descripcion_item ||
+              null
+            )
+
+            .input(
+              'observacion',
+              sql.NVarChar(300),
+              item.observacion ||
+              null
+            )
+
+            .input(
+              'created_by_usuario_id',
+              sql.Int,
+              updated_by_usuario_id
+            )
+
+            .query(`
+              INSERT INTO ventas.PedidoDetalle (
+                pedido_id,
+
+                pedido_cambio_id,
+
+                producto_id,
+
+                tipo_producto_id,
+                medida_id,
+                color_id,
+                material_id,
+
+                cantidad_pedida,
+                unidad_medida_id,
+
+                cantidad_presentacion,
+                unidad_presentacion_id,
+
+                precio_unitario,
+                moneda_codigo,
+
+                descripcion_item,
+                observacion,
+
+                created_by_usuario_id
+              )
+
+              OUTPUT
+                INSERTED.pedido_detalle_id,
+                INSERTED.pedido_id,
+
+                INSERTED.tipo_producto_id,
+                INSERTED.medida_id,
+                INSERTED.color_id,
+                INSERTED.material_id,
+
+                INSERTED.cantidad_pedida,
+                INSERTED.unidad_medida_id,
+
+                INSERTED.cantidad_presentacion,
+                INSERTED.unidad_presentacion_id,
+
+                INSERTED.precio_unitario,
+                INSERTED.moneda_codigo,
+
+                INSERTED.descripcion_item,
+                INSERTED.observacion
+
+              VALUES (
+                @pedido_id,
+
+                @pedido_cambio_id,
+
+                @producto_id,
+
+                @tipo_producto_id,
+                @medida_id,
+                @color_id,
+                @material_id,
+
+                @cantidad_pedida,
+                @unidad_medida_id,
+
+                @cantidad_presentacion,
+                @unidad_presentacion_id,
+
+                @precio_unitario,
+                @moneda_codigo,
+
+                @descripcion_item,
+                @observacion,
+
+                @created_by_usuario_id
+              );
+            `);
+
+
+        const detalleCreado =
+          detalleResult
+            .recordset[0];
+
+
+        /*
+         * Todo producto nuevo genera
+         * historial de precio.
+         */
+        await registrarHistorialPrecioCliente({
+          transaction,
+
+          cliente_id,
+
+          pedido_id,
+
+          pedido_detalle_id:
+            detalleCreado
+              .pedido_detalle_id,
+
+          item,
+
+          created_by_usuario_id:
+            updated_by_usuario_id
+        });
+
+
+        detallesCreados.push(
+          detalleCreado
+        );
+      }
+
+
+      /* =====================================================
+         9. VALIDAR DEPÓSITOS
+         ===================================================== */
+
+      /*
+       * Después de modificar cantidades
+       * y precios:
+       *
+       * NUEVO TOTAL DEL PEDIDO
+       * nunca puede quedar por debajo
+       * de lo ya depositado.
+       */
+
+      const depositoInvalidoResult =
+        await new sql.Request(
+          transaction
+        )
+
+          .input(
+            'pedido_id',
+            sql.Int,
+            pedido_id
+          )
+
+          .query(`
+            WITH TotalesPedido AS (
+              SELECT
+                moneda_codigo,
+
+                SUM(
+                  cantidad_pedida *
+                  precio_unitario
+                ) AS total_pedido
+
+              FROM ventas.PedidoDetalle
+
+              WHERE
+                pedido_id =
+                  @pedido_id
+
+                AND activo = 1
+
+              GROUP BY
+                moneda_codigo
+            ),
+
+            TotalesDeposito AS (
+              SELECT
+                moneda_codigo,
+
+                SUM(
+                  monto
+                ) AS total_depositado
+
+              FROM finance.Deposito
+
+              WHERE
+                pedido_id =
+                  @pedido_id
+
+              GROUP BY
+                moneda_codigo
+            )
+
+            SELECT TOP 1
+              td.moneda_codigo,
+
+              ISNULL(
+                tp.total_pedido,
+                0
+              ) AS total_pedido,
+
+              td.total_depositado
+
+            FROM TotalesDeposito td
+
+            LEFT JOIN TotalesPedido tp
+              ON
+                td.moneda_codigo =
+                tp.moneda_codigo
+
+            WHERE
+              td.total_depositado >
+              ISNULL(
+                tp.total_pedido,
+                0
+              );
+          `);
+
+
+      const depositoInvalido =
+        depositoInvalidoResult
+          .recordset[0];
+
+
+      if (
+        depositoInvalido
+      ) {
+        throw crearErrorNegocio(
+          `La edición no es válida porque el total del pedido en ${depositoInvalido.moneda_codigo} quedaría en ${Number(depositoInvalido.total_pedido).toFixed(2)}, por debajo de lo ya depositado (${Number(depositoInvalido.total_depositado).toFixed(2)})`,
+          409
+        );
+      }
+
+
+      /* =====================================================
+         10. ACTUALIZAR CABECERA DEL PEDIDO
+         ===================================================== */
+
+      const pedidoResult =
+        await new sql.Request(
+          transaction
+        )
+
+          .input(
+            'pedido_id',
+            sql.Int,
+            pedido_id
+          )
+
+          .input(
+            'cliente_id',
+            sql.Int,
+            cliente_id
+          )
+
+          .input(
+            'codigo_pedido',
+            sql.VarChar(50),
+            codigo_pedido ||
+            null
+          )
+
+          .input(
+            'descripcion_pedido',
+            sql.NVarChar(500),
+            descripcion_pedido ||
+            null
+          )
+
+          .input(
+            'fecha_pedido',
+            sql.Date,
+            fecha_pedido
+          )
+
+          .input(
+            'fecha_entrega_estimada',
+            sql.Date,
+            fecha_entrega_estimada ||
+            null
+          )
+
+          .input(
+            'updated_by_usuario_id',
+            sql.Int,
+            updated_by_usuario_id
+          )
+
+          .query(`
+            UPDATE ventas.Pedido
+
+            SET
+              cliente_id =
+                @cliente_id,
+
+              codigo_pedido =
+                @codigo_pedido,
+
+              descripcion_pedido =
+                @descripcion_pedido,
+
+              fecha_pedido =
+                @fecha_pedido,
+
+              fecha_entrega_estimada =
+                @fecha_entrega_estimada,
+
+              updated_at =
+                SYSDATETIME(),
+
+              updated_by_usuario_id =
+                @updated_by_usuario_id
+
+            WHERE
+              pedido_id =
+                @pedido_id
+
+              AND estado_pedido <>
+                'CANCELADO';
+          `);
+
+
+      if (
+        pedidoResult
+          .rowsAffected[0] !==
+        1
+      ) {
+        throw crearErrorNegocio(
+          'El pedido ya no está disponible para edición',
+          409
+        );
+      }
+
+
+      /* =====================================================
+         11. RECALCULAR ESTADO DEL PEDIDO
+         ===================================================== */
+
+      await new sql.Request(
+        transaction
+      )
+
+        .input(
+          'pedido_id',
+          sql.Int,
+          pedido_id
+        )
+
+        .input(
+          'updated_by_usuario_id',
+          sql.Int,
+          updated_by_usuario_id
+        )
+
+        .query(`
+          UPDATE ventas.Pedido
+
+          SET
+            estado_pedido =
+              CASE
+
+                /* ------------------------------------------
+                   SIN NINGUNA ENTREGA
+                   ------------------------------------------ */
+
+                WHEN NOT EXISTS (
+                  SELECT 1
+
+                  FROM ventas.PedidoDetalle pd
+
+                  INNER JOIN ventas.EntregaDetalle ed
+                    ON
+                      pd.pedido_detalle_id =
+                      ed.pedido_detalle_id
+
+                  WHERE
+                    pd.pedido_id =
+                      @pedido_id
+
+                    AND pd.activo = 1
+                )
+
+                THEN
+                  'REGISTRADO'
+
+
+                /* ------------------------------------------
+                   TODOS LOS PRODUCTOS COMPLETOS
+                   ------------------------------------------ */
+
+                WHEN NOT EXISTS (
+                  SELECT 1
+
+                  FROM ventas.PedidoDetalle pd
+
+                  OUTER APPLY (
+                    SELECT
+                      ISNULL(
+                        SUM(
+                          ed.cantidad_entregada
+                        ),
+                        0
+                      ) AS total_entregado
+
+                    FROM ventas.EntregaDetalle ed
+
+                    WHERE
+                      ed.pedido_detalle_id =
+                      pd.pedido_detalle_id
+                  ) entregas
+
+                  WHERE
+                    pd.pedido_id =
+                      @pedido_id
+
+                    AND pd.activo = 1
+
+                    AND
+                      entregas.total_entregado <
+                      pd.cantidad_pedida
+                )
+
+                THEN
+                  'ENTREGADO'
+
+
+                /* ------------------------------------------
+                   EXISTEN ENTREGAS PERO QUEDA PENDIENTE
+                   ------------------------------------------ */
+
+                ELSE
+                  'PARCIAL'
+
+              END,
+
+            updated_at =
+              SYSDATETIME(),
+
+            updated_by_usuario_id =
+              @updated_by_usuario_id
+
+          WHERE
+            pedido_id =
+              @pedido_id;
+        `);
+
+
+      /* =====================================================
+         12. COMMIT
+         ===================================================== */
+
+      await transaction.commit();
+
+
+      /* =====================================================
+         13. RECUPERAR PEDIDO ACTUALIZADO
+         ===================================================== */
+
+      const pedidoActualizado =
+        await obtenerPedidoPorId(
+          pedido_id
+        );
+
+
+      return {
+        pedido:
+          pedidoActualizado,
+
+        detalles_actualizados:
+          detallesActualizados,
+
+        detalles_agregados:
+          detallesCreados
+      };
+
+
+    } catch (error) {
+
+      /* =====================================================
+         ROLLBACK
+         ===================================================== */
+
+      try {
+        await transaction.rollback();
+
+      } catch (_) {
+        /*
+         * SQL Server puede haber abortado
+         * previamente la transacción.
+         *
+         * Conservamos el error original.
+         */
+      }
+
+
+      throw error;
+    }
+  };
+
+
+module.exports = {
+  actualizarPedidoConDetalles
 };
 ~~~
 
@@ -5284,6 +8674,7 @@ const actualizarPedidoYAgregarDetalles = async ({
 };
 
 module.exports = {
+  registrarHistorialPrecioCliente,
   listarPedidos,
   obtenerPedidoPorId,
   crearPedidoConDetalles,
