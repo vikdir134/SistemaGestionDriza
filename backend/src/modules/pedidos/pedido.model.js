@@ -718,6 +718,7 @@ const actualizarPedidoYAgregarDetalles = async ({
 };
 
 module.exports = {
+  registrarHistorialPrecioCliente,
   listarPedidos,
   obtenerPedidoPorId,
   crearPedidoConDetalles,

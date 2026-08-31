@@ -1,132 +1,953 @@
-import { useEffect, useState } from 'react';
-import type { ChangeEvent, FormEvent } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import {
+  useCallback,
+  useEffect,
+  useState
+} from 'react';
 
-import { apiFetch } from '../../services/api';
+import type {
+  ChangeEvent,
+  FormEvent
+} from 'react';
 
-import FeedbackToast from '../../components/common/FeedbackToast';
-import ConfirmDialog from '../../components/common/ConfirmDialog';
+import {
+  Link,
+  useNavigate,
+  useParams
+} from 'react-router-dom';
+
+import {
+  apiFetch
+} from '../../services/api';
+
+import FeedbackToast
+  from '../../components/common/FeedbackToast';
+
+import ConfirmDialog
+  from '../../components/common/ConfirmDialog';
 
 import PedidoItemsEditor, {
   detallePedidoVacio,
   type DetallePedidoForm
 } from '../../components/pedidos/PedidoItemsEditor';
 
-import { useBloqueoAccion } from '../../hooks/useBloqueoAccion';
+import {
+  useBloqueoAccion
+} from '../../hooks/useBloqueoAccion';
+
+
+type FeedbackTipo =
+  | 'success'
+  | 'error'
+  | 'info'
+  | 'warning';
+
+
+/* =========================================================
+   CONVERTIR DETALLE DEL BACKEND AL FORMULARIO
+   ========================================================= */
+
+const convertirDetalleExistente = (
+  detalle: any
+): DetallePedidoForm => {
+  return {
+    pedido_detalle_id:
+      Number(
+        detalle.pedido_detalle_id
+      ),
+
+    cantidad_entregada:
+      Number(
+        detalle.cantidad_entregada ||
+        0
+      ),
+
+    cantidad_pendiente:
+      Number(
+        detalle.cantidad_pendiente ||
+        0
+      ),
+
+    estado_entrega:
+      detalle.estado_entrega ||
+      'PENDIENTE',
+
+    unidad:
+      detalle.unidad ||
+      '',
+
+
+    tipo_producto_id:
+      detalle.tipo_producto_id
+        ? String(
+            detalle.tipo_producto_id
+          )
+        : '',
+
+
+    medida_id:
+      detalle.medida_id
+        ? String(
+            detalle.medida_id
+          )
+        : '',
+
+
+    color_id:
+      detalle.color_id
+        ? String(
+            detalle.color_id
+          )
+        : '',
+
+
+    material_id:
+      detalle.material_id
+        ? String(
+            detalle.material_id
+          )
+        : '',
+
+
+    cantidad_pedida:
+      detalle.cantidad_pedida !==
+        null &&
+      detalle.cantidad_pedida !==
+        undefined
+        ? String(
+            detalle.cantidad_pedida
+          )
+        : '',
+
+
+    unidad_medida_id:
+      detalle.unidad_medida_id
+        ? String(
+            detalle.unidad_medida_id
+          )
+        : '',
+
+
+    cantidad_presentacion:
+      detalle.cantidad_presentacion !==
+        null &&
+      detalle.cantidad_presentacion !==
+        undefined
+        ? String(
+            detalle.cantidad_presentacion
+          )
+        : '',
+
+
+    unidad_presentacion_id:
+      detalle.unidad_presentacion_id
+        ? String(
+            detalle.unidad_presentacion_id
+          )
+        : '',
+
+
+    precio_unitario:
+      detalle.precio_unitario !==
+        null &&
+      detalle.precio_unitario !==
+        undefined
+        ? String(
+            detalle.precio_unitario
+          )
+        : '',
+
+
+    moneda_codigo:
+      detalle.moneda_codigo ||
+      'PEN',
+
+
+    descripcion_item:
+      detalle.descripcion_item ||
+      '',
+
+
+    observacion:
+      detalle.observacion ||
+      ''
+  };
+};
+
+
+/* =========================================================
+   SABER SI UN PRODUCTO NUEVO FUE UTILIZADO
+   ========================================================= */
+
+const detalleNuevoTieneDatos = (
+  item: DetallePedidoForm
+) => {
+  return Boolean(
+    item.tipo_producto_id ||
+
+    item.medida_id ||
+
+    item.color_id ||
+
+    item.material_id ||
+
+    item.cantidad_pedida ||
+
+    item.unidad_medida_id ||
+
+    item.cantidad_presentacion ||
+
+    item.precio_unitario ||
+
+    item.descripcion_item.trim() ||
+
+    item.observacion.trim()
+  );
+};
+
+
+/* =========================================================
+   VALIDAR UN DETALLE
+   ========================================================= */
+
+const validarDetalle = (
+  item: DetallePedidoForm,
+  nombre: string,
+  validarCantidadEntregada = false
+) => {
+
+  /* =======================================================
+     TIPO / MEDIDA / COLOR / MATERIAL
+     ======================================================= */
+
+  if (
+    !item.tipo_producto_id ||
+    !item.medida_id ||
+    !item.color_id ||
+    !item.material_id
+  ) {
+    return (
+      `${nombre} debe tener tipo, medida, color y material`
+    );
+  }
+
+
+  /* =======================================================
+     CANTIDAD
+     ======================================================= */
+
+  const cantidad =
+    Number(
+      item.cantidad_pedida
+    );
+
+
+  if (
+    !Number.isFinite(
+      cantidad
+    ) ||
+    cantidad <= 0
+  ) {
+    return (
+      `${nombre} debe tener una cantidad mayor a 0`
+    );
+  }
+
+
+  /*
+   * REGLA PRINCIPAL:
+   *
+   * Si ya se entregaron 80 KG:
+   *
+   * 100 → 90 ✅
+   * 100 → 80 ✅
+   * 100 → 79 ❌
+   */
+  if (
+    validarCantidadEntregada
+  ) {
+    const cantidadEntregada =
+      Number(
+        item.cantidad_entregada ||
+        0
+      );
+
+
+    if (
+      cantidad <
+      cantidadEntregada
+    ) {
+      return (
+        `${nombre} no puede tener una cantidad menor a lo ya entregado (${cantidadEntregada} ${item.unidad || ''})`
+      );
+    }
+  }
+
+
+  /* =======================================================
+     UNIDAD
+     ======================================================= */
+
+  if (
+    !item.unidad_medida_id
+  ) {
+    return (
+      `${nombre} debe tener una unidad de medida`
+    );
+  }
+
+
+  /* =======================================================
+     PRESENTACIÓN
+     ======================================================= */
+
+  if (
+    item.cantidad_presentacion !==
+    ''
+  ) {
+    const presentacion =
+      Number(
+        item.cantidad_presentacion
+      );
+
+
+    if (
+      !Number.isFinite(
+        presentacion
+      ) ||
+      presentacion <= 0
+    ) {
+      return (
+        `${nombre} debe tener una presentación mayor a 0`
+      );
+    }
+
+
+    if (
+      !item.unidad_presentacion_id
+    ) {
+      return (
+        `${nombre} debe tener una unidad de presentación`
+      );
+    }
+  }
+
+
+  /* =======================================================
+     PRECIO
+     ======================================================= */
+
+  const precio =
+    Number(
+      item.precio_unitario
+    );
+
+
+  if (
+    !Number.isFinite(
+      precio
+    ) ||
+    precio <= 0
+  ) {
+    return (
+      `${nombre} debe tener un precio mayor a 0`
+    );
+  }
+
+
+  /* =======================================================
+     MONEDA
+     ======================================================= */
+
+  if (
+    ![
+      'PEN',
+      'USD'
+    ].includes(
+      item.moneda_codigo
+    )
+  ) {
+    return (
+      `${nombre} debe tener una moneda válida`
+    );
+  }
+
+
+  return null;
+};
+
+
+/* =========================================================
+   CONVERTIR DETALLE DEL FORMULARIO AL BODY DE LA API
+   ========================================================= */
+
+const convertirDetalleParaApi = (
+  item: DetallePedidoForm,
+  incluirId = false
+) => {
+  return {
+    ...(incluirId
+      ? {
+          pedido_detalle_id:
+            Number(
+              item.pedido_detalle_id
+            )
+        }
+      : {}
+    ),
+
+
+    tipo_producto_id:
+      Number(
+        item.tipo_producto_id
+      ),
+
+
+    medida_id:
+      Number(
+        item.medida_id
+      ),
+
+
+    color_id:
+      Number(
+        item.color_id
+      ),
+
+
+    material_id:
+      Number(
+        item.material_id
+      ),
+
+
+    cantidad_pedida:
+      Number(
+        item.cantidad_pedida
+      ),
+
+
+    unidad_medida_id:
+      Number(
+        item.unidad_medida_id
+      ),
+
+
+    cantidad_presentacion:
+      item.cantidad_presentacion
+        ? Number(
+            item.cantidad_presentacion
+          )
+        : null,
+
+
+    unidad_presentacion_id:
+      item.cantidad_presentacion &&
+      item.unidad_presentacion_id
+        ? Number(
+            item.unidad_presentacion_id
+          )
+        : null,
+
+
+    precio_unitario:
+      Number(
+        item.precio_unitario
+      ),
+
+
+    moneda_codigo:
+      item.moneda_codigo,
+
+
+    descripcion_item:
+      item.descripcion_item.trim(),
+
+
+    observacion:
+      item.observacion.trim()
+  };
+};
+
+
+/* =========================================================
+   COMPONENTE
+   ========================================================= */
 
 function EditarPedido() {
-  const { pedido_id } = useParams();
-  const navigate = useNavigate();
 
-  const [pedido, setPedido] = useState<any | null>(null);
+  const {
+    pedido_id
+  } = useParams();
 
-  const [clientes, setClientes] = useState<any[]>([]);
-  const [tipos, setTipos] = useState<any[]>([]);
-  const [medidas, setMedidas] = useState<any[]>([]);
-  const [colores, setColores] = useState<any[]>([]);
-  const [materiales, setMateriales] = useState<any[]>([]);
-  const [unidades, setUnidades] = useState<any[]>([]);
 
-  const [dialogAbierto, setDialogAbierto] = useState(false);
+  const navigate =
+    useNavigate();
 
-  const [feedback, setFeedback] = useState({
-    tipo: 'info' as 'success' | 'error' | 'info' | 'warning',
-    mensaje: ''
-  });
 
-  const [form, setForm] = useState({
+  /* =========================================================
+     PEDIDO
+     ========================================================= */
+
+  const [
+    pedido,
+    setPedido
+  ] = useState<any | null>(
+    null
+  );
+
+
+  const [
+    cargando,
+    setCargando
+  ] = useState(true);
+
+
+  const [
+    errorCarga,
+    setErrorCarga
+  ] = useState('');
+
+
+  /* =========================================================
+     CATÁLOGOS
+     ========================================================= */
+
+  const [
+    clientes,
+    setClientes
+  ] = useState<any[]>([]);
+
+
+  const [
+    tipos,
+    setTipos
+  ] = useState<any[]>([]);
+
+
+  const [
+    medidas,
+    setMedidas
+  ] = useState<any[]>([]);
+
+
+  const [
+    colores,
+    setColores
+  ] = useState<any[]>([]);
+
+
+  const [
+    materiales,
+    setMateriales
+  ] = useState<any[]>([]);
+
+
+  const [
+    unidades,
+    setUnidades
+  ] = useState<any[]>([]);
+
+
+  /* =========================================================
+     CABECERA DEL PEDIDO
+     ========================================================= */
+
+  const [
+    form,
+    setForm
+  ] = useState({
     cliente_id: '',
+
     codigo_pedido: '',
+
     fecha_pedido: '',
+
     fecha_entrega_estimada: '',
+
     descripcion_pedido: '',
+
     motivo_cambio: ''
   });
 
-  const [nuevosDetalles, setNuevosDetalles] = useState<
+
+  /* =========================================================
+     PRODUCTOS EXISTENTES
+     ========================================================= */
+
+  const [
+    detallesEditados,
+    setDetallesEditados
+  ] = useState<
+    DetallePedidoForm[]
+  >([]);
+
+
+  /* =========================================================
+     PRODUCTOS NUEVOS
+     ========================================================= */
+
+  const [
+    nuevosDetalles,
+    setNuevosDetalles
+  ] = useState<
     DetallePedidoForm[]
   >([
-    { ...detallePedidoVacio }
+    {
+      ...detallePedidoVacio
+    }
   ]);
 
-  /*
-   * Protección contra múltiples actualizaciones.
-   *
-   * useBloqueoAccion utiliza:
-   * - useRef para bloquear inmediatamente.
-   * - useState para reflejar el estado en la interfaz.
-   */
-  const {
-    procesando: actualizandoPedido,
-    intentarBloquear: bloquearActualizacion,
-    liberar: liberarActualizacion
-  } = useBloqueoAccion();
 
-  const cargarDatos = async () => {
-    const [
-      pedidoData,
-      clientesData,
-      tiposData,
-      medidasData,
-      coloresData,
-      materialesData,
-      unidadesData
-    ] = await Promise.all([
-      apiFetch(`/pedidos/${pedido_id}`),
-      apiFetch('/clientes'),
-      apiFetch('/catalogos/tiposProducto'),
-      apiFetch('/catalogos/medidas'),
-      apiFetch('/catalogos/colores'),
-      apiFetch('/catalogos/materiales'),
-      apiFetch('/catalogos/unidades-medida')
-    ]);
+  /* =========================================================
+     DIÁLOGO DE CONFIRMACIÓN
+     ========================================================= */
 
-    const pedidoActual = pedidoData.pedido;
+  const [
+    dialogAbierto,
+    setDialogAbierto
+  ] = useState(false);
 
-    setPedido(pedidoActual);
 
-    setClientes(clientesData.clientes);
+  /* =========================================================
+     FEEDBACK
+     ========================================================= */
 
-    setTipos(tiposData.items);
-    setMedidas(medidasData.items);
-    setColores(coloresData.items);
-    setMateriales(materialesData.items);
-    setUnidades(unidadesData.unidades);
+  const [
+    feedback,
+    setFeedback
+  ] = useState<{
+    tipo: FeedbackTipo;
+    mensaje: string;
+  }>({
+    tipo: 'info',
 
-    setForm({
-      cliente_id: String(pedidoActual.cliente_id),
+    mensaje: ''
+  });
 
-      codigo_pedido:
-        pedidoActual.codigo_pedido || '',
 
-      fecha_pedido:
-        pedidoActual.fecha_pedido?.slice(0, 10) || '',
-
-      fecha_entrega_estimada:
-        pedidoActual.fecha_entrega_estimada?.slice(0, 10) || '',
-
-      descripcion_pedido:
-        pedidoActual.descripcion_pedido || '',
-
-      motivo_cambio: ''
+  const mostrarFeedback = (
+    tipo: FeedbackTipo,
+    mensaje: string
+  ) => {
+    setFeedback({
+      tipo,
+      mensaje
     });
   };
 
-  useEffect(() => {
-    const iniciar = async () => {
-      try {
-        await cargarDatos();
 
-      } catch (error: any) {
-        setFeedback({
-          tipo: 'error',
-          mensaje: error.message
+  /* =========================================================
+     PROTECCIÓN CONTRA MÚLTIPLES PUT
+     ========================================================= */
+
+  const {
+    procesando:
+      actualizandoPedido,
+
+    intentarBloquear:
+      bloquearActualizacion,
+
+    liberar:
+      liberarActualizacion
+
+  } = useBloqueoAccion();
+
+
+  /* =========================================================
+     CARGAR PEDIDO Y CATÁLOGOS
+     ========================================================= */
+
+  const cargarDatos =
+    useCallback(
+      async () => {
+
+        if (!pedido_id) {
+          throw new Error(
+            'ID de pedido no válido'
+          );
+        }
+
+
+        const [
+          pedidoData,
+          clientesData,
+          tiposData,
+          medidasData,
+          coloresData,
+          materialesData,
+          unidadesData
+        ] = await Promise.all([
+
+          apiFetch(
+            `/pedidos/${pedido_id}`
+          ),
+
+          apiFetch(
+            '/clientes'
+          ),
+
+          apiFetch(
+            '/catalogos/tiposProducto'
+          ),
+
+          apiFetch(
+            '/catalogos/medidas'
+          ),
+
+          apiFetch(
+            '/catalogos/colores'
+          ),
+
+          apiFetch(
+            '/catalogos/materiales'
+          ),
+
+          apiFetch(
+            '/catalogos/unidades-medida'
+          )
+        ]);
+
+
+        const pedidoActual =
+          pedidoData.pedido;
+
+
+        if (!pedidoActual) {
+          throw new Error(
+            'Pedido no encontrado'
+          );
+        }
+
+
+        /* ===================================================
+           PEDIDO
+           =================================================== */
+
+        setPedido(
+          pedidoActual
+        );
+
+
+        /* ===================================================
+           CLIENTES
+           =================================================== */
+
+        const listaClientes = [
+          ...(clientesData.clientes || [])
+        ];
+
+
+        /*
+         * Clientes está paginado.
+         *
+         * Puede ocurrir que el cliente del
+         * pedido no se encuentre en la primera
+         * página del endpoint /clientes.
+         *
+         * Lo agregamos manualmente al select.
+         */
+        const clienteActualExiste =
+          listaClientes.some(
+            (cliente) =>
+              Number(
+                cliente.cliente_id
+              ) ===
+              Number(
+                pedidoActual.cliente_id
+              )
+          );
+
+
+        if (
+          !clienteActualExiste
+        ) {
+          listaClientes.push({
+            cliente_id:
+              pedidoActual.cliente_id,
+
+            razon_social:
+              pedidoActual.razon_social,
+
+            ruc:
+              pedidoActual.ruc
+          });
+        }
+
+
+        setClientes(
+          listaClientes
+        );
+
+
+        /* ===================================================
+           CATÁLOGOS
+           =================================================== */
+
+        setTipos(
+          tiposData.items ||
+          []
+        );
+
+
+        setMedidas(
+          medidasData.items ||
+          []
+        );
+
+
+        setColores(
+          coloresData.items ||
+          []
+        );
+
+
+        setMateriales(
+          materialesData.items ||
+          []
+        );
+
+
+        setUnidades(
+          unidadesData.unidades ||
+          []
+        );
+
+
+        /* ===================================================
+           CABECERA
+           =================================================== */
+
+        setForm({
+          cliente_id:
+            String(
+              pedidoActual.cliente_id
+            ),
+
+
+          codigo_pedido:
+            pedidoActual.codigo_pedido ||
+            '',
+
+
+          fecha_pedido:
+            pedidoActual.fecha_pedido
+              ?.slice(
+                0,
+                10
+              ) ||
+            '',
+
+
+          fecha_entrega_estimada:
+            pedidoActual
+              .fecha_entrega_estimada
+              ?.slice(
+                0,
+                10
+              ) ||
+            '',
+
+
+          descripcion_pedido:
+            pedidoActual
+              .descripcion_pedido ||
+            '',
+
+
+          motivo_cambio:
+            ''
         });
-      }
-    };
+
+
+        /* ===================================================
+           PRODUCTOS EXISTENTES
+           =================================================== */
+
+        setDetallesEditados(
+          (
+            pedidoActual.detalles ||
+            []
+          ).map(
+            convertirDetalleExistente
+          )
+        );
+
+
+        /* ===================================================
+           NUEVOS PRODUCTOS
+           =================================================== */
+
+        setNuevosDetalles([
+          {
+            ...detallePedidoVacio
+          }
+        ]);
+      },
+
+      [
+        pedido_id
+      ]
+    );
+
+
+  /* =========================================================
+     USE EFFECT DE CARGA
+     ========================================================= */
+
+  useEffect(() => {
+
+    const iniciar =
+      async () => {
+
+        try {
+          setCargando(
+            true
+          );
+
+
+          setErrorCarga(
+            ''
+          );
+
+
+          await cargarDatos();
+
+        } catch (error: any) {
+
+          const mensaje =
+            error.message ||
+            'No se pudo cargar el pedido';
+
+
+          setErrorCarga(
+            mensaje
+          );
+
+
+          mostrarFeedback(
+            'error',
+            mensaje
+          );
+
+        } finally {
+
+          setCargando(
+            false
+          );
+        }
+      };
+
 
     iniciar();
-  }, [pedido_id]);
+
+  }, [
+    cargarDatos
+  ]);
+
+
+  /* =========================================================
+     CAMBIO DE CABECERA
+     ========================================================= */
 
   const handleChange = (
     e: ChangeEvent<
@@ -135,321 +956,453 @@ function EditarPedido() {
       HTMLTextAreaElement
     >
   ) => {
+
+    if (
+      actualizandoPedido
+    ) {
+      return;
+    }
+
+
     setForm({
       ...form,
-      [e.target.name]: e.target.value
+
+      [e.target.name]:
+        e.target.value
     });
   };
 
-  /*
-   * Primer paso:
-   * el usuario pulsa "Actualizar pedido".
-   *
-   * Todavía NO actualizamos.
-   * Abrimos el diálogo de confirmación.
-   */
-  const prepararEdicion = (e: FormEvent) => {
-    e.preventDefault();
 
-    /*
-     * Si ya existe una actualización en curso,
-     * ignoramos cualquier nuevo submit.
-     */
-    if (actualizandoPedido) {
-      return;
-    }
+  /* =========================================================
+     VALIDAR FORMULARIO COMPLETO
+     ========================================================= */
 
-    if (!form.cliente_id) {
-      setFeedback({
-        tipo: 'error',
-        mensaje: 'Debes seleccionar un cliente'
-      });
+  const validarFormulario = () => {
 
-      return;
-    }
+    /* =======================================================
+       PEDIDO ENTREGADO
+       ======================================================= */
 
-    if (!form.fecha_pedido) {
-      setFeedback({
-        tipo: 'error',
-        mensaje: 'Debes ingresar la fecha del pedido'
-      });
-
-      return;
-    }
-
-    if (!form.motivo_cambio.trim()) {
-      setFeedback({
-        tipo: 'error',
-        mensaje: 'Debes ingresar el motivo del cambio'
-      });
-
-      return;
-    }
-
-    setDialogAbierto(true);
-  };
-
-  /*
-   * Segundo paso:
-   * el usuario confirma la edición.
-   *
-   * Aquí sí hacemos el PUT.
-   */
-  const confirmarEdicion = async () => {
-    /*
-     * BLOQUEO INMEDIATO.
-     *
-     * Primer clic:
-     * bloquearActualizacion() -> true
-     *
-     * Segundo, tercero, cuarto clic:
-     * bloquearActualizacion() -> false
-     *
-     * Por lo tanto solo puede existir un PUT.
-     */
-    if (!bloquearActualizacion()) {
-      return;
-    }
-
-    try {
-      /*
-       * El editor siempre tiene inicialmente una fila vacía.
-       *
-       * Solo enviamos elementos que tengan algún dato.
-       */
-      const detallesValidos = nuevosDetalles.filter(
-        (item) => {
-          return (
-            item.tipo_producto_id ||
-            item.medida_id ||
-            item.color_id ||
-            item.material_id ||
-            item.cantidad_pedida ||
-            item.precio_unitario ||
-            item.descripcion_item
-          );
-        }
+    if (
+      pedido?.estado_pedido ===
+      'ENTREGADO'
+    ) {
+      return (
+        'Un pedido completamente entregado ya no puede editarse'
       );
+    }
 
-      /*
-       * Si el usuario comenzó a llenar un producto nuevo,
-       * debemos asegurarnos de que esté completo.
-       */
-      for (
-        let index = 0;
-        index < detallesValidos.length;
-        index++
+
+    /* =======================================================
+       PEDIDO CANCELADO
+       ======================================================= */
+
+    if (
+      pedido?.estado_pedido ===
+      'CANCELADO'
+    ) {
+      return (
+        'Un pedido cancelado no puede editarse'
+      );
+    }
+
+
+    /* =======================================================
+       CLIENTE
+       ======================================================= */
+
+    if (
+      !form.cliente_id
+    ) {
+      return (
+        'Debes seleccionar un cliente'
+      );
+    }
+
+
+    /* =======================================================
+       FECHA
+       ======================================================= */
+
+    if (
+      !form.fecha_pedido
+    ) {
+      return (
+        'Debes ingresar la fecha del pedido'
+      );
+    }
+
+
+    /* =======================================================
+       MOTIVO
+       ======================================================= */
+
+    if (
+      !form.motivo_cambio.trim()
+    ) {
+      return (
+        'Debes ingresar el motivo del cambio'
+      );
+    }
+
+
+    /* =======================================================
+       DEBE EXISTIR AL MENOS UN PRODUCTO REGISTRADO
+       ======================================================= */
+
+    if (
+      detallesEditados.length ===
+      0
+    ) {
+      return (
+        'El pedido debe tener al menos un producto'
+      );
+    }
+
+
+    /* =======================================================
+       PRODUCTOS EXISTENTES
+       ======================================================= */
+
+    for (
+      let index = 0;
+      index <
+      detallesEditados.length;
+      index++
+    ) {
+
+      const item =
+        detallesEditados[index];
+
+
+      if (
+        !item.pedido_detalle_id
       ) {
-        const item = detallesValidos[index];
-
-        if (
-          !item.tipo_producto_id ||
-          !item.medida_id ||
-          !item.color_id ||
-          !item.material_id
-        ) {
-          setFeedback({
-            tipo: 'error',
-            mensaje:
-              `El nuevo producto ${index + 1} debe tener tipo, medida, color y material`
-          });
-
-          liberarActualizacion();
-          return;
-        }
-
-        if (
-          !item.cantidad_pedida ||
-          Number(item.cantidad_pedida) <= 0
-        ) {
-          setFeedback({
-            tipo: 'error',
-            mensaje:
-              `El nuevo producto ${index + 1} debe tener una cantidad mayor a 0`
-          });
-
-          liberarActualizacion();
-          return;
-        }
-
-        if (!item.unidad_medida_id) {
-          setFeedback({
-            tipo: 'error',
-            mensaje:
-              `El nuevo producto ${index + 1} debe tener una unidad de medida`
-          });
-
-          liberarActualizacion();
-          return;
-        }
-
-        if (
-          item.precio_unitario === '' ||
-          Number(item.precio_unitario) < 0
-        ) {
-          setFeedback({
-            tipo: 'error',
-            mensaje:
-              `El nuevo producto ${index + 1} debe tener un precio válido`
-          });
-
-          liberarActualizacion();
-          return;
-        }
-
-        if (!item.moneda_codigo) {
-          setFeedback({
-            tipo: 'error',
-            mensaje:
-              `El nuevo producto ${index + 1} debe tener una moneda`
-          });
-
-          liberarActualizacion();
-          return;
-        }
+        return (
+          `El producto registrado ${index + 1} no tiene un identificador válido`
+        );
       }
 
-      const body = {
-        cliente_id:
-          Number(form.cliente_id),
 
-        codigo_pedido:
-          form.codigo_pedido || null,
+      const error =
+        validarDetalle(
+          item,
 
-        fecha_pedido:
-          form.fecha_pedido,
+          `El producto registrado ${index + 1}`,
 
-        fecha_entrega_estimada:
-          form.fecha_entrega_estimada || null,
+          true
+        );
 
-        descripcion_pedido:
-          form.descripcion_pedido,
 
-        motivo_cambio:
-          form.motivo_cambio,
+      if (error) {
+        return error;
+      }
+    }
 
-        nuevos_detalles:
-          detallesValidos.map((item) => ({
-            tipo_producto_id:
-              Number(item.tipo_producto_id),
 
-            medida_id:
-              Number(item.medida_id),
+    /* =======================================================
+       PRODUCTOS NUEVOS
+       ======================================================= */
 
-            color_id:
-              Number(item.color_id),
-
-            material_id:
-              Number(item.material_id),
-
-            cantidad_pedida:
-              Number(item.cantidad_pedida),
-
-            unidad_medida_id:
-              Number(item.unidad_medida_id),
-
-            cantidad_presentacion:
-              item.cantidad_presentacion
-                ? Number(item.cantidad_presentacion)
-                : null,
-
-            unidad_presentacion_id:
-              item.unidad_presentacion_id
-                ? Number(item.unidad_presentacion_id)
-                : null,
-
-            precio_unitario:
-              Number(item.precio_unitario),
-
-            moneda_codigo:
-              item.moneda_codigo,
-
-            descripcion_item:
-              item.descripcion_item,
-
-            observacion:
-              item.observacion
-          }))
-      };
-
-      await apiFetch(
-        `/pedidos/${pedido_id}`,
-        {
-          method: 'PUT',
-          body: JSON.stringify(body)
-        }
+    const nuevosValidos =
+      nuevosDetalles.filter(
+        detalleNuevoTieneDatos
       );
 
-      /*
-       * Cerramos el diálogo solo cuando el backend
-       * confirmó correctamente la actualización.
-       */
-      setDialogAbierto(false);
 
-      setFeedback({
-        tipo: 'success',
-        mensaje: 'Pedido actualizado correctamente'
-      });
+    for (
+      let index = 0;
+      index <
+      nuevosValidos.length;
+      index++
+    ) {
 
-      /*
-       * NO liberamos actualizandoPedido aquí.
-       *
-       * Esto es intencional.
-       *
-       * Durante estos 800 ms el usuario tampoco
-       * podrá generar otro PUT.
-       */
-      setTimeout(() => {
-        navigate(
-          `/gestion/pedidos/${pedido_id}`
+      const error =
+        validarDetalle(
+          nuevosValidos[index],
+
+          `El nuevo producto ${index + 1}`,
+
+          false
         );
-      }, 800);
 
-    } catch (error: any) {
-      /*
-       * Si falló el backend sí permitimos
-       * que el usuario vuelva a intentarlo.
-       */
-      liberarActualizacion();
 
-      setFeedback({
-        tipo: 'error',
-        mensaje: error.message
-      });
+      if (error) {
+        return error;
+      }
     }
+
+
+    return null;
   };
 
-  const claseEstadoEntrega = (
-    estado: string
+
+  /* =========================================================
+     PREPARAR EDICIÓN
+     ========================================================= */
+
+  const prepararEdicion = (
+    e: FormEvent
   ) => {
-    if (estado === 'COMPLETO') {
-      return 'estado estado-completo';
+
+    e.preventDefault();
+
+
+    if (
+      actualizandoPedido
+    ) {
+      return;
     }
 
-    if (estado === 'PARCIAL') {
-      return 'estado estado-parcial';
+
+    const error =
+      validarFormulario();
+
+
+    if (error) {
+
+      mostrarFeedback(
+        'error',
+        error
+      );
+
+
+      return;
     }
 
-    return 'estado estado-pendiente';
+
+    setDialogAbierto(
+      true
+    );
   };
 
-  /*
-   * Estado inicial mientras cargamos
-   * pedido + clientes + catálogos.
-   */
-  if (!pedido) {
+
+  /* =========================================================
+     CONFIRMAR EDICIÓN
+     ========================================================= */
+
+  const confirmarEdicion =
+    async () => {
+
+      /*
+       * useBloqueoAccion utiliza useRef.
+       *
+       * Por eso aunque el usuario haga
+       * varios clics muy rápidos, solo
+       * entra la primera llamada.
+       */
+      if (
+        !bloquearActualizacion()
+      ) {
+        return;
+      }
+
+
+      /*
+       * Validamos nuevamente antes del PUT.
+       */
+      const error =
+        validarFormulario();
+
+
+      if (error) {
+
+        liberarActualizacion();
+
+
+        setDialogAbierto(
+          false
+        );
+
+
+        mostrarFeedback(
+          'error',
+          error
+        );
+
+
+        return;
+      }
+
+
+      try {
+
+        /* ===================================================
+           FILTRAR PRODUCTOS NUEVOS VACÍOS
+           =================================================== */
+
+        const nuevosValidos =
+          nuevosDetalles.filter(
+            detalleNuevoTieneDatos
+          );
+
+
+        /* ===================================================
+           CONSTRUIR BODY
+           =================================================== */
+
+        const body = {
+
+          /* =================================================
+             CABECERA
+             ================================================= */
+
+          cliente_id:
+            Number(
+              form.cliente_id
+            ),
+
+
+          codigo_pedido:
+            form.codigo_pedido
+              .trim() ||
+            null,
+
+
+          descripcion_pedido:
+            form.descripcion_pedido
+              .trim(),
+
+
+          fecha_pedido:
+            form.fecha_pedido,
+
+
+          fecha_entrega_estimada:
+            form
+              .fecha_entrega_estimada ||
+            null,
+
+
+          motivo_cambio:
+            form.motivo_cambio
+              .trim(),
+
+
+          /* =================================================
+             PRODUCTOS EXISTENTES
+             ================================================= */
+
+          detalles_editados:
+            detallesEditados.map(
+              (item) =>
+                convertirDetalleParaApi(
+                  item,
+                  true
+                )
+            ),
+
+
+          /* =================================================
+             PRODUCTOS NUEVOS
+             ================================================= */
+
+          nuevos_detalles:
+            nuevosValidos.map(
+              (item) =>
+                convertirDetalleParaApi(
+                  item,
+                  false
+                )
+            )
+        };
+
+
+        /* ===================================================
+           PUT
+           =================================================== */
+
+        await apiFetch(
+          `/pedidos/${pedido_id}`,
+          {
+            method: 'PUT',
+
+            body:
+              JSON.stringify(
+                body
+              )
+          }
+        );
+
+
+        /* ===================================================
+           ÉXITO
+           =================================================== */
+
+        setDialogAbierto(
+          false
+        );
+
+
+        mostrarFeedback(
+          'success',
+          'Pedido actualizado correctamente'
+        );
+
+
+        /*
+         * NO liberamos el bloqueo aquí.
+         *
+         * Si lo liberáramos durante estos
+         * milisegundos el usuario podría
+         * volver a generar otro PUT.
+         *
+         * Navegamos con el bloqueo activo.
+         */
+        setTimeout(() => {
+
+          navigate(
+            `/gestion/pedidos/${pedido_id}`
+          );
+
+        }, 900);
+
+
+      } catch (error: any) {
+
+        /*
+         * Si el backend rechazó la edición,
+         * permitimos volver a intentarlo.
+         */
+        liberarActualizacion();
+
+
+        mostrarFeedback(
+          'error',
+          error.message
+        );
+      }
+    };
+
+
+  /* =========================================================
+     CARGANDO
+     ========================================================= */
+
+  if (
+    cargando
+  ) {
     return (
-      <div>
+      <div className="pedidos-page">
+
         <FeedbackToast
-          tipo={feedback.tipo}
-          mensaje={feedback.mensaje}
+          tipo={
+            feedback.tipo
+          }
+
+          mensaje={
+            feedback.mensaje
+          }
+
           onClose={() =>
             setFeedback({
               ...feedback,
+
               mensaje: ''
             })
           }
         />
+
 
         <Link
           to="/gestion/pedidos"
@@ -458,254 +1411,709 @@ function EditarPedido() {
           ← Volver a pedidos
         </Link>
 
-        <p>Cargando pedido...</p>
+
+        <div className="pedidos-card">
+
+          <p>
+            Cargando pedido...
+          </p>
+
+        </div>
+
       </div>
     );
   }
 
+
+  /* =========================================================
+     ERROR DE CARGA
+     ========================================================= */
+
+  if (
+    !pedido ||
+    errorCarga
+  ) {
+    return (
+      <div className="pedidos-page">
+
+        <FeedbackToast
+          tipo={
+            feedback.tipo
+          }
+
+          mensaje={
+            feedback.mensaje
+          }
+
+          onClose={() =>
+            setFeedback({
+              ...feedback,
+
+              mensaje: ''
+            })
+          }
+        />
+
+
+        <Link
+          to="/gestion/pedidos"
+          className="btn-volver"
+        >
+          ← Volver a pedidos
+        </Link>
+
+
+        <div className="pedidos-card">
+
+          <h3>
+            Pedido no disponible
+          </h3>
+
+
+          <p>
+            {
+              errorCarga ||
+              'No se pudo cargar el pedido.'
+            }
+          </p>
+
+        </div>
+
+      </div>
+    );
+  }
+
+
+  /* =========================================================
+     PEDIDO ENTREGADO
+     ========================================================= */
+
+  if (
+    pedido.estado_pedido ===
+    'ENTREGADO'
+  ) {
+    return (
+      <div className="pedidos-page">
+
+        <FeedbackToast
+          tipo={
+            feedback.tipo
+          }
+
+          mensaje={
+            feedback.mensaje
+          }
+
+          onClose={() =>
+            setFeedback({
+              ...feedback,
+
+              mensaje: ''
+            })
+          }
+        />
+
+
+        <Link
+          to={
+            `/gestion/pedidos/${pedido_id}`
+          }
+
+          className="btn-volver"
+        >
+          ← Volver al detalle
+        </Link>
+
+
+        <div className="pedidos-header">
+
+          <div>
+
+            <h1>
+              Pedido #{pedido.pedido_id}
+            </h1>
+
+
+            <p>
+              El pedido ya está completamente
+              entregado.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div className="pedidos-card">
+
+          <div className="pedido-item-aviso-entrega">
+
+            Este pedido ya se encuentra{' '}
+
+            <strong>
+              completamente entregado
+            </strong>.
+
+            {' '}
+
+            Por seguridad ya no puede
+            modificarse.
+
+          </div>
+
+
+          <Link
+            to={
+              `/gestion/pedidos/${pedido_id}`
+            }
+
+            className="btn-outline"
+          >
+            Ver detalle del pedido
+          </Link>
+
+        </div>
+
+      </div>
+    );
+  }
+
+
+  /* =========================================================
+     PEDIDO CANCELADO
+     ========================================================= */
+
+  if (
+    pedido.estado_pedido ===
+    'CANCELADO'
+  ) {
+    return (
+      <div className="pedidos-page">
+
+        <Link
+          to={
+            `/gestion/pedidos/${pedido_id}`
+          }
+
+          className="btn-volver"
+        >
+          ← Volver al detalle
+        </Link>
+
+
+        <div className="pedidos-card">
+
+          <h3>
+            Pedido cancelado
+          </h3>
+
+
+          <p>
+            Un pedido cancelado no puede
+            modificarse.
+          </p>
+
+        </div>
+
+      </div>
+    );
+  }
+
+
+  /* =========================================================
+     FORMULARIO PRINCIPAL
+     ========================================================= */
+
   return (
     <div className="pedidos-page">
+
+
+      {/* =====================================================
+          FEEDBACK
+          ===================================================== */}
+
       <FeedbackToast
-        tipo={feedback.tipo}
-        mensaje={feedback.mensaje}
+        tipo={
+          feedback.tipo
+        }
+
+        mensaje={
+          feedback.mensaje
+        }
+
         onClose={() =>
           setFeedback({
             ...feedback,
+
             mensaje: ''
           })
         }
       />
 
+
+      {/* =====================================================
+          CONFIRMACIÓN
+          ===================================================== */}
+
       <ConfirmDialog
-        abierto={dialogAbierto}
-        titulo="Confirmar edición"
-        descripcion="Se actualizará la cabecera del pedido y se registrará el motivo del cambio. Si agregaste productos nuevos, quedarán añadidos al pedido."
-        textoConfirmar="Actualizar pedido"
-        textoProcesando="Actualizando pedido..."
-        procesando={actualizandoPedido}
-        onConfirmar={confirmarEdicion}
+        abierto={
+          dialogAbierto
+        }
+
+        titulo=
+          "Confirmar edición del pedido"
+
+        descripcion={
+          'Se actualizarán los datos del pedido y sus productos. ' +
+          'Las cantidades no pueden quedar por debajo de lo ya entregado. ' +
+          'Los cambios quedarán registrados en el historial.'
+        }
+
+        textoConfirmar=
+          "Actualizar pedido"
+
+        textoProcesando=
+          "Actualizando pedido..."
+
+        procesando={
+          actualizandoPedido
+        }
+
+        onConfirmar={
+          confirmarEdicion
+        }
+
         onCerrar={() => {
-          /*
-           * El diálogo tampoco puede cerrarse
-           * mientras el PUT está ejecutándose.
-           */
-          if (!actualizandoPedido) {
-            setDialogAbierto(false);
+
+          if (
+            !actualizandoPedido
+          ) {
+            setDialogAbierto(
+              false
+            );
           }
         }}
       />
 
+
+      {/* =====================================================
+          VOLVER
+          ===================================================== */}
+
       <Link
-        to={`/gestion/pedidos/${pedido_id}`}
+        to={
+          `/gestion/pedidos/${pedido_id}`
+        }
+
         className="btn-volver"
       >
         ← Volver al detalle
       </Link>
 
+
+      {/* =====================================================
+          CABECERA
+          ===================================================== */}
+
       <div className="pedidos-header">
+
         <div>
+
           <h1>
             Editar pedido #{pedido.pedido_id}
           </h1>
 
+
           <p>
-            Edita la cabecera del pedido o agrega
-            nuevos productos con motivo.
+            Modifica la información del pedido,
+            los productos registrados o agrega
+            nuevos productos.
           </p>
+
         </div>
+
       </div>
+
+
+      {/* =====================================================
+          FORMULARIO
+          ===================================================== */}
 
       <form
         className="form-card pedido-form"
-        onSubmit={prepararEdicion}
-      >
-        <h3>Datos actuales del pedido</h3>
 
-        <label>Cliente</label>
+        onSubmit={
+          prepararEdicion
+        }
+      >
+
+
+        {/* ===================================================
+            DATOS DEL PEDIDO
+            =================================================== */}
+
+        <h3>
+          Datos del pedido
+        </h3>
+
+
+        {/* CLIENTE */}
+
+        <label>
+          Cliente
+        </label>
+
 
         <select
           name="cliente_id"
-          value={form.cliente_id}
-          onChange={handleChange}
-          disabled={actualizandoPedido}
+
+          value={
+            form.cliente_id
+          }
+
+          onChange={
+            handleChange
+          }
+
+          disabled={
+            actualizandoPedido
+          }
         >
+
           <option value="">
             Seleccione cliente
           </option>
 
-          {clientes.map((cliente) => (
-            <option
-              key={cliente.cliente_id}
-              value={cliente.cliente_id}
-            >
-              {cliente.razon_social} - {cliente.ruc}
-            </option>
-          ))}
+
+          {clientes.map(
+            (cliente) => (
+
+              <option
+                key={
+                  cliente.cliente_id
+                }
+
+                value={
+                  cliente.cliente_id
+                }
+              >
+                {
+                  cliente.razon_social
+                }
+
+                {' - '}
+
+                {
+                  cliente.ruc
+                }
+              </option>
+
+            )
+          )}
+
         </select>
 
-        <label>Código de pedido</label>
+
+        {/* CÓDIGO */}
+
+        <label>
+          Código de pedido
+        </label>
+
 
         <input
           name="codigo_pedido"
-          value={form.codigo_pedido}
-          onChange={handleChange}
+
+          value={
+            form.codigo_pedido
+          }
+
+          onChange={
+            handleChange
+          }
+
           placeholder="Ejemplo: PED-001"
-          disabled={actualizandoPedido}
-        />
 
-        <label>Fecha de pedido</label>
-
-        <input
-          type="date"
-          name="fecha_pedido"
-          value={form.fecha_pedido}
-          onChange={handleChange}
-          disabled={actualizandoPedido}
-        />
-
-        <label>Fecha de entrega estimada</label>
-
-        <input
-          type="date"
-          name="fecha_entrega_estimada"
-          value={form.fecha_entrega_estimada}
-          onChange={handleChange}
-          disabled={actualizandoPedido}
-        />
-
-        <label>Descripción del pedido</label>
-
-        <textarea
-          name="descripcion_pedido"
-          value={form.descripcion_pedido}
-          onChange={handleChange}
-          rows={3}
-          disabled={actualizandoPedido}
-        />
-
-        <label>Motivo del cambio</label>
-
-        <textarea
-          name="motivo_cambio"
-          value={form.motivo_cambio}
-          onChange={handleChange}
-          rows={3}
-          placeholder="Ejemplo: El cliente solicitó aumentar productos al pedido"
-          disabled={actualizandoPedido}
-        />
-
-        <div className="tabla-card">
-          <h3>Productos ya registrados</h3>
-
-          <table>
-            <thead>
-              <tr>
-                <th>Producto</th>
-                <th>Cantidad</th>
-                <th>Entregado</th>
-                <th>Pendiente</th>
-                <th>Precio</th>
-                <th>Estado entrega</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {pedido.detalles.map(
-                (detalle: any) => (
-                  <tr
-                    key={
-                      detalle.pedido_detalle_id
-                    }
-                  >
-                    <td>
-                      <strong>
-                        {detalle.tipo_producto}{' '}
-                        {detalle.material}{' '}
-                        {detalle.medida}{' '}
-                        {detalle.color}
-                      </strong>
-
-                      <br />
-
-                      <span className="muted">
-                        {
-                          detalle.descripcion_item ||
-                          '-'
-                        }
-                      </span>
-                    </td>
-
-                    <td>
-                      {detalle.cantidad_pedida}{' '}
-                      {detalle.unidad}
-                    </td>
-
-                    <td>
-                      {detalle.cantidad_entregada}{' '}
-                      {detalle.unidad}
-                    </td>
-
-                    <td>
-                      {detalle.cantidad_pendiente}{' '}
-                      {detalle.unidad}
-                    </td>
-
-                    <td>
-                      {Number(
-                        detalle.precio_unitario
-                      ).toFixed(2)}{' '}
-                      {detalle.moneda_codigo}
-                    </td>
-
-                    <td>
-                      <span
-                        className={
-                          claseEstadoEntrega(
-                            detalle.estado_entrega
-                          )
-                        }
-                      >
-                        {detalle.estado_entrega}
-                      </span>
-                    </td>
-                  </tr>
-                )
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        <PedidoItemsEditor
-          detalles={nuevosDetalles}
-          setDetalles={setNuevosDetalles}
-          tipos={tipos}
-          medidas={medidas}
-          colores={colores}
-          materiales={materiales}
-          unidades={unidades}
-          titulo="Agregar nuevos productos opcionales"
-          textoBotonAgregar="+ Agregar otro producto nuevo"
-          onFeedback={(tipo, mensaje) =>
-            setFeedback({
-              tipo,
-              mensaje
-            })
+          disabled={
+            actualizandoPedido
           }
         />
 
-        <br />
 
-        <button
-          type="submit"
-          disabled={actualizandoPedido}
-        >
-          {actualizandoPedido
-            ? 'Actualizando pedido...'
-            : 'Actualizar pedido'}
-        </button>
+        {/* FECHA PEDIDO */}
+
+        <label>
+          Fecha de pedido
+        </label>
+
+
+        <input
+          type="date"
+
+          name="fecha_pedido"
+
+          value={
+            form.fecha_pedido
+          }
+
+          onChange={
+            handleChange
+          }
+
+          disabled={
+            actualizandoPedido
+          }
+        />
+
+
+        {/* FECHA ENTREGA */}
+
+        <label>
+          Fecha de entrega estimada
+        </label>
+
+
+        <input
+          type="date"
+
+          name="fecha_entrega_estimada"
+
+          value={
+            form.fecha_entrega_estimada
+          }
+
+          onChange={
+            handleChange
+          }
+
+          disabled={
+            actualizandoPedido
+          }
+        />
+
+
+        {/* DESCRIPCIÓN PEDIDO */}
+
+        <label>
+          Descripción del pedido
+        </label>
+
+
+        <textarea
+          name="descripcion_pedido"
+
+          value={
+            form.descripcion_pedido
+          }
+
+          onChange={
+            handleChange
+          }
+
+          rows={3}
+
+          disabled={
+            actualizandoPedido
+          }
+        />
+
+
+        {/* ===================================================
+            PRODUCTOS EXISTENTES
+            =================================================== */}
+
+        <PedidoItemsEditor
+          detalles={
+            detallesEditados
+          }
+
+          setDetalles={
+            setDetallesEditados
+          }
+
+          tipos={
+            tipos
+          }
+
+          medidas={
+            medidas
+          }
+
+          colores={
+            colores
+          }
+
+          materiales={
+            materiales
+          }
+
+          unidades={
+            unidades
+          }
+
+          titulo=
+            "Editar productos registrados"
+
+          permitirAgregar={
+            false
+          }
+
+          permitirQuitar={
+            false
+          }
+
+          bloquearEstructuraConEntrega={
+            true
+          }
+
+          mostrarResumenEntrega={
+            true
+          }
+
+          procesando={
+            actualizandoPedido
+          }
+
+          onFeedback={
+            mostrarFeedback
+          }
+        />
+
+
+        {/* ===================================================
+            PRODUCTOS NUEVOS
+            =================================================== */}
+
+        <PedidoItemsEditor
+          detalles={
+            nuevosDetalles
+          }
+
+          setDetalles={
+            setNuevosDetalles
+          }
+
+          tipos={
+            tipos
+          }
+
+          medidas={
+            medidas
+          }
+
+          colores={
+            colores
+          }
+
+          materiales={
+            materiales
+          }
+
+          unidades={
+            unidades
+          }
+
+          titulo=
+            "Agregar nuevos productos opcionales"
+
+          textoBotonAgregar=
+            "+ Agregar otro producto nuevo"
+
+          permitirAgregar={
+            true
+          }
+
+          permitirQuitar={
+            true
+          }
+
+          bloquearEstructuraConEntrega={
+            false
+          }
+
+          mostrarResumenEntrega={
+            false
+          }
+
+          procesando={
+            actualizandoPedido
+          }
+
+          onFeedback={
+            mostrarFeedback
+          }
+        />
+
+
+        {/* ===================================================
+            MOTIVO DEL CAMBIO
+            =================================================== */}
+
+        <div className="pedido-motivo-edicion">
+
+          <label>
+            Motivo del cambio
+          </label>
+
+
+          <textarea
+            name="motivo_cambio"
+
+            value={
+              form.motivo_cambio
+            }
+
+            onChange={
+              handleChange
+            }
+
+            rows={3}
+
+            placeholder="Ejemplo: El cliente solicitó modificar la cantidad y el precio acordado."
+
+            disabled={
+              actualizandoPedido
+            }
+          />
+
+
+          <span className="muted">
+
+            El motivo quedará registrado
+            en el historial del pedido.
+
+          </span>
+
+        </div>
+
+
+        {/* ===================================================
+            GUARDAR
+            =================================================== */}
+
+        <div className="pedido-edicion-actions">
+
+          <button
+            type="submit"
+
+            disabled={
+              actualizandoPedido
+            }
+          >
+            {
+              actualizandoPedido
+                ? 'Actualizando pedido...'
+                : 'Actualizar pedido'
+            }
+          </button>
+
+        </div>
+
       </form>
+
     </div>
   );
 }
+
 
 export default EditarPedido;

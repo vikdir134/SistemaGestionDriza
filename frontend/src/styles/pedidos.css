@@ -534,3 +534,57 @@
   }
 
 }
+/* =========================================================
+   EDICIÓN DE PRODUCTOS DEL PEDIDO
+   ========================================================= */
+
+.pedido-item-entrega-info {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+
+.pedido-item-entrega-info > div {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 12px;
+}
+
+
+.pedido-item-entrega-info span {
+  display: block;
+  color: #6b7280;
+  font-size: 13px;
+  margin-bottom: 5px;
+}
+
+
+.pedido-item-entrega-info strong {
+  display: block;
+  color: #111827;
+}
+
+
+.pedido-item-aviso-entrega {
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  border-radius: 10px;
+
+  background: #fef3c7;
+  color: #92400e;
+
+  border: 1px solid #fde68a;
+
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+
+@media (max-width: 750px) {
+  .pedido-item-entrega-info {
+    grid-template-columns: 1fr;
+  }
+}
