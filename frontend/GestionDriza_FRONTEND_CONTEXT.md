@@ -7,10 +7,10 @@
 
 - Proyecto: GestionDriza
 - Componente: Frontend
-- Fecha de generación: 2026-08-30 21:06:37
+- Fecha de generación: 2026-09-13 18:58:27
 - Branch Git: main
-- Commit Git: 3b73029d9df34a565ac9242ca90d03932cd5b897
-- Cantidad de archivos incluidos: 50
+- Commit Git: d0d717f362a3f44fb48e6dbb6ac88122a4705711
+- Cantidad de archivos incluidos: 73
 
 ---
 
@@ -37,6 +37,10 @@
 - src\index.css
 - src\layouts\GestionLayout.tsx
 - src\main.tsx
+- src\pages\almacenMateriaPrima\AlmacenMateriaPrima.tsx
+- src\pages\almacenMateriaPrima\AlmacenMateriaPrimaLoteDetalle.tsx
+- src\pages\almacenProductoTerminado\AlmacenProductoTerminado.tsx
+- src\pages\almacenProductoTerminado\AlmacenProductoTerminadoDetalle.tsx
 - src\pages\Catalogos.tsx
 - src\pages\Clientes.tsx
 - src\pages\clientes\ClientesLista.tsx
@@ -44,6 +48,9 @@
 - src\pages\clientes\HistorialPreciosCliente.tsx
 - src\pages\clientes\RegistrarCliente.tsx
 - src\pages\Compras.tsx
+- src\pages\comprasMateriaPrima\CompraMateriaPrimaDetalle.tsx
+- src\pages\comprasMateriaPrima\ComprasMateriaPrimaLista.tsx
+- src\pages\comprasMateriaPrima\RegistrarCompraMateriaPrima.tsx
 - src\pages\Dashboard.tsx
 - src\pages\DepositoPedidoDetalle.tsx
 - src\pages\Depositos.tsx
@@ -52,16 +59,32 @@
 - src\pages\Gastos.tsx
 - src\pages\gastos\EditarGasto.tsx
 - src\pages\Login.tsx
+- src\pages\mermas\MermaDetalle.tsx
+- src\pages\mermas\MermasLista.tsx
+- src\pages\mermas\RegistrarMerma.tsx
 - src\pages\Pedidos.tsx
 - src\pages\pedidos\EditarPedido.tsx
 - src\pages\pedidos\PedidoDetalle.tsx
 - src\pages\pedidos\PedidosLista.tsx
 - src\pages\pedidos\RegistrarPedido.tsx
+- src\pages\producciones\ProduccionDetalle.tsx
+- src\pages\producciones\ProduccionesLista.tsx
+- src\pages\producciones\RegistrarProduccion.tsx
 - src\pages\Productos.tsx
+- src\pages\productosTerminados\ProductosTerminadosLista.tsx
+- src\pages\productosTerminados\ProductoTerminadoDetalle.tsx
+- src\pages\productosTerminados\RegistrarProductoTerminado.tsx
 - src\pages\Proveedores.tsx
 - src\pages\usuarios\UsuariosAdmin.tsx
 - src\services\api.ts
+- src\styles\almacenMateriaPrima.css
+- src\styles\almacenProductoTerminado.css
+- src\styles\comprasMateriaPrima.css
+- src\styles\entregasStock.css
+- src\styles\mermas.css
 - src\styles\pedidos.css
+- src\styles\producciones.css
+- src\styles\productosTerminados.css
 - tsconfig.app.json
 - tsconfig.json
 - tsconfig.node.json
@@ -520,6 +543,24 @@ import Dashboard
 import Catalogos
   from './pages/Catalogos';
 
+import ProductosTerminadosLista
+  from './pages/productosTerminados/ProductosTerminadosLista';
+
+import RegistrarProductoTerminado
+  from './pages/productosTerminados/RegistrarProductoTerminado';
+
+import ProductoTerminadoDetalle
+  from './pages/productosTerminados/ProductoTerminadoDetalle';
+
+import ProduccionesLista
+  from './pages/producciones/ProduccionesLista';
+
+import RegistrarProduccion
+  from './pages/producciones/RegistrarProduccion';
+
+import ProduccionDetalle
+  from './pages/producciones/ProduccionDetalle';
+
 import PedidosLista
   from './pages/pedidos/PedidosLista';
 
@@ -549,6 +590,36 @@ import Proveedores
 
 import Compras
   from './pages/Compras';
+
+import ComprasMateriaPrimaLista
+  from './pages/comprasMateriaPrima/ComprasMateriaPrimaLista';
+
+import RegistrarCompraMateriaPrima
+  from './pages/comprasMateriaPrima/RegistrarCompraMateriaPrima';
+
+import CompraMateriaPrimaDetalle
+  from './pages/comprasMateriaPrima/CompraMateriaPrimaDetalle';
+
+import AlmacenMateriaPrima
+  from './pages/almacenMateriaPrima/AlmacenMateriaPrima';
+
+import AlmacenMateriaPrimaLoteDetalle
+  from './pages/almacenMateriaPrima/AlmacenMateriaPrimaLoteDetalle';
+
+import AlmacenProductoTerminado
+  from './pages/almacenProductoTerminado/AlmacenProductoTerminado';
+
+import AlmacenProductoTerminadoDetalle
+  from './pages/almacenProductoTerminado/AlmacenProductoTerminadoDetalle';
+
+import MermasLista
+  from './pages/mermas/MermasLista';
+
+import RegistrarMerma
+  from './pages/mermas/RegistrarMerma';
+
+import MermaDetalle
+  from './pages/mermas/MermaDetalle';
 
 import Gastos
   from './pages/Gastos';
@@ -643,6 +714,58 @@ function App() {
 
 
           {/* =========================
+              PRODUCTOS TERMINADOS
+              ========================= */}
+
+          <Route
+            path="productos-terminados"
+            element={
+              <ProductosTerminadosLista />
+            }
+          />
+
+          <Route
+            path="productos-terminados/registrar"
+            element={
+              <RegistrarProductoTerminado />
+            }
+          />
+
+          <Route
+            path="productos-terminados/:producto_id"
+            element={
+              <ProductoTerminadoDetalle />
+            }
+          />
+
+
+          {/* =========================
+              PRODUCCION
+              ========================= */}
+
+          <Route
+            path="producciones"
+            element={
+              <ProduccionesLista />
+            }
+          />
+
+          <Route
+            path="producciones/registrar"
+            element={
+              <RegistrarProduccion />
+            }
+          />
+
+          <Route
+            path="producciones/:produccion_id"
+            element={
+              <ProduccionDetalle />
+            }
+          />
+
+
+          {/* =========================
               PEDIDOS
               ========================= */}
 
@@ -726,13 +849,103 @@ function App() {
 
 
           {/* =========================
-              COMPRAS
+              COMPRAS GENERALES
               ========================= */}
 
           <Route
             path="compras"
             element={
               <Compras />
+            }
+          />
+
+
+          {/* =========================
+              COMPRAS MATERIA PRIMA
+              ========================= */}
+
+          <Route
+            path="compras-materia-prima"
+            element={
+              <ComprasMateriaPrimaLista />
+            }
+          />
+
+          <Route
+            path="compras-materia-prima/registrar"
+            element={
+              <RegistrarCompraMateriaPrima />
+            }
+          />
+
+          <Route
+            path="compras-materia-prima/:compra_materia_prima_id"
+            element={
+              <CompraMateriaPrimaDetalle />
+            }
+          />
+
+
+          {/* =========================
+              ALMACEN MATERIA PRIMA
+              ========================= */}
+
+          <Route
+            path="almacen/materia-prima"
+            element={
+              <AlmacenMateriaPrima />
+            }
+          />
+
+          <Route
+            path="almacen/materia-prima/lotes/:stock_materia_prima_lote_id"
+            element={
+              <AlmacenMateriaPrimaLoteDetalle />
+            }
+          />
+
+
+          {/* =========================
+              ALMACEN PRODUCTO TERMINADO
+              ========================= */}
+
+          <Route
+            path="almacen/producto-terminado"
+            element={
+              <AlmacenProductoTerminado />
+            }
+          />
+
+          <Route
+            path="almacen/producto-terminado/presentaciones/:stock_producto_terminado_id"
+            element={
+              <AlmacenProductoTerminadoDetalle />
+            }
+          />
+
+
+          {/* =========================
+              MERMAS
+              ========================= */}
+
+          <Route
+            path="mermas"
+            element={
+              <MermasLista />
+            }
+          />
+
+          <Route
+            path="mermas/registrar"
+            element={
+              <RegistrarMerma />
+            }
+          />
+
+          <Route
+            path="mermas/:merma_id"
+            element={
+              <MermaDetalle />
             }
           />
 
@@ -798,6 +1011,7 @@ function App() {
 
 
 export default App;
+
 
 <<<END OF FILE>>>
 
@@ -2834,64 +3048,271 @@ export default ProtectedRoute;
 
 <<<START OF FILE>>>
 
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { cerrarSesion, getUsuario } from '../services/api';
+import {
+  NavLink,
+  useLocation,
+  useNavigate
+} from 'react-router-dom';
+
+import {
+  useEffect,
+  useState
+} from 'react';
+
+import {
+  cerrarSesion,
+  getUsuario
+} from '../services/api';
+
 
 function Sidebar() {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const usuario = getUsuario();
+  const navigate =
+    useNavigate();
 
-  const esAdmin = usuario?.roles?.includes('ADMIN');
+  const location =
+    useLocation();
 
-  const pedidosActivo = location.pathname.startsWith('/gestion/pedidos');
+  const usuario =
+    getUsuario();
 
-  const [pedidosAbierto, setPedidosAbierto] = useState(pedidosActivo);
+  const esAdmin =
+    usuario?.roles?.includes(
+      'ADMIN'
+    );
+
+  const pedidosActivo =
+    location.pathname
+      .startsWith(
+        '/gestion/pedidos'
+      );
+
+  const produccionActivo =
+    location.pathname
+      .startsWith(
+        '/gestion/producciones'
+      );
+
+  const comprasActivo =
+    location.pathname
+      .startsWith(
+        '/gestion/compras'
+      );
+
+  const almacenActivo =
+    location.pathname
+      .startsWith(
+        '/gestion/almacen'
+      ) ||
+    location.pathname
+      .startsWith(
+        '/gestion/mermas'
+      );
+
+
+  const [
+    produccionAbierto,
+    setProduccionAbierto
+  ] = useState(
+    produccionActivo
+  );
+  const [
+    pedidosAbierto,
+    setPedidosAbierto
+  ] = useState(
+    pedidosActivo
+  );
+
+  const [
+    comprasAbierto,
+    setComprasAbierto
+  ] = useState(
+    comprasActivo
+  );
+
+  const [
+    almacenAbierto,
+    setAlmacenAbierto
+  ] = useState(
+    almacenActivo
+  );
+
+
+
+  useEffect(() => {
+    if (produccionActivo) {
+      setProduccionAbierto(
+        true
+      );
+    }
+  }, [
+    produccionActivo
+  ]);
+
 
   useEffect(() => {
     if (pedidosActivo) {
-      setPedidosAbierto(true);
+      setPedidosAbierto(
+        true
+      );
     }
-  }, [pedidosActivo]);
+  }, [
+    pedidosActivo
+  ]);
+
+
+  useEffect(() => {
+    if (comprasActivo) {
+      setComprasAbierto(
+        true
+      );
+    }
+  }, [
+    comprasActivo
+  ]);
+
+
+  useEffect(() => {
+    if (almacenActivo) {
+      setAlmacenAbierto(
+        true
+      );
+    }
+  }, [
+    almacenActivo
+  ]);
+
 
   const handleLogout = () => {
     cerrarSesion();
-    navigate('/login');
+
+    navigate(
+      '/login'
+    );
   };
 
-  const linkClass = ({ isActive }: { isActive: boolean }) => {
+
+  const linkClass = ({
+    isActive
+  }: {
+    isActive: boolean;
+  }) => {
     return isActive
       ? 'sidebar-link sidebar-link-active'
       : 'sidebar-link';
   };
 
+
   return (
     <aside className="sidebar">
-      <h2>Sistema de Gestion</h2>
+
+      <h2>
+        Sistema de Gestion
+      </h2>
+
 
       <p className="usuario">
-        {usuario?.nombre_completo}
+        {
+          usuario
+            ?.nombre_completo
+        }
       </p>
 
+
       <nav>
-        <NavLink end to="/gestion" className={linkClass}>
+
+        <NavLink
+          end
+          to="/gestion"
+          className={linkClass}
+        >
           Inicio
         </NavLink>
 
+
         {esAdmin && (
-          <NavLink to="/gestion/usuarios" className={linkClass}>
+          <NavLink
+            to="/gestion/usuarios"
+            className={linkClass}
+          >
             Usuarios
           </NavLink>
         )}
 
-        <NavLink to="/gestion/clientes" className={linkClass}>
+
+        <NavLink
+          to="/gestion/clientes"
+          className={linkClass}
+        >
           Clientes
         </NavLink>
 
-        <NavLink to="/gestion/catalogos" className={linkClass}>
+
+        <NavLink
+          to="/gestion/catalogos"
+          className={linkClass}
+        >
           Catálogos
         </NavLink>
+
+
+        <NavLink
+          to="/gestion/productos-terminados"
+          className={linkClass}
+        >
+          Productos terminados
+        </NavLink>
+
+
+        {/* =========================
+            PRODUCCION
+            ========================= */}
+
+        <button
+          type="button"
+          className={
+            produccionActivo
+              ? 'sidebar-group-button sidebar-group-active'
+              : 'sidebar-group-button'
+          }
+          onClick={() =>
+            setProduccionAbierto(
+              !produccionAbierto
+            )
+          }
+        >
+          Producción {
+            produccionAbierto
+              ? '▾'
+              : '▸'
+          }
+        </button>
+
+
+        {produccionAbierto && (
+          <div className="sidebar-submenu">
+
+            <NavLink
+              end
+              to="/gestion/producciones"
+              className={linkClass}
+            >
+              Historial
+            </NavLink>
+
+            <NavLink
+              to="/gestion/producciones/registrar"
+              className={linkClass}
+            >
+              Registrar producción
+            </NavLink>
+
+          </div>
+        )}
+
+
+        {/* =========================
+            PEDIDOS
+            ========================= */}
 
         <button
           type="button"
@@ -2900,52 +3321,200 @@ function Sidebar() {
               ? 'sidebar-group-button sidebar-group-active'
               : 'sidebar-group-button'
           }
-          onClick={() => setPedidosAbierto(!pedidosAbierto)}
+          onClick={() =>
+            setPedidosAbierto(
+              !pedidosAbierto
+            )
+          }
         >
-          Pedidos {pedidosAbierto ? '▾' : '▸'}
+          Pedidos {
+            pedidosAbierto
+              ? '▾'
+              : '▸'
+          }
         </button>
+
 
         {pedidosAbierto && (
           <div className="sidebar-submenu">
-            <NavLink end to="/gestion/pedidos" className={linkClass}>
+
+            <NavLink
+              end
+              to="/gestion/pedidos"
+              className={linkClass}
+            >
               Pedidos totales
             </NavLink>
 
-            <NavLink to="/gestion/pedidos/registrar" className={linkClass}>
+            <NavLink
+              to="/gestion/pedidos/registrar"
+              className={linkClass}
+            >
               Registrar pedido
             </NavLink>
+
           </div>
         )}
 
-        <NavLink to="/gestion/entregas" className={linkClass}>
+
+        <NavLink
+          to="/gestion/entregas"
+          className={linkClass}
+        >
           Registro de Entregas
         </NavLink>
 
-        <NavLink to="/gestion/depositos" className={linkClass}>
+
+        <NavLink
+          to="/gestion/depositos"
+          className={linkClass}
+        >
           Registro de Depósitos
         </NavLink>
 
-        <NavLink to="/gestion/proveedores" className={linkClass}>
+
+        <NavLink
+          to="/gestion/proveedores"
+          className={linkClass}
+        >
           Proveedores
         </NavLink>
 
-        <NavLink to="/gestion/compras" className={linkClass}>
-          Registro de Compras
-        </NavLink>
 
-        <NavLink to="/gestion/gastos" className={linkClass}>
+        {/* =========================
+            COMPRAS
+            ========================= */}
+
+        <button
+          type="button"
+          className={
+            comprasActivo
+              ? 'sidebar-group-button sidebar-group-active'
+              : 'sidebar-group-button'
+          }
+          onClick={() =>
+            setComprasAbierto(
+              !comprasAbierto
+            )
+          }
+        >
+          Compras {
+            comprasAbierto
+              ? '▾'
+              : '▸'
+          }
+        </button>
+
+
+        {comprasAbierto && (
+          <div className="sidebar-submenu">
+
+            <NavLink
+              end
+              to="/gestion/compras"
+              className={linkClass}
+            >
+              Compras generales
+            </NavLink>
+
+            <NavLink
+              end
+              to="/gestion/compras-materia-prima"
+              className={linkClass}
+            >
+              Materia prima
+            </NavLink>
+
+            <NavLink
+              to="/gestion/compras-materia-prima/registrar"
+              className={linkClass}
+            >
+              Registrar lote
+            </NavLink>
+
+          </div>
+        )}
+
+
+        {/* =========================
+            ALMACEN
+            ========================= */}
+
+        <button
+          type="button"
+          className={
+            almacenActivo
+              ? 'sidebar-group-button sidebar-group-active'
+              : 'sidebar-group-button'
+          }
+          onClick={() =>
+            setAlmacenAbierto(
+              !almacenAbierto
+            )
+          }
+        >
+          Almacén {
+            almacenAbierto
+              ? '▾'
+              : '▸'
+          }
+        </button>
+
+
+        {almacenAbierto && (
+          <div className="sidebar-submenu">
+
+            <NavLink
+              to="/gestion/almacen/materia-prima"
+              className={linkClass}
+            >
+              Materia prima
+            </NavLink>
+
+            <NavLink
+              to="/gestion/almacen/producto-terminado"
+              className={linkClass}
+            >
+              Producto terminado
+            </NavLink>
+
+            <NavLink
+              to="/gestion/mermas"
+              className={linkClass}
+            >
+              Mermas
+            </NavLink>
+
+          </div>
+        )}
+
+
+        <NavLink
+          to="/gestion/gastos"
+          className={linkClass}
+        >
           Registro de Gastos
         </NavLink>
+
       </nav>
 
-      <button onClick={handleLogout} className="btn-logout">
+
+      <button
+        onClick={
+          handleLogout
+        }
+        className="btn-logout"
+      >
         Cerrar sesión
       </button>
+
     </aside>
   );
 }
 
+
 export default Sidebar;
+
 
 <<<END OF FILE>>>
 
@@ -3554,6 +4123,4366 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <App />
   </React.StrictMode>
 );
+
+<<<END OF FILE>>>
+
+
+---
+
+## FILE: src\pages\almacenMateriaPrima\AlmacenMateriaPrima.tsx
+
+<<<START OF FILE>>>
+
+import {
+  useCallback,
+  useEffect,
+  useState
+} from 'react';
+
+import type {
+  FormEvent
+} from 'react';
+
+import {
+  Link
+} from 'react-router-dom';
+
+import {
+  apiFetch
+} from '../../services/api';
+
+import FeedbackToast
+  from '../../components/common/FeedbackToast';
+
+import '../../styles/almacenMateriaPrima.css';
+
+
+type FeedbackTipo =
+  | 'success'
+  | 'error'
+  | 'info'
+  | 'warning';
+
+
+type Vista =
+  | 'RESUMEN'
+  | 'LOTES';
+
+
+type FiltrosResumen = {
+  q: string;
+  material_id: string;
+  color_id: string;
+};
+
+
+type FiltrosLotes = {
+  q: string;
+  proveedor_id: string;
+  estado: string;
+};
+
+
+const filtrosResumenVacios:
+  FiltrosResumen = {
+  q: '',
+  material_id: '',
+  color_id: ''
+};
+
+
+const filtrosLotesVacios:
+  FiltrosLotes = {
+  q: '',
+  proveedor_id: '',
+  estado: 'TODOS'
+};
+
+
+function AlmacenMateriaPrima() {
+  const [
+    vista,
+    setVista
+  ] = useState<Vista>(
+    'RESUMEN'
+  );
+
+  const [
+    indicadores,
+    setIndicadores
+  ] = useState<any>({
+    total_comprado_kg: 0,
+    stock_total_kg: 0,
+    consumido_total_kg: 0,
+    lotes_registrados: 0
+  });
+
+  const [
+    materiales,
+    setMateriales
+  ] = useState<any[]>([]);
+
+  const [
+    colores,
+    setColores
+  ] = useState<any[]>([]);
+
+  const [
+    proveedores,
+    setProveedores
+  ] = useState<any[]>([]);
+
+  const [
+    resumen,
+    setResumen
+  ] = useState<any[]>([]);
+
+  const [
+    lotes,
+    setLotes
+  ] = useState<any[]>([]);
+
+  const [
+    cargando,
+    setCargando
+  ] = useState(true);
+
+  const [
+    pageResumen,
+    setPageResumen
+  ] = useState(1);
+
+  const [
+    pageLotes,
+    setPageLotes
+  ] = useState(1);
+
+  const [
+    paginacionResumen,
+    setPaginacionResumen
+  ] = useState({
+    page: 1,
+    limit: 10,
+    total: 0,
+    totalPaginas: 0
+  });
+
+  const [
+    paginacionLotes,
+    setPaginacionLotes
+  ] = useState({
+    page: 1,
+    limit: 10,
+    total: 0,
+    totalPaginas: 0
+  });
+
+  const [
+    filtrosResumen,
+    setFiltrosResumen
+  ] = useState<FiltrosResumen>({
+    ...filtrosResumenVacios
+  });
+
+  const [
+    filtrosResumenAplicados,
+    setFiltrosResumenAplicados
+  ] = useState<FiltrosResumen>({
+    ...filtrosResumenVacios
+  });
+
+  const [
+    filtrosLotes,
+    setFiltrosLotes
+  ] = useState<FiltrosLotes>({
+    ...filtrosLotesVacios
+  });
+
+  const [
+    filtrosLotesAplicados,
+    setFiltrosLotesAplicados
+  ] = useState<FiltrosLotes>({
+    ...filtrosLotesVacios
+  });
+
+  const [
+    feedback,
+    setFeedback
+  ] = useState<{
+    tipo: FeedbackTipo;
+    mensaje: string;
+  }>({
+    tipo: 'info',
+    mensaje: ''
+  });
+
+
+  const cargarIndicadores =
+    useCallback(
+      async () => {
+        const data =
+          await apiFetch(
+            '/almacen-materia-prima/indicadores'
+          );
+
+        setIndicadores(
+          data.indicadores || {}
+        );
+      },
+      []
+    );
+
+
+  const cargarCatalogos =
+    useCallback(
+      async () => {
+        const [
+          materialesData,
+          coloresData,
+          proveedoresData
+        ] = await Promise.all([
+          apiFetch(
+            '/catalogos/materiales'
+          ),
+          apiFetch(
+            '/catalogos/colores'
+          ),
+          apiFetch(
+            '/proveedores'
+          )
+        ]);
+
+        setMateriales(
+          materialesData.items ||
+          []
+        );
+
+        setColores(
+          coloresData.items ||
+          []
+        );
+
+        setProveedores(
+          proveedoresData.proveedores ||
+          []
+        );
+      },
+      []
+    );
+
+
+  const cargarResumen =
+    useCallback(
+      async (
+        pagina: number,
+        filtrosActuales:
+          FiltrosResumen
+      ) => {
+        const params =
+          new URLSearchParams();
+
+        params.set(
+          'page',
+          String(pagina)
+        );
+
+        params.set(
+          'limit',
+          '10'
+        );
+
+        if (
+          filtrosActuales.q.trim()
+        ) {
+          params.set(
+            'q',
+            filtrosActuales.q.trim()
+          );
+        }
+
+        if (
+          filtrosActuales.material_id
+        ) {
+          params.set(
+            'material_id',
+            filtrosActuales.material_id
+          );
+        }
+
+        if (
+          filtrosActuales.color_id
+        ) {
+          params.set(
+            'color_id',
+            filtrosActuales.color_id
+          );
+        }
+
+        const data =
+          await apiFetch(
+            `/almacen-materia-prima/resumen?${params.toString()}`
+          );
+
+        setResumen(
+          data.resumen || []
+        );
+
+        setPaginacionResumen(
+          data.paginacion
+        );
+      },
+      []
+    );
+
+
+  const cargarLotes =
+    useCallback(
+      async (
+        pagina: number,
+        filtrosActuales:
+          FiltrosLotes
+      ) => {
+        const params =
+          new URLSearchParams();
+
+        params.set(
+          'page',
+          String(pagina)
+        );
+
+        params.set(
+          'limit',
+          '10'
+        );
+
+        params.set(
+          'estado',
+          filtrosActuales.estado
+        );
+
+        if (
+          filtrosActuales.q.trim()
+        ) {
+          params.set(
+            'q',
+            filtrosActuales.q.trim()
+          );
+        }
+
+        if (
+          filtrosActuales.proveedor_id
+        ) {
+          params.set(
+            'proveedor_id',
+            filtrosActuales.proveedor_id
+          );
+        }
+
+        const data =
+          await apiFetch(
+            `/almacen-materia-prima/lotes?${params.toString()}`
+          );
+
+        setLotes(
+          data.lotes || []
+        );
+
+        setPaginacionLotes(
+          data.paginacion
+        );
+      },
+      []
+    );
+
+
+  useEffect(() => {
+    const iniciar =
+      async () => {
+        setCargando(true);
+
+        try {
+          await Promise.all([
+            cargarCatalogos(),
+            cargarIndicadores(),
+            cargarResumen(
+              1,
+              filtrosResumenVacios
+            ),
+            cargarLotes(
+              1,
+              filtrosLotesVacios
+            )
+          ]);
+
+        } catch (error: any) {
+          setFeedback({
+            tipo: 'error',
+            mensaje: error.message
+          });
+
+        } finally {
+          setCargando(false);
+        }
+      };
+
+    iniciar();
+  }, [
+    cargarCatalogos,
+    cargarIndicadores,
+    cargarResumen,
+    cargarLotes
+  ]);
+
+
+  useEffect(() => {
+    if (cargando) {
+      return;
+    }
+
+    cargarResumen(
+      pageResumen,
+      filtrosResumenAplicados
+    ).catch(
+      (error: any) => {
+        setFeedback({
+          tipo: 'error',
+          mensaje: error.message
+        });
+      }
+    );
+  }, [
+    pageResumen,
+    filtrosResumenAplicados,
+    cargarResumen,
+    cargando
+  ]);
+
+
+  useEffect(() => {
+    if (cargando) {
+      return;
+    }
+
+    cargarLotes(
+      pageLotes,
+      filtrosLotesAplicados
+    ).catch(
+      (error: any) => {
+        setFeedback({
+          tipo: 'error',
+          mensaje: error.message
+        });
+      }
+    );
+  }, [
+    pageLotes,
+    filtrosLotesAplicados,
+    cargarLotes,
+    cargando
+  ]);
+
+
+  const aplicarFiltrosResumen = (
+    e: FormEvent
+  ) => {
+    e.preventDefault();
+
+    setPageResumen(1);
+
+    setFiltrosResumenAplicados({
+      q:
+        filtrosResumen.q.trim(),
+      material_id:
+        filtrosResumen.material_id,
+      color_id:
+        filtrosResumen.color_id
+    });
+  };
+
+
+  const limpiarFiltrosResumen =
+    () => {
+      setFiltrosResumen({
+        ...filtrosResumenVacios
+      });
+
+      setPageResumen(1);
+
+      setFiltrosResumenAplicados({
+        ...filtrosResumenVacios
+      });
+    };
+
+
+  const aplicarFiltrosLotes = (
+    e: FormEvent
+  ) => {
+    e.preventDefault();
+
+    setPageLotes(1);
+
+    setFiltrosLotesAplicados({
+      q:
+        filtrosLotes.q.trim(),
+      proveedor_id:
+        filtrosLotes.proveedor_id,
+      estado:
+        filtrosLotes.estado
+    });
+  };
+
+
+  const limpiarFiltrosLotes =
+    () => {
+      setFiltrosLotes({
+        ...filtrosLotesVacios
+      });
+
+      setPageLotes(1);
+
+      setFiltrosLotesAplicados({
+        ...filtrosLotesVacios
+      });
+    };
+
+
+  const fechaTexto = (
+    valor: string | null
+  ) => {
+    if (!valor) {
+      return '-';
+    }
+
+    return valor.slice(
+      0,
+      10
+    );
+  };
+
+
+  const cantidad = (
+    valor: any
+  ) => {
+    return Number(
+      valor || 0
+    ).toFixed(3);
+  };
+
+
+  return (
+    <div className="pedidos-page almacen-mp-page">
+
+      <FeedbackToast
+        tipo={feedback.tipo}
+        mensaje={feedback.mensaje}
+        onClose={() =>
+          setFeedback({
+            ...feedback,
+            mensaje: ''
+          })
+        }
+      />
+
+
+      <div className="pedidos-header almacen-mp-header">
+        <div>
+          <h1>
+            Almacén de materia prima
+          </h1>
+
+          <p>
+            Consulta las existencias actuales
+            de fibra y el detalle de cada lote.
+          </p>
+        </div>
+
+        <Link
+          to="/gestion/compras-materia-prima/registrar"
+          className="btn-primary-link"
+        >
+          + Registrar compra
+        </Link>
+      </div>
+
+
+      <div className="almacen-mp-indicadores">
+
+        <div className="almacen-mp-kpi">
+          <span>
+            Total comprado
+          </span>
+
+          <strong>
+            {
+              cantidad(
+                indicadores
+                  .total_comprado_kg
+              )
+            } KG
+          </strong>
+
+          <small>
+            Materia prima ingresada
+          </small>
+        </div>
+
+
+        <div className="almacen-mp-kpi">
+          <span>
+            Stock disponible
+          </span>
+
+          <strong>
+            {
+              cantidad(
+                indicadores
+                  .stock_total_kg
+              )
+            } KG
+          </strong>
+
+          <small>
+            Existencia actual
+          </small>
+        </div>
+
+
+        <div className="almacen-mp-kpi">
+          <span>
+            Consumido
+          </span>
+
+          <strong>
+            {
+              cantidad(
+                indicadores
+                  .consumido_total_kg
+              )
+            } KG
+          </strong>
+
+          <small>
+            Producción y merma
+          </small>
+        </div>
+
+
+        <div className="almacen-mp-kpi">
+          <span>
+            Lotes registrados
+          </span>
+
+          <strong>
+            {
+              indicadores
+                .lotes_registrados ||
+              0
+            }
+          </strong>
+
+          <small>
+            Compras de materia prima
+          </small>
+        </div>
+
+      </div>
+
+
+      <div className="almacen-mp-tabs">
+
+        <button
+          type="button"
+          className={
+            vista === 'RESUMEN'
+              ? 'almacen-mp-tab almacen-mp-tab-activo'
+              : 'almacen-mp-tab'
+          }
+          onClick={() =>
+            setVista(
+              'RESUMEN'
+            )
+          }
+        >
+          Resumen general
+        </button>
+
+        <button
+          type="button"
+          className={
+            vista === 'LOTES'
+              ? 'almacen-mp-tab almacen-mp-tab-activo'
+              : 'almacen-mp-tab'
+          }
+          onClick={() =>
+            setVista(
+              'LOTES'
+            )
+          }
+        >
+          Lotes
+        </button>
+
+      </div>
+
+
+      {
+        vista === 'RESUMEN'
+          ? (
+            <>
+              <form
+                className="almacen-mp-filtros almacen-mp-filtros-resumen"
+                onSubmit={
+                  aplicarFiltrosResumen
+                }
+              >
+
+                <div>
+                  <label>
+                    Buscar
+                  </label>
+
+                  <input
+                    value={
+                      filtrosResumen.q
+                    }
+                    onChange={(e) =>
+                      setFiltrosResumen({
+                        ...filtrosResumen,
+                        q:
+                          e.target.value
+                      })
+                    }
+                    placeholder="Material o color..."
+                  />
+                </div>
+
+
+                <div>
+                  <label>
+                    Material
+                  </label>
+
+                  <select
+                    value={
+                      filtrosResumen
+                        .material_id
+                    }
+                    onChange={(e) =>
+                      setFiltrosResumen({
+                        ...filtrosResumen,
+                        material_id:
+                          e.target.value
+                      })
+                    }
+                  >
+                    <option value="">
+                      Todos
+                    </option>
+
+                    {materiales.map(
+                      (material) => (
+                        <option
+                          key={
+                            material.id
+                          }
+                          value={
+                            material.id
+                          }
+                        >
+                          {
+                            material
+                              .nombre
+                          }
+                        </option>
+                      )
+                    )}
+                  </select>
+                </div>
+
+
+                <div>
+                  <label>
+                    Color
+                  </label>
+
+                  <select
+                    value={
+                      filtrosResumen
+                        .color_id
+                    }
+                    onChange={(e) =>
+                      setFiltrosResumen({
+                        ...filtrosResumen,
+                        color_id:
+                          e.target.value
+                      })
+                    }
+                  >
+                    <option value="">
+                      Todos
+                    </option>
+
+                    {colores.map(
+                      (color) => (
+                        <option
+                          key={
+                            color.id
+                          }
+                          value={
+                            color.id
+                          }
+                        >
+                          {
+                            color.nombre
+                          }
+                        </option>
+                      )
+                    )}
+                  </select>
+                </div>
+
+
+                <button type="submit">
+                  Buscar
+                </button>
+
+                <button
+                  type="button"
+                  className="btn-secondary"
+                  onClick={
+                    limpiarFiltrosResumen
+                  }
+                >
+                  Limpiar
+                </button>
+
+              </form>
+
+
+              <div className="tabla-card">
+
+                <div className="almacen-mp-tabla-cabecera">
+                  <div>
+                    <h3>
+                      Existencias por materia prima
+                    </h3>
+
+                    <p>
+                      Totales agrupados por material y color.
+                    </p>
+                  </div>
+                </div>
+
+
+                {
+                  cargando
+                    ? (
+                      <p>
+                        Cargando almacén...
+                      </p>
+                    )
+                    : (
+                      <>
+                        <div className="tabla-scroll">
+                          <table className="almacen-mp-tabla-simple">
+                            <thead>
+                              <tr>
+                                <th>
+                                  Material
+                                </th>
+                                <th>
+                                  Color
+                                </th>
+                                <th>
+                                  Total comprado
+                                </th>
+                                <th>
+                                  Consumido
+                                </th>
+                                <th>
+                                  Disponible
+                                </th>
+                              </tr>
+                            </thead>
+
+                            <tbody>
+                              {
+                                resumen.map(
+                                  (item) => (
+                                    <tr
+                                      key={
+                                        `${item.material_id}-${item.color_id}-${item.unidad_medida_id}`
+                                      }
+                                    >
+                                      <td>
+                                        <strong>
+                                          {
+                                            item.material
+                                          }
+                                        </strong>
+                                      </td>
+
+                                      <td>
+                                        {
+                                          item.color
+                                        }
+                                      </td>
+
+                                      <td>
+                                        {
+                                          cantidad(
+                                            item
+                                              .cantidad_inicial_total
+                                          )
+                                        } {
+                                          item.unidad
+                                        }
+                                      </td>
+
+                                      <td>
+                                        {
+                                          cantidad(
+                                            item
+                                              .cantidad_consumida_total
+                                          )
+                                        } {
+                                          item.unidad
+                                        }
+                                      </td>
+
+                                      <td>
+                                        <strong className="almacen-mp-disponible">
+                                          {
+                                            cantidad(
+                                              item
+                                                .cantidad_disponible_total
+                                            )
+                                          } {
+                                            item.unidad
+                                          }
+                                        </strong>
+                                      </td>
+                                    </tr>
+                                  )
+                                )
+                              }
+
+                              {
+                                resumen.length === 0 &&
+                                (
+                                  <tr>
+                                    <td colSpan={5}>
+                                      No hay materia prima
+                                      para los filtros seleccionados.
+                                    </td>
+                                  </tr>
+                                )
+                              }
+                            </tbody>
+                          </table>
+                        </div>
+
+
+                        <div className="paginado">
+
+                          <button
+                            type="button"
+                            disabled={
+                              pageResumen <=
+                              1
+                            }
+                            onClick={() =>
+                              setPageResumen(
+                                pageResumen -
+                                1
+                              )
+                            }
+                          >
+                            Anterior
+                          </button>
+
+                          <span>
+                            Página {
+                              paginacionResumen
+                                .page
+                            } de {
+                              paginacionResumen
+                                .totalPaginas ||
+                              1
+                            }
+                          </span>
+
+                          <button
+                            type="button"
+                            disabled={
+                              pageResumen >=
+                              paginacionResumen
+                                .totalPaginas
+                            }
+                            onClick={() =>
+                              setPageResumen(
+                                pageResumen +
+                                1
+                              )
+                            }
+                          >
+                            Siguiente
+                          </button>
+
+                        </div>
+                      </>
+                    )
+                }
+
+              </div>
+            </>
+          )
+          : (
+            <>
+              <form
+                className="almacen-mp-filtros almacen-mp-filtros-lotes"
+                onSubmit={
+                  aplicarFiltrosLotes
+                }
+              >
+
+                <div>
+                  <label>
+                    Buscar
+                  </label>
+
+                  <input
+                    value={
+                      filtrosLotes.q
+                    }
+                    onChange={(e) =>
+                      setFiltrosLotes({
+                        ...filtrosLotes,
+                        q:
+                          e.target.value
+                      })
+                    }
+                    placeholder="Lote, documento, proveedor, material..."
+                  />
+                </div>
+
+
+                <div>
+                  <label>
+                    Proveedor
+                  </label>
+
+                  <select
+                    value={
+                      filtrosLotes
+                        .proveedor_id
+                    }
+                    onChange={(e) =>
+                      setFiltrosLotes({
+                        ...filtrosLotes,
+                        proveedor_id:
+                          e.target.value
+                      })
+                    }
+                  >
+                    <option value="">
+                      Todos
+                    </option>
+
+                    {proveedores.map(
+                      (proveedor) => (
+                        <option
+                          key={
+                            proveedor
+                              .proveedor_id
+                          }
+                          value={
+                            proveedor
+                              .proveedor_id
+                          }
+                        >
+                          {
+                            proveedor
+                              .razon_social
+                          }
+                        </option>
+                      )
+                    )}
+                  </select>
+                </div>
+
+
+                <div>
+                  <label>
+                    Estado
+                  </label>
+
+                  <select
+                    value={
+                      filtrosLotes.estado
+                    }
+                    onChange={(e) =>
+                      setFiltrosLotes({
+                        ...filtrosLotes,
+                        estado:
+                          e.target.value
+                      })
+                    }
+                  >
+                    <option value="TODOS">
+                      Todos
+                    </option>
+
+                    <option value="CON_STOCK">
+                      Con stock
+                    </option>
+
+                    <option value="AGOTADO">
+                      Agotados
+                    </option>
+                  </select>
+                </div>
+
+
+                <button type="submit">
+                  Buscar
+                </button>
+
+                <button
+                  type="button"
+                  className="btn-secondary"
+                  onClick={
+                    limpiarFiltrosLotes
+                  }
+                >
+                  Limpiar
+                </button>
+
+              </form>
+
+
+              <div className="tabla-card">
+
+                <div className="almacen-mp-tabla-cabecera">
+                  <div>
+                    <h3>
+                      Lotes de materia prima
+                    </h3>
+
+                    <p>
+                      Cada fila representa un lote completo.
+                    </p>
+                  </div>
+
+                  <span className="muted">
+                    {
+                      paginacionLotes
+                        .total
+                    } lote(s)
+                  </span>
+                </div>
+
+
+                {
+                  cargando
+                    ? (
+                      <p>
+                        Cargando lotes...
+                      </p>
+                    )
+                    : (
+                      <>
+                        <div className="tabla-scroll">
+                          <table>
+                            <thead>
+                              <tr>
+                                <th>
+                                  Lote
+                                </th>
+                                <th>
+                                  Fecha
+                                </th>
+                                <th>
+                                  Proveedor
+                                </th>
+                                <th>
+                                  Documento
+                                </th>
+                                <th>
+                                  Total comprado
+                                </th>
+                                <th>
+                                  Consumido
+                                </th>
+                                <th>
+                                  Disponible
+                                </th>
+                                <th>
+                                  Acción
+                                </th>
+                              </tr>
+                            </thead>
+
+                            <tbody>
+                              {
+                                lotes.map(
+                                  (lote) => (
+                                    <tr
+                                      key={
+                                        lote
+                                          .compra_materia_prima_id
+                                      }
+                                    >
+                                      <td>
+                                        <strong>
+                                          {
+                                            lote.nombre_lote
+                                          }
+                                        </strong>
+                                      </td>
+
+                                      <td>
+                                        {
+                                          fechaTexto(
+                                            lote.fecha_compra
+                                          )
+                                        }
+                                      </td>
+
+                                      <td>
+                                        {
+                                          lote.proveedor
+                                        }
+                                      </td>
+
+                                      <td>
+                                        {
+                                          lote.numero_documento ||
+                                          '-'
+                                        }
+                                      </td>
+
+                                      <td>
+                                        {
+                                          cantidad(
+                                            lote
+                                              .cantidad_inicial_total
+                                          )
+                                        } KG
+                                      </td>
+
+                                      <td>
+                                        {
+                                          cantidad(
+                                            lote
+                                              .cantidad_consumida_total
+                                          )
+                                        } KG
+                                      </td>
+
+                                      <td>
+                                        <strong className="almacen-mp-disponible">
+                                          {
+                                            cantidad(
+                                              lote
+                                                .cantidad_disponible_total
+                                            )
+                                          } KG
+                                        </strong>
+                                      </td>
+
+                                      <td>
+                                        <Link
+                                          className="btn-outline"
+                                          to={
+                                            `/gestion/almacen/materia-prima/lotes/${lote.compra_materia_prima_id}`
+                                          }
+                                        >
+                                          Ver lote
+                                        </Link>
+                                      </td>
+                                    </tr>
+                                  )
+                                )
+                              }
+
+                              {
+                                lotes.length === 0 &&
+                                (
+                                  <tr>
+                                    <td colSpan={8}>
+                                      No hay lotes
+                                      para los filtros seleccionados.
+                                    </td>
+                                  </tr>
+                                )
+                              }
+                            </tbody>
+                          </table>
+                        </div>
+
+
+                        <div className="paginado">
+
+                          <button
+                            type="button"
+                            disabled={
+                              pageLotes <=
+                              1
+                            }
+                            onClick={() =>
+                              setPageLotes(
+                                pageLotes -
+                                1
+                              )
+                            }
+                          >
+                            Anterior
+                          </button>
+
+                          <span>
+                            Página {
+                              paginacionLotes
+                                .page
+                            } de {
+                              paginacionLotes
+                                .totalPaginas ||
+                              1
+                            }
+                          </span>
+
+                          <button
+                            type="button"
+                            disabled={
+                              pageLotes >=
+                              paginacionLotes
+                                .totalPaginas
+                            }
+                            onClick={() =>
+                              setPageLotes(
+                                pageLotes +
+                                1
+                              )
+                            }
+                          >
+                            Siguiente
+                          </button>
+
+                        </div>
+                      </>
+                    )
+                }
+
+              </div>
+            </>
+          )
+      }
+
+    </div>
+  );
+}
+
+
+export default AlmacenMateriaPrima;
+
+
+<<<END OF FILE>>>
+
+
+---
+
+## FILE: src\pages\almacenMateriaPrima\AlmacenMateriaPrimaLoteDetalle.tsx
+
+<<<START OF FILE>>>
+
+import {
+  useCallback,
+  useEffect,
+  useState
+} from 'react';
+
+import {
+  Link,
+  useParams
+} from 'react-router-dom';
+
+import {
+  apiFetch
+} from '../../services/api';
+
+import FeedbackToast
+  from '../../components/common/FeedbackToast';
+
+import '../../styles/almacenMateriaPrima.css';
+
+
+type FeedbackTipo =
+  | 'success'
+  | 'error'
+  | 'info'
+  | 'warning';
+
+
+const tiposMovimiento = [
+  {
+    valor: '',
+    texto: 'Todos'
+  },
+  {
+    valor: 'ENTRADA_COMPRA',
+    texto: 'Entrada por compra'
+  },
+  {
+    valor: 'SALIDA_PRODUCCION',
+    texto: 'Salida por producción'
+  },
+  {
+    valor: 'SALIDA_MERMA',
+    texto: 'Salida por merma'
+  },
+  {
+    valor: 'AJUSTE_ENTRADA',
+    texto: 'Ajuste de entrada'
+  },
+  {
+    valor: 'AJUSTE_SALIDA',
+    texto: 'Ajuste de salida'
+  }
+];
+
+
+function AlmacenMateriaPrimaLoteDetalle() {
+  const {
+    stock_materia_prima_lote_id:
+      compra_materia_prima_id
+  } = useParams();
+
+  const [
+    lote,
+    setLote
+  ] = useState<any | null>(
+    null
+  );
+
+  const [
+    movimientos,
+    setMovimientos
+  ] = useState<any[]>([]);
+
+  const [
+    cargando,
+    setCargando
+  ] = useState(true);
+
+  const [
+    page,
+    setPage
+  ] = useState(1);
+
+  const [
+    tipoMovimiento,
+    setTipoMovimiento
+  ] = useState('');
+
+  const [
+    paginacion,
+    setPaginacion
+  ] = useState({
+    page: 1,
+    limit: 10,
+    total: 0,
+    totalPaginas: 0
+  });
+
+  const [
+    feedback,
+    setFeedback
+  ] = useState<{
+    tipo: FeedbackTipo;
+    mensaje: string;
+  }>({
+    tipo: 'info',
+    mensaje: ''
+  });
+
+
+  const cargarLote =
+    useCallback(
+      async () => {
+        const data =
+          await apiFetch(
+            `/almacen-materia-prima/lotes/${compra_materia_prima_id}`
+          );
+
+        setLote(
+          data.lote
+        );
+      },
+      [
+        compra_materia_prima_id
+      ]
+    );
+
+
+  const cargarMovimientos =
+    useCallback(
+      async (
+        pagina: number,
+        tipo: string
+      ) => {
+        const params =
+          new URLSearchParams();
+
+        params.set(
+          'page',
+          String(pagina)
+        );
+
+        params.set(
+          'limit',
+          '10'
+        );
+
+        if (tipo) {
+          params.set(
+            'tipo_movimiento',
+            tipo
+          );
+        }
+
+        const data =
+          await apiFetch(
+            `/almacen-materia-prima/lotes/${compra_materia_prima_id}/movimientos?${params.toString()}`
+          );
+
+        setMovimientos(
+          data.movimientos ||
+          []
+        );
+
+        setPaginacion(
+          data.paginacion
+        );
+      },
+      [
+        compra_materia_prima_id
+      ]
+    );
+
+
+  useEffect(() => {
+    const iniciar =
+      async () => {
+        setCargando(true);
+
+        try {
+          await Promise.all([
+            cargarLote(),
+            cargarMovimientos(
+              1,
+              ''
+            )
+          ]);
+
+        } catch (error: any) {
+          setFeedback({
+            tipo: 'error',
+            mensaje: error.message
+          });
+
+        } finally {
+          setCargando(false);
+        }
+      };
+
+    iniciar();
+  }, [
+    cargarLote,
+    cargarMovimientos
+  ]);
+
+
+  useEffect(() => {
+    if (cargando) {
+      return;
+    }
+
+    cargarMovimientos(
+      page,
+      tipoMovimiento
+    ).catch(
+      (error: any) => {
+        setFeedback({
+          tipo: 'error',
+          mensaje: error.message
+        });
+      }
+    );
+  }, [
+    page,
+    tipoMovimiento,
+    cargarMovimientos,
+    cargando
+  ]);
+
+
+  const cantidad = (
+    valor: any
+  ) => {
+    return Number(
+      valor || 0
+    ).toFixed(3);
+  };
+
+
+  const tipoTexto = (
+    tipo: string
+  ) => {
+    const item =
+      tiposMovimiento.find(
+        (opcion) =>
+          opcion.valor === tipo
+      );
+
+    return item?.texto || tipo;
+  };
+
+
+  const esEntrada = (
+    tipo: string
+  ) => {
+    return [
+      'ENTRADA_COMPRA',
+      'AJUSTE_ENTRADA'
+    ].includes(tipo);
+  };
+
+
+  if (cargando) {
+    return (
+      <div className="pedidos-page">
+        <p>
+          Cargando lote...
+        </p>
+      </div>
+    );
+  }
+
+
+  if (!lote) {
+    return (
+      <div className="pedidos-page">
+
+        <FeedbackToast
+          tipo={feedback.tipo}
+          mensaje={feedback.mensaje}
+          onClose={() =>
+            setFeedback({
+              ...feedback,
+              mensaje: ''
+            })
+          }
+        />
+
+        <Link
+          to="/gestion/almacen/materia-prima"
+          className="btn-volver"
+        >
+          ← Volver
+        </Link>
+
+        <div className="tabla-card">
+          No se pudo cargar el lote.
+        </div>
+
+      </div>
+    );
+  }
+
+
+  return (
+    <div className="pedidos-page almacen-mp-page">
+
+      <FeedbackToast
+        tipo={feedback.tipo}
+        mensaje={feedback.mensaje}
+        onClose={() =>
+          setFeedback({
+            ...feedback,
+            mensaje: ''
+          })
+        }
+      />
+
+
+      <Link
+        to="/gestion/almacen/materia-prima"
+        className="btn-volver"
+      >
+        ← Volver al almacén
+      </Link>
+
+
+      <div className="pedidos-header">
+        <div>
+          <h1>
+            {lote.nombre_lote}
+          </h1>
+
+          <p>
+            Detalle de las materias primas
+            ingresadas en este lote.
+          </p>
+        </div>
+
+        <Link
+          to={
+            `/gestion/compras-materia-prima/${lote.compra_materia_prima_id}`
+          }
+          className="btn-outline"
+        >
+          Ver compra
+        </Link>
+      </div>
+
+
+      <div className="almacen-mp-lote-meta">
+
+        <div>
+          <span>
+            Proveedor
+          </span>
+
+          <strong>
+            {
+              lote.proveedor
+            }
+          </strong>
+
+          <small>
+            RUC {
+              lote.proveedor_ruc
+            }
+          </small>
+        </div>
+
+
+        <div>
+          <span>
+            Fecha
+          </span>
+
+          <strong>
+            {
+              lote
+                .fecha_compra
+                ?.slice(
+                  0,
+                  10
+                )
+            }
+          </strong>
+        </div>
+
+
+        <div>
+          <span>
+            Documento
+          </span>
+
+          <strong>
+            {
+              lote
+                .numero_documento ||
+              '-'
+            }
+          </strong>
+        </div>
+
+      </div>
+
+
+      <div className="almacen-mp-detalle-resumen almacen-mp-detalle-resumen-3">
+
+        <div>
+          <span>
+            Total comprado
+          </span>
+
+          <strong>
+            {
+              cantidad(
+                lote
+                  .cantidad_inicial_total
+              )
+            } KG
+          </strong>
+        </div>
+
+
+        <div>
+          <span>
+            Consumido
+          </span>
+
+          <strong>
+            {
+              cantidad(
+                lote
+                  .cantidad_consumida_total
+              )
+            } KG
+          </strong>
+        </div>
+
+
+        <div>
+          <span>
+            Disponible
+          </span>
+
+          <strong className="almacen-mp-disponible">
+            {
+              cantidad(
+                lote
+                  .cantidad_disponible_total
+              )
+            } KG
+          </strong>
+        </div>
+
+      </div>
+
+
+      <div className="tabla-card">
+
+        <div className="almacen-mp-tabla-cabecera">
+          <div>
+            <h3>
+              Materias primas del lote
+            </h3>
+
+            <p>
+              Revisa cuánto ingresó,
+              cuánto se consumió y cuánto queda.
+            </p>
+          </div>
+        </div>
+
+
+        <div className="tabla-scroll">
+          <table className="almacen-mp-tabla-simple">
+            <thead>
+              <tr>
+                <th>
+                  Material
+                </th>
+                <th>
+                  Color
+                </th>
+                <th>
+                  Comprado
+                </th>
+                <th>
+                  Consumido
+                </th>
+                <th>
+                  Disponible
+                </th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {
+                lote.detalles.map(
+                  (item: any) => (
+                    <tr
+                      key={
+                        item
+                          .compra_materia_prima_detalle_id
+                      }
+                    >
+                      <td>
+                        <strong>
+                          {
+                            item.material
+                          }
+                        </strong>
+                      </td>
+
+                      <td>
+                        {
+                          item.color
+                        }
+                      </td>
+
+                      <td>
+                        {
+                          cantidad(
+                            item
+                              .cantidad_inicial
+                          )
+                        } {
+                          item.unidad
+                        }
+                      </td>
+
+                      <td>
+                        {
+                          cantidad(
+                            item
+                              .cantidad_consumida
+                          )
+                        } {
+                          item.unidad
+                        }
+                      </td>
+
+                      <td>
+                        <strong className="almacen-mp-disponible">
+                          {
+                            cantidad(
+                              item
+                                .cantidad_disponible
+                            )
+                          } {
+                            item.unidad
+                          }
+                        </strong>
+                      </td>
+                    </tr>
+                  )
+                )
+              }
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+
+      <details className="almacen-mp-historial">
+
+        <summary>
+          Ver historial de movimientos
+        </summary>
+
+
+        <div className="almacen-mp-historial-contenido">
+
+          <div className="almacen-mp-movimientos-header">
+            <div>
+              <h3>
+                Historial del lote
+              </h3>
+
+              <p>
+                Registro de entradas y salidas
+                de sus materias primas.
+              </p>
+            </div>
+
+            <div className="almacen-mp-movimiento-filtro">
+              <label>
+                Tipo
+              </label>
+
+              <select
+                value={
+                  tipoMovimiento
+                }
+                onChange={(e) => {
+                  setPage(1);
+
+                  setTipoMovimiento(
+                    e.target.value
+                  );
+                }}
+              >
+                {
+                  tiposMovimiento.map(
+                    (opcion) => (
+                      <option
+                        key={
+                          opcion.valor ||
+                          'TODOS'
+                        }
+                        value={
+                          opcion.valor
+                        }
+                      >
+                        {
+                          opcion.texto
+                        }
+                      </option>
+                    )
+                  )
+                }
+              </select>
+            </div>
+          </div>
+
+
+          <div className="tabla-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>
+                    Fecha
+                  </th>
+                  <th>
+                    Materia prima
+                  </th>
+                  <th>
+                    Tipo
+                  </th>
+                  <th>
+                    Movimiento
+                  </th>
+                  <th>
+                    Observación
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {
+                  movimientos.map(
+                    (movimiento) => (
+                      <tr
+                        key={
+                          movimiento
+                            .movimiento_materia_prima_id
+                        }
+                      >
+                        <td>
+                          {
+                            movimiento
+                              .fecha_movimiento
+                              ? new Date(
+                                  movimiento
+                                    .fecha_movimiento
+                                )
+                                  .toLocaleString()
+                              : '-'
+                          }
+                        </td>
+
+                        <td>
+                          <strong>
+                            {
+                              movimiento.material
+                            }
+                          </strong>
+                          {' / '}
+                          {
+                            movimiento.color
+                          }
+                        </td>
+
+                        <td>
+                          <span
+                            className={
+                              esEntrada(
+                                movimiento
+                                  .tipo_movimiento
+                              )
+                                ? 'almacen-mp-movimiento almacen-mp-movimiento-entrada'
+                                : 'almacen-mp-movimiento almacen-mp-movimiento-salida'
+                            }
+                          >
+                            {
+                              tipoTexto(
+                                movimiento
+                                  .tipo_movimiento
+                              )
+                            }
+                          </span>
+                        </td>
+
+                        <td>
+                          <strong
+                            className={
+                              esEntrada(
+                                movimiento
+                                  .tipo_movimiento
+                              )
+                                ? 'almacen-mp-cantidad-entrada'
+                                : 'almacen-mp-cantidad-salida'
+                            }
+                          >
+                            {
+                              esEntrada(
+                                movimiento
+                                  .tipo_movimiento
+                              )
+                                ? '+'
+                                : '-'
+                            }
+                            {
+                              cantidad(
+                                movimiento
+                                  .cantidad
+                              )
+                            } {
+                              movimiento.unidad
+                            }
+                          </strong>
+                        </td>
+
+                        <td>
+                          {
+                            movimiento
+                              .observacion ||
+                            '-'
+                          }
+                        </td>
+                      </tr>
+                    )
+                  )
+                }
+
+                {
+                  movimientos.length === 0 &&
+                  (
+                    <tr>
+                      <td colSpan={5}>
+                        No existen movimientos
+                        para el filtro seleccionado.
+                      </td>
+                    </tr>
+                  )
+                }
+              </tbody>
+            </table>
+          </div>
+
+
+          <div className="paginado">
+
+            <button
+              type="button"
+              disabled={
+                page <= 1
+              }
+              onClick={() =>
+                setPage(
+                  page - 1
+                )
+              }
+            >
+              Anterior
+            </button>
+
+            <span>
+              Página {
+                paginacion.page
+              } de {
+                paginacion
+                  .totalPaginas ||
+                1
+              }
+            </span>
+
+            <button
+              type="button"
+              disabled={
+                page >=
+                paginacion
+                  .totalPaginas
+              }
+              onClick={() =>
+                setPage(
+                  page + 1
+                )
+              }
+            >
+              Siguiente
+            </button>
+
+          </div>
+
+        </div>
+
+      </details>
+
+    </div>
+  );
+}
+
+
+export default AlmacenMateriaPrimaLoteDetalle;
+
+
+<<<END OF FILE>>>
+
+
+---
+
+## FILE: src\pages\almacenProductoTerminado\AlmacenProductoTerminado.tsx
+
+<<<START OF FILE>>>
+
+import {
+  useCallback,
+  useEffect,
+  useState
+} from 'react';
+
+import type {
+  FormEvent
+} from 'react';
+
+import {
+  Link
+} from 'react-router-dom';
+
+import {
+  apiFetch
+} from '../../services/api';
+
+import FeedbackToast
+  from '../../components/common/FeedbackToast';
+
+import '../../styles/almacenProductoTerminado.css';
+
+
+type FeedbackTipo =
+  | 'success'
+  | 'error'
+  | 'info'
+  | 'warning';
+
+
+type Vista =
+  | 'RESUMEN'
+  | 'PRESENTACIONES';
+
+
+type FiltrosBase = {
+  q: string;
+  tipo_producto_id: string;
+  material_id: string;
+  medida_id: string;
+  color_id: string;
+};
+
+
+type FiltrosPresentaciones =
+  FiltrosBase & {
+    estado: string;
+  };
+
+
+const filtrosBaseVacios:
+  FiltrosBase = {
+  q: '',
+  tipo_producto_id: '',
+  material_id: '',
+  medida_id: '',
+  color_id: ''
+};
+
+
+const filtrosPresentacionesVacios:
+  FiltrosPresentaciones = {
+  ...filtrosBaseVacios,
+  estado: 'TODOS'
+};
+
+
+function AlmacenProductoTerminado() {
+  const [
+    vista,
+    setVista
+  ] = useState<Vista>(
+    'RESUMEN'
+  );
+
+  const [
+    indicadores,
+    setIndicadores
+  ] = useState<any>({
+    stock_disponible_kg: 0,
+    productos_con_stock: 0,
+    presentaciones_con_stock: 0
+  });
+
+  const [
+    tipos,
+    setTipos
+  ] = useState<any[]>([]);
+
+  const [
+    materiales,
+    setMateriales
+  ] = useState<any[]>([]);
+
+  const [
+    medidas,
+    setMedidas
+  ] = useState<any[]>([]);
+
+  const [
+    colores,
+    setColores
+  ] = useState<any[]>([]);
+
+  const [
+    resumen,
+    setResumen
+  ] = useState<any[]>([]);
+
+  const [
+    presentaciones,
+    setPresentaciones
+  ] = useState<any[]>([]);
+
+  const [
+    cargando,
+    setCargando
+  ] = useState(true);
+
+  const [
+    pageResumen,
+    setPageResumen
+  ] = useState(1);
+
+  const [
+    pagePresentaciones,
+    setPagePresentaciones
+  ] = useState(1);
+
+  const [
+    paginacionResumen,
+    setPaginacionResumen
+  ] = useState({
+    page: 1,
+    limit: 10,
+    total: 0,
+    totalPaginas: 0
+  });
+
+  const [
+    paginacionPresentaciones,
+    setPaginacionPresentaciones
+  ] = useState({
+    page: 1,
+    limit: 10,
+    total: 0,
+    totalPaginas: 0
+  });
+
+  const [
+    filtrosResumen,
+    setFiltrosResumen
+  ] = useState<FiltrosBase>({
+    ...filtrosBaseVacios
+  });
+
+  const [
+    filtrosResumenAplicados,
+    setFiltrosResumenAplicados
+  ] = useState<FiltrosBase>({
+    ...filtrosBaseVacios
+  });
+
+  const [
+    filtrosPresentaciones,
+    setFiltrosPresentaciones
+  ] = useState<FiltrosPresentaciones>({
+    ...filtrosPresentacionesVacios
+  });
+
+  const [
+    filtrosPresentacionesAplicados,
+    setFiltrosPresentacionesAplicados
+  ] = useState<FiltrosPresentaciones>({
+    ...filtrosPresentacionesVacios
+  });
+
+  const [
+    feedback,
+    setFeedback
+  ] = useState<{
+    tipo: FeedbackTipo;
+    mensaje: string;
+  }>({
+    tipo: 'info',
+    mensaje: ''
+  });
+
+
+  const cargarCatalogos =
+    useCallback(
+      async () => {
+        const [
+          tiposData,
+          materialesData,
+          medidasData,
+          coloresData
+        ] = await Promise.all([
+          apiFetch(
+            '/catalogos/tiposProducto'
+          ),
+          apiFetch(
+            '/catalogos/materiales'
+          ),
+          apiFetch(
+            '/catalogos/medidas'
+          ),
+          apiFetch(
+            '/catalogos/colores'
+          )
+        ]);
+
+        setTipos(
+          tiposData.items || []
+        );
+
+        setMateriales(
+          materialesData.items || []
+        );
+
+        setMedidas(
+          medidasData.items || []
+        );
+
+        setColores(
+          coloresData.items || []
+        );
+      },
+      []
+    );
+
+
+  const cargarIndicadores =
+    useCallback(
+      async () => {
+        const data =
+          await apiFetch(
+            '/almacen-producto-terminado/indicadores'
+          );
+
+        setIndicadores(
+          data.indicadores || {}
+        );
+      },
+      []
+    );
+
+
+  const cargarResumen =
+    useCallback(
+      async (
+        pagina: number,
+        filtros:
+          FiltrosBase
+      ) => {
+        const params =
+          new URLSearchParams();
+
+        params.set(
+          'page',
+          String(pagina)
+        );
+
+        params.set(
+          'limit',
+          '10'
+        );
+
+        if (
+          filtros.q.trim()
+        ) {
+          params.set(
+            'q',
+            filtros.q.trim()
+          );
+        }
+
+        if (
+          filtros.tipo_producto_id
+        ) {
+          params.set(
+            'tipo_producto_id',
+            filtros.tipo_producto_id
+          );
+        }
+
+        if (
+          filtros.material_id
+        ) {
+          params.set(
+            'material_id',
+            filtros.material_id
+          );
+        }
+
+        if (
+          filtros.medida_id
+        ) {
+          params.set(
+            'medida_id',
+            filtros.medida_id
+          );
+        }
+
+        if (
+          filtros.color_id
+        ) {
+          params.set(
+            'color_id',
+            filtros.color_id
+          );
+        }
+
+        const data =
+          await apiFetch(
+            `/almacen-producto-terminado/resumen?${params.toString()}`
+          );
+
+        setResumen(
+          data.resumen || []
+        );
+
+        setPaginacionResumen(
+          data.paginacion
+        );
+      },
+      []
+    );
+
+
+  const cargarPresentaciones =
+    useCallback(
+      async (
+        pagina: number,
+        filtros:
+          FiltrosPresentaciones
+      ) => {
+        const params =
+          new URLSearchParams();
+
+        params.set(
+          'page',
+          String(pagina)
+        );
+
+        params.set(
+          'limit',
+          '10'
+        );
+
+        params.set(
+          'estado',
+          filtros.estado
+        );
+
+        if (
+          filtros.q.trim()
+        ) {
+          params.set(
+            'q',
+            filtros.q.trim()
+          );
+        }
+
+        if (
+          filtros.tipo_producto_id
+        ) {
+          params.set(
+            'tipo_producto_id',
+            filtros.tipo_producto_id
+          );
+        }
+
+        if (
+          filtros.material_id
+        ) {
+          params.set(
+            'material_id',
+            filtros.material_id
+          );
+        }
+
+        if (
+          filtros.medida_id
+        ) {
+          params.set(
+            'medida_id',
+            filtros.medida_id
+          );
+        }
+
+        if (
+          filtros.color_id
+        ) {
+          params.set(
+            'color_id',
+            filtros.color_id
+          );
+        }
+
+        const data =
+          await apiFetch(
+            `/almacen-producto-terminado/presentaciones?${params.toString()}`
+          );
+
+        setPresentaciones(
+          data.presentaciones ||
+          []
+        );
+
+        setPaginacionPresentaciones(
+          data.paginacion
+        );
+      },
+      []
+    );
+
+
+  useEffect(() => {
+    const iniciar =
+      async () => {
+        setCargando(true);
+
+        try {
+          await Promise.all([
+            cargarCatalogos(),
+            cargarIndicadores(),
+            cargarResumen(
+              1,
+              filtrosBaseVacios
+            ),
+            cargarPresentaciones(
+              1,
+              filtrosPresentacionesVacios
+            )
+          ]);
+
+        } catch (error: any) {
+          setFeedback({
+            tipo: 'error',
+            mensaje: error.message
+          });
+
+        } finally {
+          setCargando(false);
+        }
+      };
+
+    iniciar();
+  }, [
+    cargarCatalogos,
+    cargarIndicadores,
+    cargarResumen,
+    cargarPresentaciones
+  ]);
+
+
+  useEffect(() => {
+    if (cargando) {
+      return;
+    }
+
+    cargarResumen(
+      pageResumen,
+      filtrosResumenAplicados
+    ).catch(
+      (error: any) => {
+        setFeedback({
+          tipo: 'error',
+          mensaje: error.message
+        });
+      }
+    );
+  }, [
+    pageResumen,
+    filtrosResumenAplicados,
+    cargarResumen,
+    cargando
+  ]);
+
+
+  useEffect(() => {
+    if (cargando) {
+      return;
+    }
+
+    cargarPresentaciones(
+      pagePresentaciones,
+      filtrosPresentacionesAplicados
+    ).catch(
+      (error: any) => {
+        setFeedback({
+          tipo: 'error',
+          mensaje: error.message
+        });
+      }
+    );
+  }, [
+    pagePresentaciones,
+    filtrosPresentacionesAplicados,
+    cargarPresentaciones,
+    cargando
+  ]);
+
+
+  const aplicarFiltrosResumen = (
+    e: FormEvent
+  ) => {
+    e.preventDefault();
+
+    setPageResumen(1);
+
+    setFiltrosResumenAplicados({
+      q:
+        filtrosResumen.q.trim(),
+      tipo_producto_id:
+        filtrosResumen
+          .tipo_producto_id,
+      material_id:
+        filtrosResumen.material_id,
+      medida_id:
+        filtrosResumen.medida_id,
+      color_id:
+        filtrosResumen.color_id
+    });
+  };
+
+
+  const limpiarFiltrosResumen =
+    () => {
+      setFiltrosResumen({
+        ...filtrosBaseVacios
+      });
+
+      setPageResumen(1);
+
+      setFiltrosResumenAplicados({
+        ...filtrosBaseVacios
+      });
+    };
+
+
+  const aplicarFiltrosPresentaciones = (
+    e: FormEvent
+  ) => {
+    e.preventDefault();
+
+    setPagePresentaciones(
+      1
+    );
+
+    setFiltrosPresentacionesAplicados({
+      q:
+        filtrosPresentaciones.q
+          .trim(),
+      tipo_producto_id:
+        filtrosPresentaciones
+          .tipo_producto_id,
+      material_id:
+        filtrosPresentaciones
+          .material_id,
+      medida_id:
+        filtrosPresentaciones
+          .medida_id,
+      color_id:
+        filtrosPresentaciones
+          .color_id,
+      estado:
+        filtrosPresentaciones.estado
+    });
+  };
+
+
+  const limpiarFiltrosPresentaciones =
+    () => {
+      setFiltrosPresentaciones({
+        ...filtrosPresentacionesVacios
+      });
+
+      setPagePresentaciones(
+        1
+      );
+
+      setFiltrosPresentacionesAplicados({
+        ...filtrosPresentacionesVacios
+      });
+    };
+
+
+  const cantidad = (
+    valor: any
+  ) => {
+    return Number(
+      valor || 0
+    ).toFixed(3);
+  };
+
+
+  const renderFiltrosBase = (
+    filtros:
+      FiltrosBase |
+      FiltrosPresentaciones,
+    setFiltros:
+      (valor: any) => void
+  ) => {
+    return (
+      <>
+        <div className="apt-filtro-busqueda">
+          <label>
+            Buscar
+          </label>
+
+          <input
+            value={filtros.q}
+            onChange={(e) =>
+              setFiltros({
+                ...filtros,
+                q:
+                  e.target.value
+              })
+            }
+            placeholder="Tipo, material, medida o color..."
+          />
+        </div>
+
+
+        <div>
+          <label>
+            Tipo
+          </label>
+
+          <select
+            value={
+              filtros
+                .tipo_producto_id
+            }
+            onChange={(e) =>
+              setFiltros({
+                ...filtros,
+                tipo_producto_id:
+                  e.target.value
+              })
+            }
+          >
+            <option value="">
+              Todos
+            </option>
+
+            {tipos.map(
+              (tipo) => (
+                <option
+                  key={tipo.id}
+                  value={tipo.id}
+                >
+                  {tipo.nombre}
+                </option>
+              )
+            )}
+          </select>
+        </div>
+
+
+        <div>
+          <label>
+            Material
+          </label>
+
+          <select
+            value={
+              filtros.material_id
+            }
+            onChange={(e) =>
+              setFiltros({
+                ...filtros,
+                material_id:
+                  e.target.value
+              })
+            }
+          >
+            <option value="">
+              Todos
+            </option>
+
+            {materiales.map(
+              (material) => (
+                <option
+                  key={material.id}
+                  value={material.id}
+                >
+                  {material.nombre}
+                </option>
+              )
+            )}
+          </select>
+        </div>
+
+
+        <div>
+          <label>
+            Medida
+          </label>
+
+          <select
+            value={
+              filtros.medida_id
+            }
+            onChange={(e) =>
+              setFiltros({
+                ...filtros,
+                medida_id:
+                  e.target.value
+              })
+            }
+          >
+            <option value="">
+              Todas
+            </option>
+
+            {medidas.map(
+              (medida) => (
+                <option
+                  key={medida.id}
+                  value={medida.id}
+                >
+                  {medida.nombre}
+                </option>
+              )
+            )}
+          </select>
+        </div>
+
+
+        <div>
+          <label>
+            Color
+          </label>
+
+          <select
+            value={
+              filtros.color_id
+            }
+            onChange={(e) =>
+              setFiltros({
+                ...filtros,
+                color_id:
+                  e.target.value
+              })
+            }
+          >
+            <option value="">
+              Todos
+            </option>
+
+            {colores.map(
+              (color) => (
+                <option
+                  key={color.id}
+                  value={color.id}
+                >
+                  {color.nombre}
+                </option>
+              )
+            )}
+          </select>
+        </div>
+      </>
+    );
+  };
+
+
+  return (
+    <div className="pedidos-page almacen-pt-page">
+
+      <FeedbackToast
+        tipo={feedback.tipo}
+        mensaje={feedback.mensaje}
+        onClose={() =>
+          setFeedback({
+            ...feedback,
+            mensaje: ''
+          })
+        }
+      />
+
+
+      <div className="pedidos-header almacen-pt-header">
+        <div>
+          <h1>
+            Almacén de producto terminado
+          </h1>
+
+          <p>
+            Consulta las existencias disponibles
+            de los productos fabricados.
+          </p>
+        </div>
+
+        <Link
+          to="/gestion/producciones/registrar"
+          className="btn-primary-link"
+        >
+          + Registrar producción
+        </Link>
+      </div>
+
+
+      <div className="apt-indicadores">
+
+        <div className="apt-kpi">
+          <span>
+            Stock disponible
+          </span>
+
+          <strong>
+            {
+              cantidad(
+                indicadores
+                  .stock_disponible_kg
+              )
+            } KG
+          </strong>
+
+          <small>
+            Existencia actual
+          </small>
+        </div>
+
+
+        <div className="apt-kpi">
+          <span>
+            Productos con stock
+          </span>
+
+          <strong>
+            {
+              indicadores
+                .productos_con_stock ||
+              0
+            }
+          </strong>
+
+          <small>
+            Productos disponibles
+          </small>
+        </div>
+
+
+        <div className="apt-kpi">
+          <span>
+            Presentaciones con stock
+          </span>
+
+          <strong>
+            {
+              indicadores
+                .presentaciones_con_stock ||
+              0
+            }
+          </strong>
+
+          <small>
+            Formatos disponibles
+          </small>
+        </div>
+
+      </div>
+
+
+      <div className="apt-tabs">
+
+        <button
+          type="button"
+          className={
+            vista === 'RESUMEN'
+              ? 'apt-tab apt-tab-activo'
+              : 'apt-tab'
+          }
+          onClick={() =>
+            setVista(
+              'RESUMEN'
+            )
+          }
+        >
+          Resumen general
+        </button>
+
+        <button
+          type="button"
+          className={
+            vista === 'PRESENTACIONES'
+              ? 'apt-tab apt-tab-activo'
+              : 'apt-tab'
+          }
+          onClick={() =>
+            setVista(
+              'PRESENTACIONES'
+            )
+          }
+        >
+          Por presentación
+        </button>
+
+      </div>
+
+
+      {
+        vista === 'RESUMEN'
+          ? (
+            <>
+              <form
+                className="apt-filtros"
+                onSubmit={
+                  aplicarFiltrosResumen
+                }
+              >
+
+                {
+                  renderFiltrosBase(
+                    filtrosResumen,
+                    setFiltrosResumen
+                  )
+                }
+
+                <button type="submit">
+                  Buscar
+                </button>
+
+                <button
+                  type="button"
+                  className="btn-secondary"
+                  onClick={
+                    limpiarFiltrosResumen
+                  }
+                >
+                  Limpiar
+                </button>
+
+              </form>
+
+
+              <div className="tabla-card">
+
+                <div className="apt-tabla-cabecera">
+                  <div>
+                    <h3>
+                      Stock consolidado
+                    </h3>
+
+                    <p>
+                      Total disponible de cada producto,
+                      sin separar por presentación.
+                    </p>
+                  </div>
+
+                  <span className="muted">
+                    {
+                      paginacionResumen
+                        .total
+                    } producto(s)
+                  </span>
+                </div>
+
+
+                {
+                  cargando
+                    ? (
+                      <p>
+                        Cargando almacén...
+                      </p>
+                    )
+                    : (
+                      <>
+                        <div className="tabla-scroll">
+                          <table>
+                            <thead>
+                              <tr>
+                                <th>
+                                  Tipo
+                                </th>
+                                <th>
+                                  Material
+                                </th>
+                                <th>
+                                  Medida
+                                </th>
+                                <th>
+                                  Color
+                                </th>
+                                <th>
+                                  Disponible
+                                </th>
+                              </tr>
+                            </thead>
+
+                            <tbody>
+                              {
+                                resumen.map(
+                                  (item) => (
+                                    <tr
+                                      key={
+                                        item
+                                          .producto_id
+                                      }
+                                    >
+                                      <td>
+                                        <strong>
+                                          {
+                                            item
+                                              .tipo_producto
+                                          }
+                                        </strong>
+                                      </td>
+
+                                      <td>
+                                        {
+                                          item.material
+                                        }
+                                      </td>
+
+                                      <td>
+                                        {
+                                          item.medida
+                                        }
+                                      </td>
+
+                                      <td>
+                                        {
+                                          item.color
+                                        }
+                                      </td>
+
+                                      <td>
+                                        <strong className="apt-stock-positivo">
+                                          {
+                                            cantidad(
+                                              item
+                                                .cantidad_disponible_total
+                                            )
+                                          } {
+                                            item.unidad
+                                          }
+                                        </strong>
+                                      </td>
+                                    </tr>
+                                  )
+                                )
+                              }
+
+                              {
+                                resumen.length ===
+                                  0 &&
+                                (
+                                  <tr>
+                                    <td colSpan={5}>
+                                      No hay productos
+                                      para los filtros seleccionados.
+                                    </td>
+                                  </tr>
+                                )
+                              }
+                            </tbody>
+                          </table>
+                        </div>
+
+
+                        <div className="paginado">
+
+                          <button
+                            type="button"
+                            disabled={
+                              pageResumen <=
+                              1
+                            }
+                            onClick={() =>
+                              setPageResumen(
+                                pageResumen -
+                                1
+                              )
+                            }
+                          >
+                            Anterior
+                          </button>
+
+                          <span>
+                            Página {
+                              paginacionResumen
+                                .page
+                            } de {
+                              paginacionResumen
+                                .totalPaginas ||
+                              1
+                            }
+                          </span>
+
+                          <button
+                            type="button"
+                            disabled={
+                              pageResumen >=
+                              paginacionResumen
+                                .totalPaginas
+                            }
+                            onClick={() =>
+                              setPageResumen(
+                                pageResumen +
+                                1
+                              )
+                            }
+                          >
+                            Siguiente
+                          </button>
+
+                        </div>
+                      </>
+                    )
+                }
+
+              </div>
+            </>
+          )
+          : (
+            <>
+              <form
+                className="apt-filtros apt-filtros-presentaciones"
+                onSubmit={
+                  aplicarFiltrosPresentaciones
+                }
+              >
+
+                {
+                  renderFiltrosBase(
+                    filtrosPresentaciones,
+                    setFiltrosPresentaciones
+                  )
+                }
+
+                <div>
+                  <label>
+                    Estado
+                  </label>
+
+                  <select
+                    value={
+                      filtrosPresentaciones
+                        .estado
+                    }
+                    onChange={(e) =>
+                      setFiltrosPresentaciones({
+                        ...filtrosPresentaciones,
+                        estado:
+                          e.target.value
+                      })
+                    }
+                  >
+                    <option value="TODOS">
+                      Todos
+                    </option>
+
+                    <option value="CON_STOCK">
+                      Con stock
+                    </option>
+
+                    <option value="AGOTADO">
+                      Agotados
+                    </option>
+                  </select>
+                </div>
+
+                <button type="submit">
+                  Buscar
+                </button>
+
+                <button
+                  type="button"
+                  className="btn-secondary"
+                  onClick={
+                    limpiarFiltrosPresentaciones
+                  }
+                >
+                  Limpiar
+                </button>
+
+              </form>
+
+
+              <div className="tabla-card">
+
+                <div className="apt-tabla-cabecera">
+                  <div>
+                    <h3>
+                      Stock por presentación
+                    </h3>
+
+                    <p>
+                      Existencias separadas según
+                      la presentación registrada en producción.
+                    </p>
+                  </div>
+
+                  <span className="muted">
+                    {
+                      paginacionPresentaciones
+                        .total
+                    } registro(s)
+                  </span>
+                </div>
+
+
+                {
+                  cargando
+                    ? (
+                      <p>
+                        Cargando presentaciones...
+                      </p>
+                    )
+                    : (
+                      <>
+                        <div className="tabla-scroll">
+                          <table>
+                            <thead>
+                              <tr>
+                                <th>
+                                  Producto
+                                </th>
+                                <th>
+                                  Medida
+                                </th>
+                                <th>
+                                  Color
+                                </th>
+                                <th>
+                                  Presentación
+                                </th>
+                                <th>
+                                  Disponible
+                                </th>
+                                <th>
+                                  Unidades disponibles
+                                </th>
+                                <th>
+                                  Estado
+                                </th>
+                                <th>
+                                  Acción
+                                </th>
+                              </tr>
+                            </thead>
+
+                            <tbody>
+                              {
+                                presentaciones.map(
+                                  (item) => (
+                                    <tr
+                                      key={
+                                        item
+                                          .stock_producto_terminado_id
+                                      }
+                                    >
+                                      <td>
+                                        <strong>
+                                          {
+                                            item
+                                              .tipo_producto
+                                          }
+                                        </strong>
+                                        <div className="apt-subtexto">
+                                          {
+                                            item.material
+                                          }
+                                        </div>
+                                      </td>
+
+                                      <td>
+                                        {
+                                          item.medida
+                                        }
+                                      </td>
+
+                                      <td>
+                                        {
+                                          item.color
+                                        }
+                                      </td>
+
+                                      <td>
+                                        <strong>
+                                          {
+                                            cantidad(
+                                              item
+                                                .cantidad_presentacion
+                                            )
+                                          } {
+                                            item
+                                              .unidad_presentacion
+                                          }
+                                        </strong>
+                                      </td>
+
+                                      <td>
+                                        <strong className="apt-stock-positivo">
+                                          {
+                                            cantidad(
+                                              item
+                                                .cantidad_disponible
+                                            )
+                                          } {
+                                            item.unidad
+                                          }
+                                        </strong>
+                                      </td>
+
+                                      <td>
+                                        {
+                                          Number(
+                                            item
+                                              .presentaciones_disponibles ||
+                                            0
+                                          )
+                                            .toFixed(
+                                              2
+                                            )
+                                        }
+                                      </td>
+
+                                      <td>
+                                        <span
+                                          className={
+                                            item
+                                              .estado_stock ===
+                                              'CON_STOCK'
+                                              ? 'apt-badge apt-badge-ok'
+                                              : 'apt-badge apt-badge-agotado'
+                                          }
+                                        >
+                                          {
+                                            item
+                                              .estado_stock ===
+                                              'CON_STOCK'
+                                              ? 'Con stock'
+                                              : 'Agotado'
+                                          }
+                                        </span>
+                                      </td>
+
+                                      <td>
+                                        <Link
+                                          className="btn-outline"
+                                          to={
+                                            `/gestion/almacen/producto-terminado/presentaciones/${item.stock_producto_terminado_id}`
+                                          }
+                                        >
+                                          Ver detalle
+                                        </Link>
+                                      </td>
+                                    </tr>
+                                  )
+                                )
+                              }
+
+                              {
+                                presentaciones.length ===
+                                  0 &&
+                                (
+                                  <tr>
+                                    <td colSpan={8}>
+                                      No hay presentaciones
+                                      para los filtros seleccionados.
+                                    </td>
+                                  </tr>
+                                )
+                              }
+                            </tbody>
+                          </table>
+                        </div>
+
+
+                        <div className="paginado">
+
+                          <button
+                            type="button"
+                            disabled={
+                              pagePresentaciones <=
+                              1
+                            }
+                            onClick={() =>
+                              setPagePresentaciones(
+                                pagePresentaciones -
+                                1
+                              )
+                            }
+                          >
+                            Anterior
+                          </button>
+
+                          <span>
+                            Página {
+                              paginacionPresentaciones
+                                .page
+                            } de {
+                              paginacionPresentaciones
+                                .totalPaginas ||
+                              1
+                            }
+                          </span>
+
+                          <button
+                            type="button"
+                            disabled={
+                              pagePresentaciones >=
+                              paginacionPresentaciones
+                                .totalPaginas
+                            }
+                            onClick={() =>
+                              setPagePresentaciones(
+                                pagePresentaciones +
+                                1
+                              )
+                            }
+                          >
+                            Siguiente
+                          </button>
+
+                        </div>
+                      </>
+                    )
+                }
+
+              </div>
+            </>
+          )
+      }
+
+    </div>
+  );
+}
+
+
+export default AlmacenProductoTerminado;
+
+
+<<<END OF FILE>>>
+
+
+---
+
+## FILE: src\pages\almacenProductoTerminado\AlmacenProductoTerminadoDetalle.tsx
+
+<<<START OF FILE>>>
+
+import {
+  useCallback,
+  useEffect,
+  useState
+} from 'react';
+
+import {
+  Link,
+  useParams
+} from 'react-router-dom';
+
+import {
+  apiFetch
+} from '../../services/api';
+
+import FeedbackToast
+  from '../../components/common/FeedbackToast';
+
+import '../../styles/almacenProductoTerminado.css';
+
+
+type FeedbackTipo =
+  | 'success'
+  | 'error'
+  | 'info'
+  | 'warning';
+
+
+const tiposMovimiento = [
+  {
+    valor: '',
+    texto: 'Todos'
+  },
+  {
+    valor: 'ENTRADA_PRODUCCION',
+    texto: 'Entrada por producción'
+  },
+  {
+    valor: 'SALIDA_ENTREGA',
+    texto: 'Salida por entrega'
+  },
+  {
+    valor: 'AJUSTE_ENTRADA',
+    texto: 'Ajuste de entrada'
+  },
+  {
+    valor: 'AJUSTE_SALIDA',
+    texto: 'Ajuste de salida'
+  }
+];
+
+
+function AlmacenProductoTerminadoDetalle() {
+  const {
+    stock_producto_terminado_id
+  } = useParams();
+
+  const [
+    presentacion,
+    setPresentacion
+  ] = useState<any | null>(
+    null
+  );
+
+  const [
+    movimientos,
+    setMovimientos
+  ] = useState<any[]>([]);
+
+  const [
+    cargando,
+    setCargando
+  ] = useState(true);
+
+  const [
+    page,
+    setPage
+  ] = useState(1);
+
+  const [
+    tipoMovimiento,
+    setTipoMovimiento
+  ] = useState('');
+
+  const [
+    paginacion,
+    setPaginacion
+  ] = useState({
+    page: 1,
+    limit: 10,
+    total: 0,
+    totalPaginas: 0
+  });
+
+  const [
+    feedback,
+    setFeedback
+  ] = useState<{
+    tipo: FeedbackTipo;
+    mensaje: string;
+  }>({
+    tipo: 'info',
+    mensaje: ''
+  });
+
+
+  const cargarPresentacion =
+    useCallback(
+      async () => {
+        const data =
+          await apiFetch(
+            `/almacen-producto-terminado/presentaciones/${stock_producto_terminado_id}`
+          );
+
+        setPresentacion(
+          data.presentacion
+        );
+      },
+      [
+        stock_producto_terminado_id
+      ]
+    );
+
+
+  const cargarMovimientos =
+    useCallback(
+      async (
+        pagina: number,
+        tipo: string
+      ) => {
+        const params =
+          new URLSearchParams();
+
+        params.set(
+          'page',
+          String(pagina)
+        );
+
+        params.set(
+          'limit',
+          '10'
+        );
+
+        if (tipo) {
+          params.set(
+            'tipo_movimiento',
+            tipo
+          );
+        }
+
+        const data =
+          await apiFetch(
+            `/almacen-producto-terminado/presentaciones/${stock_producto_terminado_id}/movimientos?${params.toString()}`
+          );
+
+        setMovimientos(
+          data.movimientos ||
+          []
+        );
+
+        setPaginacion(
+          data.paginacion
+        );
+      },
+      [
+        stock_producto_terminado_id
+      ]
+    );
+
+
+  useEffect(() => {
+    const iniciar =
+      async () => {
+        setCargando(true);
+
+        try {
+          await Promise.all([
+            cargarPresentacion(),
+            cargarMovimientos(
+              1,
+              ''
+            )
+          ]);
+
+        } catch (error: any) {
+          setFeedback({
+            tipo: 'error',
+            mensaje: error.message
+          });
+
+        } finally {
+          setCargando(false);
+        }
+      };
+
+    iniciar();
+  }, [
+    cargarPresentacion,
+    cargarMovimientos
+  ]);
+
+
+  useEffect(() => {
+    if (cargando) {
+      return;
+    }
+
+    cargarMovimientos(
+      page,
+      tipoMovimiento
+    ).catch(
+      (error: any) => {
+        setFeedback({
+          tipo: 'error',
+          mensaje: error.message
+        });
+      }
+    );
+  }, [
+    page,
+    tipoMovimiento,
+    cargarMovimientos,
+    cargando
+  ]);
+
+
+  const cantidad = (
+    valor: any
+  ) => {
+    return Number(
+      valor || 0
+    ).toFixed(3);
+  };
+
+
+  const fechaHoraTexto = (
+    valor: string | null
+  ) => {
+    if (!valor) {
+      return '-';
+    }
+
+    return new Date(
+      valor
+    ).toLocaleString();
+  };
+
+
+  const esEntrada = (
+    tipo: string
+  ) => {
+    return [
+      'ENTRADA_PRODUCCION',
+      'AJUSTE_ENTRADA'
+    ].includes(tipo);
+  };
+
+
+  const tipoTexto = (
+    tipo: string
+  ) => {
+    return (
+      tiposMovimiento.find(
+        (item) =>
+          item.valor === tipo
+      )?.texto ||
+      tipo
+    );
+  };
+
+
+  const referenciaTexto = (
+    movimiento: any
+  ) => {
+    if (
+      movimiento.produccion_id
+    ) {
+      return (
+        `Producción #${movimiento.produccion_id}`
+      );
+    }
+
+    if (
+      movimiento.entrega_id
+    ) {
+      return movimiento.pedido_id
+        ? `Entrega #${movimiento.entrega_id} · Pedido #${movimiento.pedido_id}`
+        : `Entrega #${movimiento.entrega_id}`;
+    }
+
+    return '-';
+  };
+
+
+  if (cargando) {
+    return (
+      <div className="pedidos-page">
+        <p>
+          Cargando stock...
+        </p>
+      </div>
+    );
+  }
+
+
+  if (!presentacion) {
+    return (
+      <div className="pedidos-page">
+
+        <FeedbackToast
+          tipo={feedback.tipo}
+          mensaje={feedback.mensaje}
+          onClose={() =>
+            setFeedback({
+              ...feedback,
+              mensaje: ''
+            })
+          }
+        />
+
+        <Link
+          to="/gestion/almacen/producto-terminado"
+          className="btn-volver"
+        >
+          ← Volver
+        </Link>
+
+        <div className="tabla-card">
+          No se pudo cargar el stock
+          del producto terminado.
+        </div>
+
+      </div>
+    );
+  }
+
+
+  return (
+    <div className="pedidos-page almacen-pt-page">
+
+      <FeedbackToast
+        tipo={feedback.tipo}
+        mensaje={feedback.mensaje}
+        onClose={() =>
+          setFeedback({
+            ...feedback,
+            mensaje: ''
+          })
+        }
+      />
+
+
+      <Link
+        to="/gestion/almacen/producto-terminado"
+        className="btn-volver"
+      >
+        ← Volver al almacén
+      </Link>
+
+
+      <div className="pedidos-header">
+        <div>
+          <h1>
+            {
+              presentacion
+                .tipo_producto
+            }
+            {' · '}
+            {
+              presentacion.material
+            }
+            {' · '}
+            {
+              presentacion.medida
+            }
+            {' · '}
+            {
+              presentacion.color
+            }
+          </h1>
+
+          <p>
+            Stock e historial de movimientos
+            de esta presentación.
+          </p>
+        </div>
+      </div>
+
+
+      <div className="apt-detalle-principal">
+
+        <div className="apt-presentacion-destacada">
+          <span>
+            Presentación
+          </span>
+
+          <strong>
+            {
+              cantidad(
+                presentacion
+                  .cantidad_presentacion
+              )
+            } {
+              presentacion
+                .unidad_presentacion
+            }
+          </strong>
+        </div>
+
+
+        <div>
+          <span>
+            Stock disponible
+          </span>
+
+          <strong className="apt-stock-positivo">
+            {
+              cantidad(
+                presentacion
+                  .cantidad_disponible
+              )
+            } {
+              presentacion.unidad
+            }
+          </strong>
+        </div>
+
+
+        <div>
+          <span>
+            Unidades disponibles
+          </span>
+
+          <strong>
+            {
+              Number(
+                presentacion
+                  .presentaciones_disponibles ||
+                0
+              ).toFixed(2)
+            }
+          </strong>
+        </div>
+
+
+        <div>
+          <span>
+            Estado
+          </span>
+
+          <strong>
+            {
+              presentacion
+                .estado_stock ===
+                'CON_STOCK'
+                ? 'Con stock'
+                : 'Agotado'
+            }
+          </strong>
+        </div>
+
+      </div>
+
+
+      <div className="tabla-card">
+
+        <div className="apt-movimientos-header">
+          <div>
+            <h3>
+              Historial de movimientos
+            </h3>
+
+            <p>
+              Entradas por producción
+              y salidas por entregas.
+            </p>
+          </div>
+
+
+          <div className="apt-movimiento-filtro">
+            <label>
+              Tipo
+            </label>
+
+            <select
+              value={
+                tipoMovimiento
+              }
+              onChange={(e) => {
+                setPage(1);
+
+                setTipoMovimiento(
+                  e.target.value
+                );
+              }}
+            >
+              {
+                tiposMovimiento.map(
+                  (item) => (
+                    <option
+                      key={
+                        item.valor ||
+                        'TODOS'
+                      }
+                      value={
+                        item.valor
+                      }
+                    >
+                      {
+                        item.texto
+                      }
+                    </option>
+                  )
+                )
+              }
+            </select>
+          </div>
+        </div>
+
+
+        <div className="tabla-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>
+                  Fecha
+                </th>
+                <th>
+                  Movimiento
+                </th>
+                <th>
+                  Cantidad
+                </th>
+                <th>
+                  Referencia
+                </th>
+                <th>
+                  Observación
+                </th>
+                <th>
+                  Registrado por
+                </th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {
+                movimientos.map(
+                  (movimiento) => (
+                    <tr
+                      key={
+                        movimiento
+                          .movimiento_producto_terminado_id
+                      }
+                    >
+                      <td>
+                        {
+                          fechaHoraTexto(
+                            movimiento
+                              .fecha_movimiento
+                          )
+                        }
+                      </td>
+
+                      <td>
+                        <span
+                          className={
+                            esEntrada(
+                              movimiento
+                                .tipo_movimiento
+                            )
+                              ? 'apt-badge apt-badge-ok'
+                              : 'apt-badge apt-badge-salida'
+                          }
+                        >
+                          {
+                            tipoTexto(
+                              movimiento
+                                .tipo_movimiento
+                            )
+                          }
+                        </span>
+                      </td>
+
+                      <td>
+                        <strong
+                          className={
+                            esEntrada(
+                              movimiento
+                                .tipo_movimiento
+                            )
+                              ? 'apt-stock-positivo'
+                              : 'apt-stock-salida'
+                          }
+                        >
+                          {
+                            esEntrada(
+                              movimiento
+                                .tipo_movimiento
+                            )
+                              ? '+'
+                              : '-'
+                          }
+                          {
+                            cantidad(
+                              movimiento
+                                .cantidad
+                            )
+                          } {
+                            presentacion.unidad
+                          }
+                        </strong>
+                      </td>
+
+                      <td>
+                        {
+                          referenciaTexto(
+                            movimiento
+                          )
+                        }
+                      </td>
+
+                      <td>
+                        {
+                          movimiento
+                            .observacion ||
+                          '-'
+                        }
+                      </td>
+
+                      <td>
+                        {
+                          movimiento
+                            .registrado_por
+                        }
+                      </td>
+                    </tr>
+                  )
+                )
+              }
+
+              {
+                movimientos.length ===
+                  0 &&
+                (
+                  <tr>
+                    <td colSpan={6}>
+                      No existen movimientos
+                      para el filtro seleccionado.
+                    </td>
+                  </tr>
+                )
+              }
+            </tbody>
+          </table>
+        </div>
+
+
+        <div className="paginado">
+
+          <button
+            type="button"
+            disabled={
+              page <= 1
+            }
+            onClick={() =>
+              setPage(
+                page - 1
+              )
+            }
+          >
+            Anterior
+          </button>
+
+          <span>
+            Página {
+              paginacion.page
+            } de {
+              paginacion
+                .totalPaginas ||
+              1
+            }
+          </span>
+
+          <button
+            type="button"
+            disabled={
+              page >=
+              paginacion
+                .totalPaginas
+            }
+            onClick={() =>
+              setPage(
+                page + 1
+              )
+            }
+          >
+            Siguiente
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+  );
+}
+
+
+export default AlmacenProductoTerminadoDetalle;
+
 
 <<<END OF FILE>>>
 
@@ -5666,6 +10595,2334 @@ export default Compras;
 
 ---
 
+## FILE: src\pages\comprasMateriaPrima\CompraMateriaPrimaDetalle.tsx
+
+<<<START OF FILE>>>
+
+import {
+  useEffect,
+  useState
+} from 'react';
+
+import {
+  Link,
+  useParams
+} from 'react-router-dom';
+
+import {
+  apiFetch
+} from '../../services/api';
+
+import FeedbackToast
+  from '../../components/common/FeedbackToast';
+
+import '../../styles/comprasMateriaPrima.css';
+
+
+type FeedbackTipo =
+  | 'success'
+  | 'error'
+  | 'info'
+  | 'warning';
+
+
+function CompraMateriaPrimaDetalle() {
+  const {
+    compra_materia_prima_id
+  } = useParams();
+
+  const [
+    compra,
+    setCompra
+  ] = useState<any | null>(
+    null
+  );
+
+  const [
+    cargando,
+    setCargando
+  ] = useState(true);
+
+  const [
+    feedback,
+    setFeedback
+  ] = useState<{
+    tipo: FeedbackTipo;
+    mensaje: string;
+  }>({
+    tipo: 'info',
+    mensaje: ''
+  });
+
+
+  useEffect(() => {
+    const cargar =
+      async () => {
+        setCargando(true);
+
+        try {
+          const data =
+            await apiFetch(
+              `/compras-materia-prima/${compra_materia_prima_id}`
+            );
+
+          setCompra(
+            data.compra
+          );
+
+        } catch (error: any) {
+          setFeedback({
+            tipo: 'error',
+            mensaje: error.message
+          });
+
+        } finally {
+          setCargando(false);
+        }
+      };
+
+    cargar();
+  }, [
+    compra_materia_prima_id
+  ]);
+
+
+  if (cargando) {
+    return (
+      <div className="pedidos-page">
+        <p>
+          Cargando detalle del lote...
+        </p>
+      </div>
+    );
+  }
+
+
+  if (!compra) {
+    return (
+      <div className="pedidos-page">
+        <FeedbackToast
+          tipo={feedback.tipo}
+          mensaje={feedback.mensaje}
+          onClose={() =>
+            setFeedback({
+              ...feedback,
+              mensaje: ''
+            })
+          }
+        />
+
+        <Link
+          to="/gestion/compras-materia-prima"
+          className="btn-volver"
+        >
+          ← Volver
+        </Link>
+
+        <div className="tabla-card">
+          No se pudo cargar la compra.
+        </div>
+      </div>
+    );
+  }
+
+
+  const comprado =
+    compra.detalles.reduce(
+      (
+        total: number,
+        item: any
+      ) =>
+        total +
+        Number(
+          item.cantidad ||
+          0
+        ),
+      0
+    );
+
+  const disponible =
+    compra.detalles.reduce(
+      (
+        total: number,
+        item: any
+      ) =>
+        total +
+        Number(
+          item
+            .cantidad_disponible ||
+          0
+        ),
+      0
+    );
+
+
+  return (
+    <div className="pedidos-page compra-mp-page">
+
+      <FeedbackToast
+        tipo={feedback.tipo}
+        mensaje={feedback.mensaje}
+        onClose={() =>
+          setFeedback({
+            ...feedback,
+            mensaje: ''
+          })
+        }
+      />
+
+
+      <Link
+        to="/gestion/compras-materia-prima"
+        className="btn-volver"
+      >
+        ← Volver a compras de materia prima
+      </Link>
+
+
+      <div className="pedidos-header">
+        <div>
+          <h1>
+            {compra.nombre_lote}
+          </h1>
+
+          <p>
+            Detalle de la compra y saldo actual
+            de cada materia prima del lote.
+          </p>
+        </div>
+      </div>
+
+
+      <div className="compra-mp-resumen">
+
+        <div>
+          <span>
+            Proveedor
+          </span>
+
+          <strong>
+            {
+              compra.razon_social
+            }
+          </strong>
+
+          <small>
+            RUC {compra.ruc}
+          </small>
+        </div>
+
+
+        <div>
+          <span>
+            Fecha
+          </span>
+
+          <strong>
+            {
+              compra
+                .fecha_compra
+                ?.slice(
+                  0,
+                  10
+                )
+            }
+          </strong>
+        </div>
+
+
+        <div>
+          <span>
+            Documento
+          </span>
+
+          <strong>
+            {
+              compra
+                .numero_documento ||
+              '-'
+            }
+          </strong>
+        </div>
+
+
+        <div>
+          <span>
+            Comprado
+          </span>
+
+          <strong>
+            {
+              comprado.toFixed(3)
+            } KG
+          </strong>
+        </div>
+
+
+        <div>
+          <span>
+            Disponible
+          </span>
+
+          <strong>
+            {
+              disponible.toFixed(3)
+            } KG
+          </strong>
+        </div>
+
+
+        <div>
+          <span>
+            Total
+          </span>
+
+          <strong>
+            {
+              compra.moneda_codigo ===
+                'USD'
+                ? '$'
+                : 'S/'
+            }
+            {' '}
+            {
+              Number(
+                compra.monto_total
+              )
+                .toFixed(2)
+            }
+            {' '}
+            {
+              compra.moneda_codigo
+            }
+          </strong>
+        </div>
+
+      </div>
+
+
+      {compra.descripcion && (
+        <div className="form-card">
+          <h3>
+            Descripción
+          </h3>
+
+          <p>
+            {compra.descripcion}
+          </p>
+        </div>
+      )}
+
+
+      <div className="tabla-card">
+
+        <h3>
+          Materias primas del lote
+        </h3>
+
+        <div className="tabla-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Material</th>
+                <th>Color</th>
+                <th>Descripción</th>
+                <th>Comprado</th>
+                <th>Disponible</th>
+                <th>Consumido</th>
+                <th>Precio unitario</th>
+                <th>Subtotal</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {compra.detalles.map(
+                (item: any) => {
+                  const consumido =
+                    Number(
+                      item.cantidad_inicial ||
+                      0
+                    ) -
+                    Number(
+                      item
+                        .cantidad_disponible ||
+                      0
+                    );
+
+                  return (
+                    <tr
+                      key={
+                        item
+                          .compra_materia_prima_detalle_id
+                      }
+                    >
+                      <td>
+                        <strong>
+                          {
+                            item.material
+                          }
+                        </strong>
+                      </td>
+
+                      <td>
+                        {
+                          item.color
+                        }
+                      </td>
+
+                      <td>
+                        {
+                          item
+                            .descripcion_item ||
+                          '-'
+                        }
+                      </td>
+
+                      <td>
+                        {
+                          Number(
+                            item
+                              .cantidad_inicial
+                          )
+                            .toFixed(3)
+                        } KG
+                      </td>
+
+                      <td>
+                        <strong>
+                          {
+                            Number(
+                              item
+                                .cantidad_disponible
+                            )
+                              .toFixed(3)
+                          } KG
+                        </strong>
+                      </td>
+
+                      <td>
+                        {
+                          consumido.toFixed(
+                            3
+                          )
+                        } KG
+                      </td>
+
+                      <td>
+                        {
+                          Number(
+                            item
+                              .precio_unitario
+                          )
+                            .toFixed(4)
+                        }
+                        {' '}
+                        {
+                          compra
+                            .moneda_codigo
+                        }
+                      </td>
+
+                      <td>
+                        {
+                          Number(
+                            item.subtotal
+                          )
+                            .toFixed(2)
+                        }
+                        {' '}
+                        {
+                          compra
+                            .moneda_codigo
+                        }
+                      </td>
+                    </tr>
+                  );
+                }
+              )}
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+
+      <div className="form-card">
+        <div className="compra-mp-meta">
+          <span>
+            Registrado por:
+            {' '}
+            <strong>
+              {
+                compra
+                  .registrado_por
+              }
+            </strong>
+          </span>
+
+          <span>
+            Registro:
+            {' '}
+            {
+              compra.created_at
+                ? new Date(
+                    compra.created_at
+                  )
+                    .toLocaleString()
+                : '-'
+            }
+          </span>
+        </div>
+      </div>
+
+    </div>
+  );
+}
+
+
+export default CompraMateriaPrimaDetalle;
+
+
+<<<END OF FILE>>>
+
+
+---
+
+## FILE: src\pages\comprasMateriaPrima\ComprasMateriaPrimaLista.tsx
+
+<<<START OF FILE>>>
+
+import {
+  useCallback,
+  useEffect,
+  useState
+} from 'react';
+
+import type {
+  FormEvent
+} from 'react';
+
+import {
+  Link
+} from 'react-router-dom';
+
+import {
+  apiFetch
+} from '../../services/api';
+
+import FeedbackToast
+  from '../../components/common/FeedbackToast';
+
+import '../../styles/comprasMateriaPrima.css';
+
+
+type FeedbackTipo =
+  | 'success'
+  | 'error'
+  | 'info'
+  | 'warning';
+
+
+type FiltrosCompraMP = {
+  proveedor_id: string;
+  q: string;
+};
+
+
+const filtrosVacios: FiltrosCompraMP = {
+  proveedor_id: '',
+  q: ''
+};
+
+
+function ComprasMateriaPrimaLista() {
+  const [
+    compras,
+    setCompras
+  ] = useState<any[]>([]);
+
+  const [
+    proveedores,
+    setProveedores
+  ] = useState<any[]>([]);
+
+  const [
+    cargando,
+    setCargando
+  ] = useState(true);
+
+  const [
+    page,
+    setPage
+  ] = useState(1);
+
+  const [
+    paginacion,
+    setPaginacion
+  ] = useState({
+    page: 1,
+    limit: 10,
+    total: 0,
+    totalPaginas: 0
+  });
+
+  /*
+   * filtros:
+   *   lo que el usuario está escribiendo.
+   *
+   * filtrosAplicados:
+   *   lo que realmente alimenta la consulta.
+   *
+   * Así cambiar el select/input no dispara
+   * consultas hasta pulsar "Buscar".
+   */
+  const [
+    filtros,
+    setFiltros
+  ] = useState<FiltrosCompraMP>({
+    ...filtrosVacios
+  });
+
+  const [
+    filtrosAplicados,
+    setFiltrosAplicados
+  ] = useState<FiltrosCompraMP>({
+    ...filtrosVacios
+  });
+
+  const [
+    feedback,
+    setFeedback
+  ] = useState<{
+    tipo: FeedbackTipo;
+    mensaje: string;
+  }>({
+    tipo: 'info',
+    mensaje: ''
+  });
+
+
+  const cargarProveedores =
+    useCallback(
+      async () => {
+        const data =
+          await apiFetch(
+            '/proveedores'
+          );
+
+        setProveedores(
+          data.proveedores || []
+        );
+      },
+      []
+    );
+
+
+  const cargarCompras =
+    useCallback(
+      async (
+        paginaActual: number,
+        filtrosActuales: FiltrosCompraMP
+      ) => {
+        const params =
+          new URLSearchParams();
+
+        params.set(
+          'page',
+          String(paginaActual)
+        );
+
+        params.set(
+          'limit',
+          '10'
+        );
+
+        if (
+          filtrosActuales.proveedor_id
+        ) {
+          params.set(
+            'proveedor_id',
+            filtrosActuales.proveedor_id
+          );
+        }
+
+        if (
+          filtrosActuales.q.trim()
+        ) {
+          params.set(
+            'q',
+            filtrosActuales.q.trim()
+          );
+        }
+
+        const data =
+          await apiFetch(
+            `/compras-materia-prima?${params.toString()}`
+          );
+
+        setCompras(
+          data.compras || []
+        );
+
+        setPaginacion(
+          data.paginacion
+        );
+      },
+      []
+    );
+
+
+  useEffect(() => {
+    const iniciar =
+      async () => {
+        setCargando(true);
+
+        try {
+          await Promise.all([
+            cargarProveedores(),
+            cargarCompras(
+              1,
+              filtrosVacios
+            )
+          ]);
+
+        } catch (error: any) {
+          setFeedback({
+            tipo: 'error',
+            mensaje: error.message
+          });
+
+        } finally {
+          setCargando(false);
+        }
+      };
+
+    iniciar();
+  }, [
+    cargarCompras,
+    cargarProveedores
+  ]);
+
+
+  useEffect(() => {
+    if (cargando) {
+      return;
+    }
+
+    const recargar =
+      async () => {
+        try {
+          await cargarCompras(
+            page,
+            filtrosAplicados
+          );
+
+        } catch (error: any) {
+          setFeedback({
+            tipo: 'error',
+            mensaje: error.message
+          });
+        }
+      };
+
+    recargar();
+  }, [
+    page,
+    filtrosAplicados,
+    cargarCompras
+  ]);
+
+
+  const aplicarFiltros = (
+    e: FormEvent
+  ) => {
+    e.preventDefault();
+
+    setPage(1);
+
+    setFiltrosAplicados({
+      proveedor_id:
+        filtros.proveedor_id,
+      q:
+        filtros.q.trim()
+    });
+  };
+
+
+  const limpiarFiltros = () => {
+    setFiltros({
+      ...filtrosVacios
+    });
+
+    setPage(1);
+
+    setFiltrosAplicados({
+      ...filtrosVacios
+    });
+  };
+
+
+  const monedaSimbolo = (
+    moneda: string
+  ) => {
+    return moneda === 'USD'
+      ? '$'
+      : 'S/';
+  };
+
+
+  return (
+    <div className="pedidos-page compra-mp-page">
+
+      <FeedbackToast
+        tipo={feedback.tipo}
+        mensaje={feedback.mensaje}
+        onClose={() =>
+          setFeedback({
+            ...feedback,
+            mensaje: ''
+          })
+        }
+      />
+
+
+      <div className="pedidos-header">
+        <div>
+          <h1>
+            Compras de materia prima
+          </h1>
+
+          <p>
+            Gestiona las compras de fibra por lote
+            y su ingreso al almacén de materia prima.
+          </p>
+        </div>
+
+        <Link
+          to="/gestion/compras-materia-prima/registrar"
+          className="btn-primary-link"
+        >
+          + Registrar lote
+        </Link>
+      </div>
+
+
+      <form
+        className="compra-mp-filtros"
+        onSubmit={aplicarFiltros}
+      >
+        <div>
+          <label>
+            Buscar
+          </label>
+
+          <input
+            value={filtros.q}
+            onChange={(e) =>
+              setFiltros({
+                ...filtros,
+                q: e.target.value
+              })
+            }
+            placeholder="Lote, documento, proveedor..."
+          />
+        </div>
+
+        <div>
+          <label>
+            Proveedor
+          </label>
+
+          <select
+            value={filtros.proveedor_id}
+            onChange={(e) =>
+              setFiltros({
+                ...filtros,
+                proveedor_id:
+                  e.target.value
+              })
+            }
+          >
+            <option value="">
+              Todos
+            </option>
+
+            {proveedores.map(
+              (proveedor) => (
+                <option
+                  key={
+                    proveedor.proveedor_id
+                  }
+                  value={
+                    proveedor.proveedor_id
+                  }
+                >
+                  {
+                    proveedor.razon_social
+                  }
+                </option>
+              )
+            )}
+          </select>
+        </div>
+
+        <button type="submit">
+          Buscar
+        </button>
+
+        <button
+          type="button"
+          className="btn-secondary"
+          onClick={limpiarFiltros}
+        >
+          Limpiar
+        </button>
+      </form>
+
+
+      <div className="tabla-card">
+
+        <div className="compra-mp-tabla-header">
+          <div>
+            <h3>
+              Lotes registrados
+            </h3>
+
+            <span className="muted">
+              {
+                paginacion.total
+              } registro(s)
+            </span>
+          </div>
+        </div>
+
+
+        {cargando ? (
+          <p>
+            Cargando compras...
+          </p>
+        ) : (
+          <>
+            <div className="tabla-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Lote</th>
+                    <th>Proveedor</th>
+                    <th>Fecha</th>
+                    <th>Documento</th>
+                    <th>Items</th>
+                    <th>Total comprado</th>
+                    <th>Disponible</th>
+                    <th>Monto</th>
+                    <th>Registrado por</th>
+                    <th>Acción</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {compras.map(
+                    (compra) => (
+                      <tr
+                        key={
+                          compra
+                            .compra_materia_prima_id
+                        }
+                      >
+                        <td>
+                          <strong>
+                            {
+                              compra
+                                .nombre_lote
+                            }
+                          </strong>
+                        </td>
+
+                        <td>
+                          {
+                            compra
+                              .razon_social
+                          }
+                          <br />
+                          <span className="muted">
+                            {
+                              compra.ruc
+                            }
+                          </span>
+                        </td>
+
+                        <td>
+                          {
+                            compra
+                              .fecha_compra
+                              ?.slice(
+                                0,
+                                10
+                              )
+                          }
+                        </td>
+
+                        <td>
+                          {
+                            compra
+                              .numero_documento ||
+                            '-'
+                          }
+                        </td>
+
+                        <td>
+                          {
+                            compra
+                              .cantidad_items
+                          }
+                        </td>
+
+                        <td>
+                          <strong>
+                            {
+                              Number(
+                                compra
+                                  .cantidad_total_kg ||
+                                0
+                              )
+                                .toFixed(3)
+                            } KG
+                          </strong>
+                        </td>
+
+                        <td>
+                          {
+                            Number(
+                              compra
+                                .cantidad_disponible_kg ||
+                              0
+                            )
+                              .toFixed(3)
+                          } KG
+                        </td>
+
+                        <td>
+                          {
+                            monedaSimbolo(
+                              compra
+                                .moneda_codigo
+                            )
+                          }
+                          {' '}
+                          {
+                            Number(
+                              compra
+                                .monto_total ||
+                              0
+                            )
+                              .toFixed(2)
+                          }
+                          {' '}
+                          {
+                            compra
+                              .moneda_codigo
+                          }
+                        </td>
+
+                        <td>
+                          {
+                            compra
+                              .registrado_por
+                          }
+                        </td>
+
+                        <td>
+                          <Link
+                            className="btn-outline"
+                            to={
+                              `/gestion/compras-materia-prima/${compra.compra_materia_prima_id}`
+                            }
+                          >
+                            Ver detalle
+                          </Link>
+                        </td>
+                      </tr>
+                    )
+                  )}
+
+                  {
+                    compras.length === 0 &&
+                    (
+                      <tr>
+                        <td colSpan={10}>
+                          No hay compras de materia prima
+                          para los filtros seleccionados.
+                        </td>
+                      </tr>
+                    )
+                  }
+                </tbody>
+              </table>
+            </div>
+
+
+            <div className="paginado">
+
+              <button
+                type="button"
+                disabled={
+                  page <= 1
+                }
+                onClick={() =>
+                  setPage(
+                    page - 1
+                  )
+                }
+              >
+                Anterior
+              </button>
+
+              <span>
+                Página {
+                  paginacion.page
+                } de {
+                  paginacion
+                    .totalPaginas ||
+                  1
+                }
+              </span>
+
+              <button
+                type="button"
+                disabled={
+                  page >=
+                  paginacion.totalPaginas
+                }
+                onClick={() =>
+                  setPage(
+                    page + 1
+                  )
+                }
+              >
+                Siguiente
+              </button>
+
+            </div>
+          </>
+        )}
+
+      </div>
+
+    </div>
+  );
+}
+
+
+export default ComprasMateriaPrimaLista;
+
+
+<<<END OF FILE>>>
+
+
+---
+
+## FILE: src\pages\comprasMateriaPrima\RegistrarCompraMateriaPrima.tsx
+
+<<<START OF FILE>>>
+
+import {
+  useEffect,
+  useState
+} from 'react';
+
+import type {
+  ChangeEvent,
+  FormEvent
+} from 'react';
+
+import {
+  Link,
+  useNavigate
+} from 'react-router-dom';
+
+import {
+  apiFetch
+} from '../../services/api';
+
+import FeedbackToast
+  from '../../components/common/FeedbackToast';
+
+import {
+  useBloqueoAccion
+} from '../../hooks/useBloqueoAccion';
+
+import '../../styles/comprasMateriaPrima.css';
+
+
+type FeedbackTipo =
+  | 'success'
+  | 'error'
+  | 'info'
+  | 'warning';
+
+
+type DetalleCompraMP = {
+  material_id: string;
+  color_id: string;
+  cantidad: string;
+  precio_unitario: string;
+  descripcion_item: string;
+};
+
+
+const detalleVacio:
+  DetalleCompraMP = {
+  material_id: '',
+  color_id: '',
+  cantidad: '',
+  precio_unitario: '',
+  descripcion_item: ''
+};
+
+
+const fechaLocalActual = () => {
+  const hoy = new Date();
+
+  const anio =
+    hoy.getFullYear();
+
+  const mes =
+    String(
+      hoy.getMonth() + 1
+    ).padStart(2, '0');
+
+  const dia =
+    String(
+      hoy.getDate()
+    ).padStart(2, '0');
+
+  return `${anio}-${mes}-${dia}`;
+};
+
+
+const generarIdempotencyKey = () => {
+  if (
+    typeof crypto !==
+      'undefined' &&
+    typeof crypto.randomUUID ===
+      'function'
+  ) {
+    return crypto.randomUUID();
+  }
+
+  return [
+    'compra-mp',
+    Date.now(),
+    Math.random()
+      .toString(36)
+      .slice(2)
+  ].join('-');
+};
+
+
+function RegistrarCompraMateriaPrima() {
+  const navigate =
+    useNavigate();
+
+  const [
+    proveedores,
+    setProveedores
+  ] = useState<any[]>([]);
+
+  const [
+    materiales,
+    setMateriales
+  ] = useState<any[]>([]);
+
+  const [
+    colores,
+    setColores
+  ] = useState<any[]>([]);
+
+  const [
+    cargandoCatalogos,
+    setCargandoCatalogos
+  ] = useState(true);
+
+  const [
+    form,
+    setForm
+  ] = useState({
+    nombre_lote: '',
+    proveedor_id: '',
+    fecha_compra:
+      fechaLocalActual(),
+    numero_documento: '',
+    /*
+     * La moneda predeterminada del módulo
+     * será Soles.
+     */
+    moneda_codigo: 'PEN',
+    descripcion: ''
+  });
+
+  const [
+    detalles,
+    setDetalles
+  ] = useState<
+    DetalleCompraMP[]
+  >([
+    {
+      ...detalleVacio
+    }
+  ]);
+
+  /*
+   * Esta clave permanece estable mientras
+   * el usuario intenta registrar ESTA compra.
+   *
+   * Si se pierde la respuesta después de que
+   * el backend hizo COMMIT, un reintento con
+   * la misma key recuperará la compra existente
+   * en lugar de duplicar el inventario.
+   *
+   * Solamente se genera una nueva key después
+   * de un éxito confirmado.
+   */
+  const [
+    idempotencyKey,
+    setIdempotencyKey
+  ] = useState(
+    generarIdempotencyKey
+  );
+
+  const [
+    feedback,
+    setFeedback
+  ] = useState<{
+    tipo: FeedbackTipo;
+    mensaje: string;
+  }>({
+    tipo: 'info',
+    mensaje: ''
+  });
+
+  const {
+    procesando:
+      registrandoCompra,
+    intentarBloquear:
+      bloquearRegistro,
+    liberar:
+      liberarRegistro
+  } = useBloqueoAccion();
+
+
+  useEffect(() => {
+    const cargar =
+      async () => {
+        setCargandoCatalogos(true);
+
+        try {
+          const [
+            proveedoresData,
+            materialesData,
+            coloresData
+          ] = await Promise.all([
+            apiFetch(
+              '/proveedores'
+            ),
+            apiFetch(
+              '/catalogos/materiales'
+            ),
+            apiFetch(
+              '/catalogos/colores'
+            )
+          ]);
+
+          setProveedores(
+            proveedoresData
+              .proveedores ||
+            []
+          );
+
+          setMateriales(
+            materialesData.items ||
+            []
+          );
+
+          setColores(
+            coloresData.items ||
+            []
+          );
+
+        } catch (error: any) {
+          setFeedback({
+            tipo: 'error',
+            mensaje: error.message
+          });
+
+        } finally {
+          setCargandoCatalogos(
+            false
+          );
+        }
+      };
+
+    cargar();
+  }, []);
+
+
+  const handleCabeceraChange = (
+    e: ChangeEvent<
+      HTMLInputElement |
+      HTMLSelectElement |
+      HTMLTextAreaElement
+    >
+  ) => {
+    const {
+      name,
+      value
+    } = e.target;
+
+    setForm({
+      ...form,
+      [name]: value
+    });
+  };
+
+
+  const handleDetalleChange = (
+    index: number,
+    e: ChangeEvent<
+      HTMLInputElement |
+      HTMLSelectElement
+    >
+  ) => {
+    if (registrandoCompra) {
+      return;
+    }
+
+    const nuevos = [
+      ...detalles
+    ];
+
+    nuevos[index] = {
+      ...nuevos[index],
+      [e.target.name]:
+        e.target.value
+    };
+
+    setDetalles(nuevos);
+  };
+
+
+  const agregarDetalle = () => {
+    if (registrandoCompra) {
+      return;
+    }
+
+    setDetalles([
+      ...detalles,
+      {
+        ...detalleVacio
+      }
+    ]);
+  };
+
+
+  const quitarDetalle = (
+    index: number
+  ) => {
+    if (registrandoCompra) {
+      return;
+    }
+
+    if (
+      detalles.length === 1
+    ) {
+      setFeedback({
+        tipo: 'warning',
+        mensaje:
+          'La compra debe tener al menos una materia prima'
+      });
+
+      return;
+    }
+
+    setDetalles(
+      detalles.filter(
+        (_, i) =>
+          i !== index
+      )
+    );
+  };
+
+
+  const calcularSubtotal = (
+    detalle: DetalleCompraMP
+  ) => {
+    return (
+      Number(
+        detalle.cantidad ||
+        0
+      ) *
+      Number(
+        detalle.precio_unitario ||
+        0
+      )
+    );
+  };
+
+
+  const montoTotal =
+    detalles.reduce(
+      (
+        total,
+        detalle
+      ) =>
+        total +
+        calcularSubtotal(
+          detalle
+        ),
+      0
+    );
+
+
+  const validarFormulario = () => {
+    if (
+      !form.nombre_lote.trim()
+    ) {
+      return (
+        'El nombre del lote es obligatorio'
+      );
+    }
+
+    if (
+      !form.proveedor_id
+    ) {
+      return (
+        'Debe seleccionar un proveedor'
+      );
+    }
+
+    if (
+      !form.fecha_compra
+    ) {
+      return (
+        'La fecha de compra es obligatoria'
+      );
+    }
+
+    const combinaciones =
+      new Set<string>();
+
+    for (
+      let i = 0;
+      i < detalles.length;
+      i++
+    ) {
+      const item =
+        detalles[i];
+
+      if (!item.material_id) {
+        return (
+          `El item ${i + 1} debe tener material`
+        );
+      }
+
+      if (!item.color_id) {
+        return (
+          `El item ${i + 1} debe tener color`
+        );
+      }
+
+      const cantidad =
+        Number(item.cantidad);
+
+      if (
+        !Number.isFinite(
+          cantidad
+        ) ||
+        cantidad <= 0
+      ) {
+        return (
+          `El item ${i + 1} debe tener una cantidad mayor a 0`
+        );
+      }
+
+      const precio =
+        Number(
+          item.precio_unitario
+        );
+
+      if (
+        !Number.isFinite(
+          precio
+        ) ||
+        precio < 0
+      ) {
+        return (
+          `El item ${i + 1} debe tener un precio válido`
+        );
+      }
+
+      const clave =
+        `${item.material_id}-${item.color_id}`;
+
+      if (
+        combinaciones.has(
+          clave
+        )
+      ) {
+        return (
+          `El item ${i + 1} repite una combinación de material y color`
+        );
+      }
+
+      combinaciones.add(
+        clave
+      );
+    }
+
+    if (
+      !Number.isFinite(
+        montoTotal
+      ) ||
+      montoTotal <= 0
+    ) {
+      return (
+        'El monto total debe ser mayor a 0'
+      );
+    }
+
+    return null;
+  };
+
+
+  const registrarCompra = async (
+    e: FormEvent
+  ) => {
+    e.preventDefault();
+
+    if (
+      !bloquearRegistro()
+    ) {
+      return;
+    }
+
+    const error =
+      validarFormulario();
+
+    if (error) {
+      liberarRegistro();
+
+      setFeedback({
+        tipo: 'error',
+        mensaje: error
+      });
+
+      return;
+    }
+
+    try {
+      const data =
+        await apiFetch(
+          '/compras-materia-prima',
+          {
+            method: 'POST',
+
+            headers: {
+              'Idempotency-Key':
+                idempotencyKey
+            },
+
+            body:
+              JSON.stringify({
+                nombre_lote:
+                  form
+                    .nombre_lote
+                    .trim(),
+
+                proveedor_id:
+                  Number(
+                    form
+                      .proveedor_id
+                  ),
+
+                fecha_compra:
+                  form
+                    .fecha_compra,
+
+                numero_documento:
+                  form
+                    .numero_documento
+                    .trim() ||
+                  null,
+
+                moneda_codigo:
+                  form
+                    .moneda_codigo,
+
+                descripcion:
+                  form
+                    .descripcion
+                    .trim() ||
+                  null,
+
+                detalles:
+                  detalles.map(
+                    (item) => ({
+                      material_id:
+                        Number(
+                          item
+                            .material_id
+                        ),
+
+                      color_id:
+                        Number(
+                          item
+                            .color_id
+                        ),
+
+                      cantidad:
+                        Number(
+                          item
+                            .cantidad
+                        ),
+
+                      precio_unitario:
+                        Number(
+                          item
+                            .precio_unitario
+                        ),
+
+                      descripcion_item:
+                        item
+                          .descripcion_item
+                          .trim() ||
+                        null
+                    })
+                  )
+              })
+          }
+        );
+
+      setFeedback({
+        tipo: 'success',
+        mensaje:
+          data.reutilizada
+            ? 'La compra ya había sido registrada. Se recuperó el registro existente sin duplicar el stock.'
+            : 'Compra de materia prima registrada correctamente.'
+      });
+
+      setIdempotencyKey(
+        generarIdempotencyKey()
+      );
+
+      setTimeout(() => {
+        navigate(
+          `/gestion/compras-materia-prima/${data.compra.compra_materia_prima_id}`
+        );
+      }, 900);
+
+    } catch (error: any) {
+      liberarRegistro();
+
+      setFeedback({
+        tipo: 'error',
+        mensaje: error.message
+      });
+    }
+  };
+
+
+  return (
+    <div className="pedidos-page compra-mp-page compra-mp-registro-page">
+
+      <FeedbackToast
+        tipo={feedback.tipo}
+        mensaje={feedback.mensaje}
+        onClose={() =>
+          setFeedback({
+            ...feedback,
+            mensaje: ''
+          })
+        }
+      />
+
+
+      <Link
+        to="/gestion/compras-materia-prima"
+        className="btn-volver"
+      >
+        ← Volver a compras de materia prima
+      </Link>
+
+
+      <div className="pedidos-header">
+        <div>
+          <h1>
+            Registrar compra de materia prima
+          </h1>
+
+          <p>
+            Registra una importación o compra de fibra
+            y genera automáticamente el stock del lote.
+          </p>
+        </div>
+      </div>
+
+
+      <form
+        className="form-card compra-mp-form"
+        onSubmit={registrarCompra}
+      >
+        <section className="compra-mp-seccion">
+          <div className="compra-mp-seccion-titulo">
+            <div>
+              <h3>
+                Datos del lote
+              </h3>
+
+              <p>
+                Información general de la compra o importación.
+              </p>
+            </div>
+          </div>
+
+
+          <div className="compra-mp-cabecera-grid">
+
+            <div>
+              <label>
+                Nombre del lote
+              </label>
+
+              <input
+                name="nombre_lote"
+                value={
+                  form.nombre_lote
+                }
+                onChange={
+                  handleCabeceraChange
+                }
+                placeholder="Ejemplo: IMPORTACION SEP 2026"
+                disabled={
+                  registrandoCompra
+                }
+              />
+            </div>
+
+
+            <div>
+              <label>
+                Proveedor
+              </label>
+
+              <select
+                name="proveedor_id"
+                value={
+                  form.proveedor_id
+                }
+                onChange={
+                  handleCabeceraChange
+                }
+                disabled={
+                  registrandoCompra ||
+                  cargandoCatalogos
+                }
+              >
+                <option value="">
+                  Seleccione proveedor
+                </option>
+
+                {proveedores.map(
+                  (proveedor) => (
+                    <option
+                      key={
+                        proveedor
+                          .proveedor_id
+                      }
+                      value={
+                        proveedor
+                          .proveedor_id
+                      }
+                    >
+                      {
+                        proveedor
+                          .razon_social
+                      }
+                      {' - '}
+                      {
+                        proveedor.ruc
+                      }
+                    </option>
+                  )
+                )}
+              </select>
+            </div>
+
+
+            <div>
+              <label>
+                Fecha de compra
+              </label>
+
+              <input
+                type="date"
+                name="fecha_compra"
+                value={
+                  form.fecha_compra
+                }
+                onChange={
+                  handleCabeceraChange
+                }
+                disabled={
+                  registrandoCompra
+                }
+              />
+            </div>
+
+
+            <div>
+              <label>
+                Número de documento
+              </label>
+
+              <input
+                name="numero_documento"
+                value={
+                  form
+                    .numero_documento
+                }
+                onChange={
+                  handleCabeceraChange
+                }
+                placeholder="Factura, guía, etc."
+                disabled={
+                  registrandoCompra
+                }
+              />
+            </div>
+
+
+            <div>
+              <label>
+                Moneda
+              </label>
+
+              <select
+                name="moneda_codigo"
+                value={
+                  form.moneda_codigo
+                }
+                onChange={
+                  handleCabeceraChange
+                }
+                disabled={
+                  registrandoCompra
+                }
+              >
+                <option value="PEN">
+                  Soles
+                </option>
+
+                <option value="USD">
+                  Dólares
+                </option>
+              </select>
+            </div>
+
+
+            <div className="compra-mp-campo-ancho">
+              <label>
+                Descripción
+              </label>
+
+              <textarea
+                name="descripcion"
+                value={
+                  form.descripcion
+                }
+                onChange={
+                  handleCabeceraChange
+                }
+                rows={3}
+                placeholder="Observación general de la compra o importación"
+                disabled={
+                  registrandoCompra
+                }
+              />
+            </div>
+
+          </div>
+        </section>
+
+
+        <section className="compra-mp-seccion compra-mp-seccion-items">
+
+          <div className="compra-mp-items-header">
+            <div>
+              <h3>
+                Materias primas del lote
+              </h3>
+
+              <p className="muted">
+                Cada item se registra en KG y se identifica
+                mediante Material + Color.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={
+                agregarDetalle
+              }
+              disabled={
+                registrandoCompra
+              }
+            >
+              + Agregar materia prima
+            </button>
+          </div>
+
+
+          <div className="compra-mp-items">
+
+            {detalles.map(
+              (
+                detalle,
+                index
+              ) => (
+                <div
+                  className="compra-mp-item-card"
+                  key={index}
+                >
+
+                  <div className="compra-mp-item-title">
+                    <div>
+                      <strong>
+                        Materia prima {
+                          index + 1
+                        }
+                      </strong>
+
+                      <span className="compra-mp-item-subtitle">
+                        Selecciona material, color,
+                        cantidad y precio.
+                      </span>
+                    </div>
+
+                    <button
+                      type="button"
+                      className="btn-danger"
+                      onClick={() =>
+                        quitarDetalle(
+                          index
+                        )
+                      }
+                      disabled={
+                        registrandoCompra
+                      }
+                    >
+                      Quitar
+                    </button>
+                  </div>
+
+
+                  <div className="compra-mp-item-grid">
+
+                    <div className="compra-mp-item-material">
+                      <label>
+                        Material
+                      </label>
+
+                      <select
+                        name="material_id"
+                        value={
+                          detalle
+                            .material_id
+                        }
+                        onChange={(e) =>
+                          handleDetalleChange(
+                            index,
+                            e
+                          )
+                        }
+                        disabled={
+                          registrandoCompra ||
+                          cargandoCatalogos
+                        }
+                      >
+                        <option value="">
+                          Seleccione
+                        </option>
+
+                        {materiales.map(
+                          (material) => (
+                            <option
+                              key={
+                                material.id
+                              }
+                              value={
+                                material.id
+                              }
+                            >
+                              {
+                                material
+                                  .nombre
+                              }
+                            </option>
+                          )
+                        )}
+                      </select>
+                    </div>
+
+
+                    <div className="compra-mp-item-color">
+                      <label>
+                        Color
+                      </label>
+
+                      <select
+                        name="color_id"
+                        value={
+                          detalle
+                            .color_id
+                        }
+                        onChange={(e) =>
+                          handleDetalleChange(
+                            index,
+                            e
+                          )
+                        }
+                        disabled={
+                          registrandoCompra ||
+                          cargandoCatalogos
+                        }
+                      >
+                        <option value="">
+                          Seleccione
+                        </option>
+
+                        {colores.map(
+                          (color) => (
+                            <option
+                              key={
+                                color.id
+                              }
+                              value={
+                                color.id
+                              }
+                            >
+                              {
+                                color.nombre
+                              }
+                            </option>
+                          )
+                        )}
+                      </select>
+                    </div>
+
+
+                    <div className="compra-mp-item-cantidad">
+                      <label>
+                        Cantidad
+                      </label>
+
+                      <div className="compra-mp-input-unidad">
+                        <input
+                          type="number"
+                          name="cantidad"
+                          value={
+                            detalle.cantidad
+                          }
+                          onChange={(e) =>
+                            handleDetalleChange(
+                              index,
+                              e
+                            )
+                          }
+                          min="0.001"
+                          step="0.001"
+                          placeholder="0.000"
+                          disabled={
+                            registrandoCompra
+                          }
+                        />
+
+                        <span>
+                          KG
+                        </span>
+                      </div>
+                    </div>
+
+
+                    <div className="compra-mp-item-precio">
+                      <label>
+                        Precio unitario
+                      </label>
+
+                      <div className="compra-mp-input-moneda">
+                        <span>
+                          {
+                            form.moneda_codigo ===
+                              'PEN'
+                              ? 'S/'
+                              : '$'
+                          }
+                        </span>
+
+                        <input
+                          type="number"
+                          name="precio_unitario"
+                          value={
+                            detalle
+                              .precio_unitario
+                          }
+                          onChange={(e) =>
+                            handleDetalleChange(
+                              index,
+                              e
+                            )
+                          }
+                          min="0"
+                          step="0.0001"
+                          placeholder="0.0000"
+                          disabled={
+                            registrandoCompra
+                          }
+                        />
+                      </div>
+                    </div>
+
+
+                    <div className="compra-mp-item-subtotal">
+                      <label>
+                        Subtotal
+                      </label>
+
+                      <div className="compra-mp-subtotal-box">
+                        <span>
+                          {
+                            form.moneda_codigo ===
+                              'PEN'
+                              ? 'S/'
+                              : '$'
+                          }
+                        </span>
+
+                        <strong>
+                          {
+                            calcularSubtotal(
+                              detalle
+                            )
+                              .toFixed(2)
+                          }
+                        </strong>
+                      </div>
+                    </div>
+
+
+                    <div className="compra-mp-campo-ancho compra-mp-item-descripcion">
+                      <label>
+                        Descripción opcional
+                      </label>
+
+                      <input
+                        name="descripcion_item"
+                        value={
+                          detalle
+                            .descripcion_item
+                        }
+                        onChange={(e) =>
+                          handleDetalleChange(
+                            index,
+                            e
+                          )
+                        }
+                        placeholder="Ejemplo: Fibra virgen"
+                        disabled={
+                          registrandoCompra
+                        }
+                      />
+                    </div>
+
+                  </div>
+
+                </div>
+              )
+            )}
+
+          </div>
+        </section>
+
+
+        <div className="compra-mp-total">
+          <div>
+            <span>
+              Total del lote
+            </span>
+
+            <small>
+              Suma de todos los ítems registrados
+            </small>
+          </div>
+
+          <strong>
+            {
+              form.moneda_codigo ===
+                'USD'
+                ? '$'
+                : 'S/'
+            }
+            {' '}
+            {
+              montoTotal.toFixed(
+                2
+              )
+            }
+            {' '}
+            {
+              form.moneda_codigo
+            }
+          </strong>
+        </div>
+
+
+        <div className="compra-mp-form-actions">
+          <Link
+            to="/gestion/compras-materia-prima"
+            className="btn-secondary-link"
+          >
+            Cancelar
+          </Link>
+
+          <button
+            type="submit"
+            disabled={
+              registrandoCompra ||
+              cargandoCatalogos
+            }
+          >
+            {
+              registrandoCompra
+                ? 'Registrando compra...'
+                : 'Registrar compra e ingresar stock'
+            }
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+  );
+}
+
+
+export default RegistrarCompraMateriaPrima;
+
+
+<<<END OF FILE>>>
+
+
+---
+
 ## FILE: src\pages\Dashboard.tsx
 
 <<<START OF FILE>>>
@@ -6297,333 +13554,1685 @@ export default Depositos;
 
 <<<START OF FILE>>>
 
-import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { apiFetch } from '../services/api';
-import { useBloqueoAccion } from '../hooks/useBloqueoAccion';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState
+} from 'react';
+
+import type {
+  FormEvent
+} from 'react';
+
+import {
+  Link,
+  useParams
+} from 'react-router-dom';
+
+import {
+  apiFetch
+} from '../services/api';
+
+import FeedbackToast
+  from '../components/common/FeedbackToast';
+
+import ConfirmDialog
+  from '../components/common/ConfirmDialog';
+
+import {
+  useBloqueoAccion
+} from '../hooks/useBloqueoAccion';
+
+import '../styles/entregasStock.css';
+
+
+type FeedbackTipo =
+  | 'success'
+  | 'error'
+  | 'info'
+  | 'warning';
+
+
+const fechaLocalActual = () => {
+  const hoy =
+    new Date();
+
+  const anio =
+    hoy.getFullYear();
+
+  const mes =
+    String(
+      hoy.getMonth() + 1
+    ).padStart(
+      2,
+      '0'
+    );
+
+  const dia =
+    String(
+      hoy.getDate()
+    ).padStart(
+      2,
+      '0'
+    );
+
+  return `${anio}-${mes}-${dia}`;
+};
+
+
+const nuevaKey = () => {
+  if (
+    typeof crypto !==
+      'undefined' &&
+    typeof crypto.randomUUID ===
+      'function'
+  ) {
+    return crypto.randomUUID();
+  }
+
+  return [
+    'entrega',
+    Date.now(),
+    Math.random()
+      .toString(36)
+      .slice(2)
+  ].join('-');
+};
+
 
 function EntregaPedidoDetalle() {
-  const { pedido_id } = useParams();
-
-  const [pedido, setPedido] = useState<any | null>(null);
-  const [detallesEntrega, setDetallesEntrega] = useState<any[]>([]);
-  const [fechaEntrega, setFechaEntrega] = useState('');
-  const [comentarioEntrega, setComentarioEntrega] = useState('');
-
-  const [error, setError] = useState('');
-  const [mensaje, setMensaje] = useState('');
   const {
-    procesando: registrandoEntrega,
-    intentarBloquear: bloquearEntrega,
-    liberar: liberarEntrega
+    pedido_id
+  } = useParams();
+
+  const [
+    pedido,
+    setPedido
+  ] = useState<any | null>(
+    null
+  );
+
+  const [
+    detallesEntrega,
+    setDetallesEntrega
+  ] = useState<any[]>([]);
+
+  const [
+    fechaEntrega,
+    setFechaEntrega
+  ] = useState(
+    fechaLocalActual()
+  );
+
+  const [
+    comentarioEntrega,
+    setComentarioEntrega
+  ] = useState('');
+
+  const [
+    cargando,
+    setCargando
+  ] = useState(true);
+
+  const [
+    confirmarRegistro,
+    setConfirmarRegistro
+  ] = useState(false);
+
+  const [
+    idempotencyKey,
+    setIdempotencyKey
+  ] = useState(
+    nuevaKey()
+  );
+
+  const [
+    feedback,
+    setFeedback
+  ] = useState<{
+    tipo: FeedbackTipo;
+    mensaje: string;
+  }>({
+    tipo: 'info',
+    mensaje: ''
+  });
+
+  const {
+    procesando:
+      registrandoEntrega,
+
+    intentarBloquear:
+      bloquearEntrega,
+
+    liberar:
+      liberarEntrega
   } = useBloqueoAccion();
-  const cargarPedido = async () => {
-    const data = await apiFetch(`/entregas/pedidos/${pedido_id}`);
 
-    setPedido(data.pedido);
 
-    const detalles = data.pedido.detalles.map((item: any) => ({
-      ...item,
-      cantidad_entregada_input: '',
-      observacion_entrega: ''
-    }));
+  const cargarPedido =
+    useCallback(
+      async () => {
+        const data =
+          await apiFetch(
+            `/entregas/pedidos/${pedido_id}`
+          );
 
-    setDetallesEntrega(detalles);
-  };
+        setPedido(
+          data.pedido
+        );
+
+        const detalles =
+          data.pedido.detalles.map(
+            (item: any) => ({
+              ...item,
+              cantidad_entregada_input: '',
+              observacion_entrega: ''
+            })
+          );
+
+        setDetallesEntrega(
+          detalles
+        );
+      },
+      [
+        pedido_id
+      ]
+    );
+
 
   useEffect(() => {
-    const iniciar = async () => {
-      try {
-        await cargarPedido();
-      } catch (error: any) {
-        setError(error.message);
-      }
-    };
+    const iniciar =
+      async () => {
+        setCargando(true);
+
+        try {
+          await cargarPedido();
+
+        } catch (error: any) {
+          setFeedback({
+            tipo: 'error',
+            mensaje: error.message
+          });
+
+        } finally {
+          setCargando(false);
+        }
+      };
 
     iniciar();
-  }, [pedido_id]);
+  }, [
+    cargarPedido
+  ]);
 
-  const claseEstado = (estado: string) => {
-    if (estado === 'COMPLETO') return 'estado estado-completo';
-    if (estado === 'PARCIAL') return 'estado estado-parcial';
-    return 'estado estado-pendiente';
+
+  const claseEstado = (
+    estado: string
+  ) => {
+    if (
+      estado ===
+      'COMPLETO'
+    ) {
+      return (
+        'estado estado-completo'
+      );
+    }
+
+    if (
+      estado ===
+      'PARCIAL'
+    ) {
+      return (
+        'estado estado-parcial'
+      );
+    }
+
+    return (
+      'estado estado-pendiente'
+    );
   };
 
-  const textoEstado = (estado: string) => {
-    if (estado === 'COMPLETO') return 'Completo';
-    if (estado === 'PARCIAL') return 'Parcial';
+
+  const textoEstado = (
+    estado: string
+  ) => {
+    if (
+      estado ===
+      'COMPLETO'
+    ) {
+      return 'Completo';
+    }
+
+    if (
+      estado ===
+      'PARCIAL'
+    ) {
+      return 'Parcial';
+    }
+
     return 'Pendiente';
   };
+
+
+  const cantidad = (
+    valor: any
+  ) => {
+    return Number(
+      valor || 0
+    ).toFixed(3);
+  };
+
+
+  const cantidadMaximaEntregable = (
+    detalle: any
+  ) => {
+    const pendiente =
+      Number(
+        detalle
+          .cantidad_pendiente ||
+        0
+      );
+
+    const stock =
+      Number(
+        detalle
+          .stock_disponible ||
+        0
+      );
+
+    const presentacion =
+      Number(
+        detalle
+          .cantidad_presentacion ||
+        0
+      );
+
+    if (
+      presentacion <= 0
+    ) {
+      return 0;
+    }
+
+    const limite =
+      Math.min(
+        pendiente,
+        stock
+      );
+
+    const unidades =
+      Math.floor(
+        (
+          limite +
+          0.000001
+        ) /
+        presentacion
+      );
+
+    return Number(
+      (
+        unidades *
+        presentacion
+      ).toFixed(3)
+    );
+  };
+
+
+  const estadoStockTexto = (
+    estado: string
+  ) => {
+    if (
+      estado ===
+      'CON_STOCK'
+    ) {
+      return 'Stock disponible';
+    }
+
+    if (
+      estado ===
+      'SIN_STOCK'
+    ) {
+      return 'Sin stock';
+    }
+
+    if (
+      estado ===
+      'SIN_PRESENTACION'
+    ) {
+      return 'Presentación no configurada';
+    }
+
+    if (
+      estado ===
+      'SIN_PRODUCTO'
+    ) {
+      return 'Producto no configurado';
+    }
+
+    return 'No disponible';
+  };
+
+
+  const estadoStockClase = (
+    estado: string
+  ) => {
+    if (
+      estado ===
+      'CON_STOCK'
+    ) {
+      return (
+        'entrega-stock-badge entrega-stock-ok'
+      );
+    }
+
+    if (
+      estado ===
+      'SIN_STOCK'
+    ) {
+      return (
+        'entrega-stock-badge entrega-stock-error'
+      );
+    }
+
+    return (
+      'entrega-stock-badge entrega-stock-warning'
+    );
+  };
+
 
   const handleDetalleChange = (
     index: number,
     campo: string,
     valor: string
   ) => {
-    const nuevosDetalles = [...detallesEntrega];
+    if (
+      registrandoEntrega
+    ) {
+      return;
+    }
+
+    const nuevosDetalles = [
+      ...detallesEntrega
+    ];
 
     nuevosDetalles[index] = {
       ...nuevosDetalles[index],
-      [campo]: valor
+      [campo]:
+        valor
     };
 
-    setDetallesEntrega(nuevosDetalles);
+    setDetallesEntrega(
+      nuevosDetalles
+    );
   };
 
-  const registrarEntrega = async (e: React.FormEvent) => {
+
+  const validarDetalle = (
+    detalle: any,
+    index: number
+  ) => {
+    const valor =
+      Number(
+        detalle
+          .cantidad_entregada_input ||
+        0
+      );
+
+    if (
+      valor <= 0
+    ) {
+      return null;
+    }
+
+    if (
+      detalle.estado_item ===
+      'COMPLETO'
+    ) {
+      return (
+        `El producto ${index + 1} ya fue entregado completamente`
+      );
+    }
+
+    if (
+      detalle.estado_stock !==
+      'CON_STOCK'
+    ) {
+      return (
+        `El producto ${index + 1} no está disponible para entrega: ${estadoStockTexto(detalle.estado_stock)}`
+      );
+    }
+
+    const pendiente =
+      Number(
+        detalle
+          .cantidad_pendiente ||
+        0
+      );
+
+    const stock =
+      Number(
+        detalle
+          .stock_disponible ||
+        0
+      );
+
+    const presentacion =
+      Number(
+        detalle
+          .cantidad_presentacion ||
+        0
+      );
+
+    if (
+      valor >
+      pendiente +
+      0.000001
+    ) {
+      return (
+        `El producto ${index + 1} solo tiene ${cantidad(pendiente)} ${detalle.unidad} pendientes`
+      );
+    }
+
+    if (
+      valor >
+      stock +
+      0.000001
+    ) {
+      return (
+        `El producto ${index + 1} solo tiene ${cantidad(stock)} ${detalle.unidad} disponibles en almacén`
+      );
+    }
+
+    if (
+      presentacion <= 0
+    ) {
+      return (
+        `El producto ${index + 1} no tiene presentación configurada`
+      );
+    }
+
+    const valorMil =
+      Math.round(
+        valor * 1000
+      );
+
+    const presentacionMil =
+      Math.round(
+        presentacion *
+        1000
+      );
+
+    if (
+      valorMil %
+      presentacionMil !==
+      0
+    ) {
+      return (
+        `El producto ${index + 1} debe entregarse en múltiplos de ${cantidad(presentacion)} ${detalle.unidad_presentacion}`
+      );
+    }
+
+    return null;
+  };
+
+
+  const detallesARegistrar =
+    useMemo(
+      () =>
+        detallesEntrega
+          .filter(
+            (item) =>
+              Number(
+                item
+                  .cantidad_entregada_input
+              ) > 0
+          ),
+      [
+        detallesEntrega
+      ]
+    );
+
+
+  const totalEntregar =
+    useMemo(
+      () =>
+        detallesARegistrar
+          .reduce(
+            (
+              total,
+              item
+            ) =>
+              total +
+              Number(
+                item
+                  .cantidad_entregada_input ||
+                0
+              ),
+            0
+          ),
+      [
+        detallesARegistrar
+      ]
+    );
+
+
+  const solicitarRegistro = (
+    e: FormEvent
+  ) => {
     e.preventDefault();
 
-    setError('');
-    setMensaje('');
-
     if (!pedido) {
-      setError('No se encontró el pedido');
+      setFeedback({
+        tipo: 'error',
+        mensaje:
+          'No se encontró el pedido'
+      });
+
       return;
     }
 
-    const detalles = detallesEntrega
-      .filter((item) => Number(item.cantidad_entregada_input) > 0)
-      .map((item) => ({
-        pedido_detalle_id: item.pedido_detalle_id,
-        cantidad_entregada: Number(item.cantidad_entregada_input),
-        unidad_medida_id: item.unidad_medida_id,
-        observacion: item.observacion_entrega
-      }));
+    if (
+      detallesARegistrar.length ===
+      0
+    ) {
+      setFeedback({
+        tipo: 'error',
+        mensaje:
+          'Ingrese al menos una cantidad entregada'
+      });
 
-    if (detalles.length === 0) {
-      setError('Ingrese al menos una cantidad entregada');
       return;
     }
-    if (!bloquearEntrega()) {
-      return;
+
+    for (
+      let i = 0;
+      i < detallesEntrega.length;
+      i++
+    ) {
+      const error =
+        validarDetalle(
+          detallesEntrega[i],
+          i
+        );
+
+      if (error) {
+        setFeedback({
+          tipo: 'error',
+          mensaje: error
+        });
+
+        return;
+      }
     }
-    try {
-  await apiFetch('/entregas', {
-    method: 'POST',
-    body: JSON.stringify({
-      pedido_id: pedido.pedido_id,
-      fecha_entrega: fechaEntrega || undefined,
-      comentario_entrega: comentarioEntrega,
-      detalles
-    })
-  });
 
-  setMensaje('Entrega registrada correctamente');
+    setConfirmarRegistro(
+      true
+    );
+  };
 
-  setFechaEntrega('');
-  setComentarioEntrega('');
 
-  await cargarPedido();
+  const registrarEntrega =
+    async () => {
+      if (
+        !pedido ||
+        !bloquearEntrega()
+      ) {
+        return;
+      }
 
-} catch (error: any) {
-  setError(error.message);
+      const detalles =
+        detallesARegistrar
+          .map(
+            (item) => ({
+              pedido_detalle_id:
+                item
+                  .pedido_detalle_id,
 
-} finally {
-  liberarEntrega();
-};}
+              cantidad_entregada:
+                Number(
+                  item
+                    .cantidad_entregada_input
+                ),
 
-  if (!pedido) {
+              unidad_medida_id:
+                item
+                  .unidad_medida_id,
+
+              observacion:
+                item
+                  .observacion_entrega
+                  .trim() ||
+                null
+            })
+          );
+
+      try {
+        const data =
+          await apiFetch(
+            '/entregas',
+            {
+              method: 'POST',
+
+              headers: {
+                'Idempotency-Key':
+                  idempotencyKey
+              },
+
+              body:
+                JSON.stringify({
+                  pedido_id:
+                    pedido
+                      .pedido_id,
+
+                  fecha_entrega:
+                    fechaEntrega ||
+                    undefined,
+
+                  comentario_entrega:
+                    comentarioEntrega
+                      .trim() ||
+                    null,
+
+                  detalles
+                })
+            }
+          );
+
+        setConfirmarRegistro(
+          false
+        );
+
+        setFeedback({
+          tipo: 'success',
+          mensaje:
+            data.reutilizada
+              ? 'La entrega ya había sido registrada. Se recuperó el resultado existente sin descontar stock nuevamente.'
+              : 'Entrega registrada correctamente.'
+        });
+
+        setComentarioEntrega(
+          ''
+        );
+
+        setFechaEntrega(
+          fechaLocalActual()
+        );
+
+        setIdempotencyKey(
+          nuevaKey()
+        );
+
+        await cargarPedido();
+
+        liberarEntrega();
+
+      } catch (error: any) {
+        liberarEntrega();
+
+        setConfirmarRegistro(
+          false
+        );
+
+        setFeedback({
+          tipo: 'error',
+          mensaje:
+            error.message
+        });
+      }
+    };
+
+
+  if (cargando) {
     return (
-      <div>
-        <Link to="/gestion/entregas" className="btn-volver">
-          ← Volver a Entregas
-        </Link>
-
-        {error ? <div className="error">{error}</div> : <p>Cargando pedido...</p>}
+      <div className="pedidos-page">
+        <p>
+          Cargando pedido...
+        </p>
       </div>
     );
   }
 
+
+  if (!pedido) {
+    return (
+      <div className="pedidos-page">
+
+        <FeedbackToast
+          tipo={feedback.tipo}
+          mensaje={feedback.mensaje}
+          onClose={() =>
+            setFeedback({
+              ...feedback,
+              mensaje: ''
+            })
+          }
+        />
+
+        <Link
+          to="/gestion/entregas"
+          className="btn-volver"
+        >
+          ← Volver a Entregas
+        </Link>
+
+        <div className="tabla-card">
+          No se pudo cargar el pedido.
+        </div>
+
+      </div>
+    );
+  }
+
+
   return (
-    <div>
-      <Link to="/gestion/entregas" className="btn-volver">
+    <div className="pedidos-page entrega-stock-page">
+
+      <FeedbackToast
+        tipo={feedback.tipo}
+        mensaje={feedback.mensaje}
+        onClose={() =>
+          setFeedback({
+            ...feedback,
+            mensaje: ''
+          })
+        }
+      />
+
+
+      <ConfirmDialog
+        abierto={
+          confirmarRegistro
+        }
+        titulo="Registrar entrega"
+        descripcion={
+          `Se registrarán ${detallesARegistrar.length} producto(s) por un total de ${cantidad(totalEntregar)} KG. El stock de producto terminado se descontará inmediatamente. ¿Deseas continuar?`
+        }
+        textoConfirmar="Registrar entrega"
+        textoProcesando="Registrando..."
+        procesando={
+          registrandoEntrega
+        }
+        onConfirmar={
+          registrarEntrega
+        }
+        onCerrar={() =>
+          !registrandoEntrega &&
+          setConfirmarRegistro(
+            false
+          )
+        }
+      />
+
+
+      <Link
+        to="/gestion/entregas"
+        className="btn-volver"
+      >
         ← Volver a Entregas
       </Link>
 
+
       <div className="pedido-detalle-header">
         <div>
-          <h1>Pedido #{pedido.pedido_id}</h1>
-          <p>{pedido.razon_social} - {pedido.ruc}</p>
+          <h1>
+            Pedido #{
+              pedido.pedido_id
+            }
+          </h1>
+
+          <p>
+            {
+              pedido.razon_social
+            }
+            {' - '}
+            {
+              pedido.ruc
+            }
+          </p>
         </div>
 
-        <span className={claseEstado(pedido.estado_entrega_general)}>
-          {textoEstado(pedido.estado_entrega_general)}
+        <span
+          className={
+            claseEstado(
+              pedido
+                .estado_entrega_general
+            )
+          }
+        >
+          {
+            textoEstado(
+              pedido
+                .estado_entrega_general
+            )
+          }
         </span>
       </div>
 
-      {error && <div className="error">{error}</div>}
-      {mensaje && <div className="success">{mensaje}</div>}
 
       <div className="pedido-resumen-grid">
-        <div className="resumen-card">
-          <span>Cliente</span>
-          <strong>{pedido.razon_social}</strong>
-        </div>
 
         <div className="resumen-card">
-          <span>Fecha pedido</span>
-          <strong>{pedido.fecha_pedido?.slice(0, 10)}</strong>
+          <span>
+            Cliente
+          </span>
+
+          <strong>
+            {
+              pedido.razon_social
+            }
+          </strong>
         </div>
 
-        <div className="resumen-card">
-          <span>Entrega estimada</span>
-          <strong>{pedido.fecha_entrega_estimada?.slice(0, 10) || '-'}</strong>
-        </div>
 
         <div className="resumen-card">
-          <span>Estado</span>
-          <strong>{textoEstado(pedido.estado_entrega_general)}</strong>
+          <span>
+            Fecha pedido
+          </span>
+
+          <strong>
+            {
+              pedido
+                .fecha_pedido
+                ?.slice(
+                  0,
+                  10
+                )
+            }
+          </strong>
         </div>
+
+
+        <div className="resumen-card">
+          <span>
+            Entrega estimada
+          </span>
+
+          <strong>
+            {
+              pedido
+                .fecha_entrega_estimada
+                ?.slice(
+                  0,
+                  10
+                ) ||
+              '-'
+            }
+          </strong>
+        </div>
+
+
+        <div className="resumen-card">
+          <span>
+            Estado
+          </span>
+
+          <strong>
+            {
+              textoEstado(
+                pedido
+                  .estado_entrega_general
+              )
+            }
+          </strong>
+        </div>
+
       </div>
+
 
       <div className="descripcion-card">
-        <strong>Descripción del pedido:</strong>
-        <p>{pedido.descripcion_pedido || 'Sin descripción'}</p>
+        <strong>
+          Descripción del pedido:
+        </strong>
+
+        <p>
+          {
+            pedido
+              .descripcion_pedido ||
+            'Sin descripción'
+          }
+        </p>
       </div>
 
-      <form className="form-card pedido-form" onSubmit={registrarEntrega}>
-        <h3>Registrar nueva entrega</h3>
 
-        <label>Fecha de entrega</label>
-        <input
-          type="date"
-          value={fechaEntrega}
-          onChange={(e) => setFechaEntrega(e.target.value)}
-        />
-
-        <label>Comentario de entrega</label>
-        <textarea
-          value={comentarioEntrega}
-          onChange={(e) => setComentarioEntrega(e.target.value)}
-          placeholder="Ejemplo: Primera entrega parcial del pedido"
-          rows={3}
-        />
-
-        <h3>Productos del pedido</h3>
-
-        {detallesEntrega.map((detalle, index) => {
-          const estaCompleto = detalle.estado_item === 'COMPLETO';
-
-          return (
-            <div
-              className={`detalle-card detalle-${detalle.estado_item.toLowerCase()}`}
-              key={detalle.pedido_detalle_id}
-            >
-              <div className="detalle-header">
-                <div>
-                  <strong>
-                    {detalle.tipo_producto} {detalle.material} {detalle.medida} {detalle.color}
-                  </strong>
-                  <br />
-                  <span className="muted">
-                    {detalle.descripcion_item || 'Sin descripción específica'}
-                  </span>
-                </div>
-
-                <span className={claseEstado(detalle.estado_item)}>
-                  {textoEstado(detalle.estado_item)}
-                </span>
-              </div>
-
-              <div className="detalle-resumen">
-                <p><strong>Pedido:</strong> {detalle.cantidad_pedida} {detalle.unidad}</p>
-                <p><strong>Entregado:</strong> {detalle.cantidad_entregada} {detalle.unidad}</p>
-                <p><strong>Pendiente:</strong> {detalle.cantidad_pendiente} {detalle.unidad}</p>
-                <p>
-                  <strong>Presentación:</strong>{' '}
-                  {detalle.cantidad_presentacion || '-'} {detalle.unidad_presentacion || ''}
-                </p>
-              </div>
-
-              {!estaCompleto ? (
-                <div className="detalle-grid">
-                  <input
-                    type="number"
-                    min="0"
-                    max={detalle.cantidad_pendiente}
-                    placeholder={`Cantidad a entregar (${detalle.unidad})`}
-                    value={detalle.cantidad_entregada_input}
-                    onChange={(e) =>
-                      handleDetalleChange(index, 'cantidad_entregada_input', e.target.value)
-                    }
-                  />
-
-                  <input
-                    placeholder="Observación"
-                    value={detalle.observacion_entrega}
-                    onChange={(e) =>
-                      handleDetalleChange(index, 'observacion_entrega', e.target.value)
-                    }
-                  />
-                </div>
-              ) : (
-                <div className="producto-completo">
-                  Este producto ya fue entregado completamente.
-                </div>
-              )}
-            </div>
-          );
-        })}
-
-      <button
-        type="submit"
-        disabled={registrandoEntrega}
+      <form
+        className="form-card pedido-form entrega-form"
+        onSubmit={
+          solicitarRegistro
+        }
       >
-        {registrandoEntrega
-          ? 'Registrando entrega...'
-          : 'Guardar entrega'}
-      </button>
+
+        <div className="entrega-form-header">
+          <div>
+            <h3>
+              Registrar nueva entrega
+            </h3>
+
+            <p>
+              Solo se pueden entregar productos
+              con stock y en múltiplos de la
+              presentación solicitada.
+            </p>
+          </div>
+        </div>
+
+
+        <div className="entrega-cabecera-grid">
+
+          <div>
+            <label>
+              Fecha de entrega
+            </label>
+
+            <input
+              type="date"
+              value={
+                fechaEntrega
+              }
+              onChange={(e) =>
+                setFechaEntrega(
+                  e.target.value
+                )
+              }
+              disabled={
+                registrandoEntrega
+              }
+            />
+          </div>
+
+
+          <div>
+            <label>
+              Comentario de entrega
+            </label>
+
+            <textarea
+              value={
+                comentarioEntrega
+              }
+              onChange={(e) =>
+                setComentarioEntrega(
+                  e.target.value
+                )
+              }
+              placeholder="Ejemplo: Primera entrega parcial del pedido"
+              rows={3}
+              disabled={
+                registrandoEntrega
+              }
+            />
+          </div>
+
+        </div>
+
+
+        <h3>
+          Productos del pedido
+        </h3>
+
+
+        {
+          detallesEntrega.map(
+            (
+              detalle,
+              index
+            ) => {
+              const estaCompleto =
+                detalle
+                  .estado_item ===
+                'COMPLETO';
+
+              const stockDisponible =
+                Number(
+                  detalle
+                    .stock_disponible ||
+                  0
+                );
+
+              const presentacion =
+                Number(
+                  detalle
+                    .cantidad_presentacion ||
+                  0
+                );
+
+              const maximoEntregable =
+                cantidadMaximaEntregable(
+                  detalle
+                );
+
+              const valorActual =
+                Number(
+                  detalle
+                    .cantidad_entregada_input ||
+                  0
+                );
+
+              const errorItem =
+                validarDetalle(
+                  detalle,
+                  index
+                );
+
+              const puedeEntregar =
+                !estaCompleto &&
+                detalle.estado_stock ===
+                  'CON_STOCK' &&
+                maximoEntregable > 0;
+
+              return (
+                <div
+                  className={
+                    `detalle-card detalle-${detalle.estado_item.toLowerCase()} entrega-producto-card`
+                  }
+                  key={
+                    detalle
+                      .pedido_detalle_id
+                  }
+                >
+
+                  <div className="detalle-header">
+
+                    <div>
+                      <strong className="entrega-producto-nombre">
+                        {
+                          detalle
+                            .tipo_producto
+                        }
+                        {' '}
+                        {
+                          detalle.material
+                        }
+                        {' '}
+                        {
+                          detalle.medida
+                        }
+                        {' '}
+                        {
+                          detalle.color
+                        }
+                      </strong>
+
+                      <br />
+
+                      <span className="muted">
+                        {
+                          detalle
+                            .descripcion_item ||
+                          'Sin descripción específica'
+                        }
+                      </span>
+                    </div>
+
+
+                    <div className="entrega-producto-estados">
+
+                      <span
+                        className={
+                          claseEstado(
+                            detalle.estado_item
+                          )
+                        }
+                      >
+                        {
+                          textoEstado(
+                            detalle.estado_item
+                          )
+                        }
+                      </span>
+
+                      {
+                        !estaCompleto &&
+                        (
+                          <span
+                            className={
+                              estadoStockClase(
+                                detalle
+                                  .estado_stock
+                              )
+                            }
+                          >
+                            {
+                              estadoStockTexto(
+                                detalle
+                                  .estado_stock
+                              )
+                            }
+                          </span>
+                        )
+                      }
+
+                    </div>
+
+                  </div>
+
+
+                  <div className="entrega-producto-resumen">
+
+                    <div>
+                      <span>
+                        Pedido
+                      </span>
+
+                      <strong>
+                        {
+                          cantidad(
+                            detalle
+                              .cantidad_pedida
+                          )
+                        } {
+                          detalle.unidad
+                        }
+                      </strong>
+                    </div>
+
+
+                    <div>
+                      <span>
+                        Entregado
+                      </span>
+
+                      <strong>
+                        {
+                          cantidad(
+                            detalle
+                              .cantidad_entregada
+                          )
+                        } {
+                          detalle.unidad
+                        }
+                      </strong>
+                    </div>
+
+
+                    <div>
+                      <span>
+                        Pendiente
+                      </span>
+
+                      <strong>
+                        {
+                          cantidad(
+                            detalle
+                              .cantidad_pendiente
+                          )
+                        } {
+                          detalle.unidad
+                        }
+                      </strong>
+                    </div>
+
+
+                    <div>
+                      <span>
+                        Presentación
+                      </span>
+
+                      <strong>
+                        {
+                          presentacion > 0
+                            ? `${cantidad(presentacion)} ${detalle.unidad_presentacion || ''}`
+                            : '-'
+                        }
+                      </strong>
+                    </div>
+
+
+                    <div>
+                      <span>
+                        Stock disponible
+                      </span>
+
+                      <strong
+                        className={
+                          stockDisponible > 0
+                            ? 'entrega-stock-valor-ok'
+                            : 'entrega-stock-valor-error'
+                        }
+                      >
+                        {
+                          cantidad(
+                            stockDisponible
+                          )
+                        } {
+                          detalle.unidad
+                        }
+                      </strong>
+                    </div>
+
+
+                    <div>
+                      <span>
+                        Presentaciones disponibles
+                      </span>
+
+                      <strong>
+                        {
+                          Number(
+                            detalle
+                              .presentaciones_disponibles ||
+                            0
+                          )
+                            .toFixed(
+                              2
+                            )
+                        }
+                      </strong>
+                    </div>
+
+                  </div>
+
+
+                  {
+                    estaCompleto
+                      ? (
+                        <div className="producto-completo">
+                          Este producto ya fue entregado completamente.
+                        </div>
+                      )
+                      : (
+                        <>
+                          {
+                            detalle.estado_stock ===
+                              'SIN_PRODUCTO' &&
+                            (
+                              <div className="entrega-alerta entrega-alerta-error">
+                                Este producto todavía no está configurado
+                                en el catálogo de productos terminados.
+                              </div>
+                            )
+                          }
+
+
+                          {
+                            detalle.estado_stock ===
+                              'SIN_PRESENTACION' &&
+                            (
+                              <div className="entrega-alerta entrega-alerta-warning">
+                                El pedido no tiene una presentación válida
+                                configurada para este producto.
+                              </div>
+                            )
+                          }
+
+
+                          {
+                            detalle.estado_stock ===
+                              'SIN_STOCK' &&
+                            (
+                              <div className="entrega-alerta entrega-alerta-error">
+                                No existe stock disponible para esta
+                                presentación.
+                              </div>
+                            )
+                          }
+
+
+                          {
+                            puedeEntregar &&
+                            (
+                              <div className="entrega-regla">
+                                Puedes entregar hasta
+                                {' '}
+                                <strong>
+                                  {
+                                    cantidad(
+                                      maximoEntregable
+                                    )
+                                  } {
+                                    detalle.unidad
+                                  }
+                                </strong>
+                                {' '}
+                                en múltiplos de
+                                {' '}
+                                <strong>
+                                  {
+                                    cantidad(
+                                      presentacion
+                                    )
+                                  } {
+                                    detalle
+                                      .unidad_presentacion
+                                }
+                                </strong>.
+                              </div>
+                            )
+                          }
+
+
+                          <div className="entrega-input-grid">
+
+                            <div>
+                              <label>
+                                Cantidad a entregar
+                              </label>
+
+                              <div className="entrega-input-unidad">
+
+                                <input
+                                  type="number"
+                                  min="0"
+                                  max={
+                                    maximoEntregable ||
+                                    undefined
+                                  }
+                                  step={
+                                    presentacion > 0
+                                      ? presentacion
+                                      : '0.001'
+                                  }
+                                  placeholder={
+                                    puedeEntregar
+                                      ? `Máximo ${cantidad(maximoEntregable)}`
+                                      : 'No disponible'
+                                  }
+                                  value={
+                                    detalle
+                                      .cantidad_entregada_input
+                                  }
+                                  onChange={(e) =>
+                                    handleDetalleChange(
+                                      index,
+                                      'cantidad_entregada_input',
+                                      e.target.value
+                                    )
+                                  }
+                                  disabled={
+                                    registrandoEntrega ||
+                                    !puedeEntregar
+                                  }
+                                />
+
+                                <span>
+                                  {
+                                    detalle.unidad
+                                  }
+                                </span>
+
+                              </div>
+                            </div>
+
+
+                            <div>
+                              <label>
+                                Observación
+                              </label>
+
+                              <input
+                                placeholder="Opcional"
+                                value={
+                                  detalle
+                                    .observacion_entrega
+                                }
+                                onChange={(e) =>
+                                  handleDetalleChange(
+                                    index,
+                                    'observacion_entrega',
+                                    e.target.value
+                                  )
+                                }
+                                disabled={
+                                  registrandoEntrega ||
+                                  !puedeEntregar
+                                }
+                              />
+                            </div>
+
+                          </div>
+
+
+                          {
+                            valorActual > 0 &&
+                            errorItem &&
+                            (
+                              <div className="entrega-validacion-error">
+                                {
+                                  errorItem
+                                }
+                              </div>
+                            )
+                          }
+
+                        </>
+                      )
+                  }
+
+                </div>
+              );
+            }
+          )
+        }
+
+
+        <div className="entrega-total-box">
+
+          <div>
+            <span>
+              Productos seleccionados
+            </span>
+
+            <strong>
+              {
+                detallesARegistrar.length
+              }
+            </strong>
+          </div>
+
+
+          <div>
+            <span>
+              Cantidad total
+            </span>
+
+            <strong>
+              {
+                cantidad(
+                  totalEntregar
+                )
+              } KG
+            </strong>
+          </div>
+
+        </div>
+
+
+        <div className="entrega-actions">
+
+          <button
+            type="submit"
+            disabled={
+              registrandoEntrega ||
+              detallesARegistrar.length ===
+                0
+            }
+          >
+            {
+              registrandoEntrega
+                ? 'Registrando entrega...'
+                : 'Registrar entrega'
+            }
+          </button>
+
+        </div>
+
       </form>
 
+
       <div className="tabla-card">
-        <h3>Historial de entregas</h3>
 
-        {pedido.historial_entregas.length === 0 ? (
-          <p>No hay entregas registradas para este pedido.</p>
-        ) : (
-          pedido.historial_entregas.map((entrega: any) => (
-            <div className="historial-card" key={entrega.entrega_id}>
-              <div className="historial-header">
-                <strong>Entrega #{entrega.entrega_id}</strong>
-                <span>{entrega.fecha_entrega?.slice(0, 10)}</span>
-              </div>
+        <div className="entrega-historial-header">
+          <div>
+            <h3>
+              Historial de entregas
+            </h3>
 
+            <p>
+              Entregas ya registradas para este pedido.
+            </p>
+          </div>
+        </div>
+
+
+        {
+          pedido
+            .historial_entregas
+            .length ===
+            0
+            ? (
               <p>
-                <strong>Registrado por:</strong> {entrega.registrado_por}
+                No hay entregas registradas
+                para este pedido.
               </p>
+            )
+            : (
+              pedido
+                .historial_entregas
+                .map(
+                  (
+                    entrega: any
+                  ) => (
+                    <div
+                      className="historial-card"
+                      key={
+                        entrega
+                          .entrega_id
+                      }
+                    >
 
-              <p>
-                <strong>Comentario:</strong> {entrega.comentario_entrega || '-'}
-              </p>
+                      <div className="historial-header">
+                        <strong>
+                          Entrega #{
+                            entrega
+                              .entrega_id
+                          }
+                        </strong>
 
-              <table>
-                <thead>
-                  <tr>
-                    <th>Producto</th>
-                    <th>Cantidad</th>
-                    <th>Observación</th>
-                  </tr>
-                </thead>
+                        <span>
+                          {
+                            entrega
+                              .fecha_entrega
+                              ?.slice(
+                                0,
+                                10
+                              )
+                          }
+                        </span>
+                      </div>
 
-                <tbody>
-                  {entrega.detalles.map((detalle: any) => (
-                    <tr key={detalle.entrega_detalle_id}>
-                      <td>{detalle.producto}</td>
-                      <td>{detalle.cantidad_entregada} {detalle.unidad}</td>
-                      <td>{detalle.observacion || '-'}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ))
-        )}
+
+                      <p>
+                        <strong>
+                          Registrado por:
+                        </strong>
+                        {' '}
+                        {
+                          entrega
+                            .registrado_por
+                        }
+                      </p>
+
+
+                      <p>
+                        <strong>
+                          Comentario:
+                        </strong>
+                        {' '}
+                        {
+                          entrega
+                            .comentario_entrega ||
+                          '-'
+                        }
+                      </p>
+
+
+                      <div className="tabla-scroll">
+                        <table>
+                          <thead>
+                            <tr>
+                              <th>
+                                Producto
+                              </th>
+                              <th>
+                                Presentación
+                              </th>
+                              <th>
+                                Cantidad
+                              </th>
+                              <th>
+                                Observación
+                              </th>
+                            </tr>
+                          </thead>
+
+                          <tbody>
+                            {
+                              entrega
+                                .detalles
+                                .map(
+                                  (
+                                    item: any
+                                  ) => (
+                                    <tr
+                                      key={
+                                        item
+                                          .entrega_detalle_id
+                                      }
+                                    >
+                                      <td>
+                                        {
+                                          item.producto
+                                        }
+                                      </td>
+
+                                      <td>
+                                        {
+                                          item
+                                            .cantidad_presentacion
+                                            ? `${cantidad(item.cantidad_presentacion)} ${item.unidad_presentacion || ''}`
+                                            : '-'
+                                        }
+                                      </td>
+
+                                      <td>
+                                        {
+                                          cantidad(
+                                            item
+                                              .cantidad_entregada
+                                          )
+                                        } {
+                                          item.unidad
+                                        }
+                                      </td>
+
+                                      <td>
+                                        {
+                                          item
+                                            .observacion ||
+                                          '-'
+                                        }
+                                      </td>
+                                    </tr>
+                                  )
+                                )
+                            }
+                          </tbody>
+                        </table>
+                      </div>
+
+                    </div>
+                  )
+                )
+            )
+        }
+
       </div>
+
     </div>
   );
 }
 
+
 export default EntregaPedidoDetalle;
+
 
 <<<END OF FILE>>>
 
@@ -8767,6 +17376,2336 @@ function Login() {
 }
 
 export default Login;
+
+<<<END OF FILE>>>
+
+
+---
+
+## FILE: src\pages\mermas\MermaDetalle.tsx
+
+<<<START OF FILE>>>
+
+import {
+  useEffect,
+  useMemo,
+  useState
+} from 'react';
+
+import {
+  Link,
+  useParams
+} from 'react-router-dom';
+
+import {
+  apiFetch
+} from '../../services/api';
+
+import FeedbackToast
+  from '../../components/common/FeedbackToast';
+
+import '../../styles/mermas.css';
+
+
+type FeedbackTipo =
+  | 'success'
+  | 'error'
+  | 'info'
+  | 'warning';
+
+
+function MermaDetalle() {
+  const {
+    merma_id
+  } = useParams();
+
+  const [
+    merma,
+    setMerma
+  ] = useState<any | null>(
+    null
+  );
+
+  const [
+    detalles,
+    setDetalles
+  ] = useState<any[]>([]);
+
+  const [
+    cargando,
+    setCargando
+  ] = useState(true);
+
+  const [
+    feedback,
+    setFeedback
+  ] = useState<{
+    tipo: FeedbackTipo;
+    mensaje: string;
+  }>({
+    tipo: 'info',
+    mensaje: ''
+  });
+
+
+  useEffect(() => {
+    const cargar =
+      async () => {
+        setCargando(true);
+
+        try {
+          const data =
+            await apiFetch(
+              `/mermas/${merma_id}`
+            );
+
+          setMerma(
+            data.merma
+          );
+
+          setDetalles(
+            data.detalles ||
+            []
+          );
+
+        } catch (error: any) {
+          setFeedback({
+            tipo: 'error',
+            mensaje: error.message
+          });
+
+        } finally {
+          setCargando(false);
+        }
+      };
+
+    cargar();
+  }, [
+    merma_id
+  ]);
+
+
+  const total =
+    useMemo(
+      () =>
+        detalles.reduce(
+          (
+            suma,
+            item
+          ) =>
+            suma +
+            Number(
+              item.cantidad ||
+              0
+            ),
+          0
+        ),
+      [
+        detalles
+      ]
+    );
+
+
+  const cantidad = (
+    valor: any
+  ) => {
+    return Number(
+      valor || 0
+    ).toFixed(3);
+  };
+
+
+  const fechaTexto = (
+    valor: string | null
+  ) => {
+    if (!valor) {
+      return '-';
+    }
+
+    return valor.slice(
+      0,
+      10
+    );
+  };
+
+
+  if (cargando) {
+    return (
+      <div className="pedidos-page">
+        <p>
+          Cargando merma...
+        </p>
+      </div>
+    );
+  }
+
+
+  if (!merma) {
+    return (
+      <div className="pedidos-page">
+
+        <FeedbackToast
+          tipo={feedback.tipo}
+          mensaje={feedback.mensaje}
+          onClose={() =>
+            setFeedback({
+              ...feedback,
+              mensaje: ''
+            })
+          }
+        />
+
+        <Link
+          to="/gestion/mermas"
+          className="btn-volver"
+        >
+          ← Volver
+        </Link>
+
+        <div className="tabla-card">
+          No se pudo cargar la merma.
+        </div>
+
+      </div>
+    );
+  }
+
+
+  return (
+    <div className="pedidos-page merma-page">
+
+      <FeedbackToast
+        tipo={feedback.tipo}
+        mensaje={feedback.mensaje}
+        onClose={() =>
+          setFeedback({
+            ...feedback,
+            mensaje: ''
+          })
+        }
+      />
+
+
+      <Link
+        to="/gestion/mermas"
+        className="btn-volver"
+      >
+        ← Volver a mermas
+      </Link>
+
+
+      <div className="pedidos-header">
+        <div>
+          <h1>
+            Detalle de merma
+          </h1>
+
+          <p>
+            Materia prima descontada
+            y lotes afectados.
+          </p>
+        </div>
+      </div>
+
+
+      <div className="merma-detalle-kpis">
+
+        <div>
+          <span>
+            Fecha
+          </span>
+
+          <strong>
+            {
+              fechaTexto(
+                merma.fecha_merma
+              )
+            }
+          </strong>
+        </div>
+
+
+        <div>
+          <span>
+            Materias primas
+          </span>
+
+          <strong>
+            {
+              detalles.length
+            }
+          </strong>
+        </div>
+
+
+        <div>
+          <span>
+            Total descontado
+          </span>
+
+          <strong className="merma-cantidad">
+            {
+              cantidad(
+                total
+              )
+            } KG
+          </strong>
+        </div>
+
+
+        <div>
+          <span>
+            Registrado por
+          </span>
+
+          <strong>
+            {
+              merma.registrado_por
+            }
+          </strong>
+        </div>
+
+      </div>
+
+
+      {
+        merma.observacion &&
+        (
+          <div className="merma-observacion-general">
+            {
+              merma.observacion
+            }
+          </div>
+        )
+      }
+
+
+      <div className="merma-detalles">
+
+        {
+          detalles.map(
+            (
+              item,
+              index
+            ) => (
+              <article
+                className="merma-detalle-card"
+                key={
+                  item
+                    .merma_detalle_id
+                }
+              >
+
+                <div className="merma-detalle-header">
+
+                  <div>
+                    <span>
+                      Materia prima {
+                        index + 1
+                      }
+                    </span>
+
+                    <h3>
+                      {
+                        item.material
+                      }
+                      {' · '}
+                      {
+                        item.color
+                      }
+                    </h3>
+                  </div>
+
+                  <strong className="merma-cantidad">
+                    -{
+                      cantidad(
+                        item.cantidad
+                      )
+                    } {
+                      item.unidad
+                    }
+                  </strong>
+
+                </div>
+
+
+                {
+                  item.observacion &&
+                  (
+                    <div className="merma-item-nota">
+                      {
+                        item.observacion
+                      }
+                    </div>
+                  )
+                }
+
+
+                <details className="merma-fifo">
+
+                  <summary>
+                    Ver lotes afectados
+                  </summary>
+
+
+                  <div className="merma-fifo-contenido">
+
+                    <div className="merma-fifo-header">
+                      <div>
+                        <h4>
+                          Consumo de stock
+                        </h4>
+
+                        <p>
+                          El sistema utilizó primero
+                          el stock disponible más antiguo.
+                        </p>
+                      </div>
+
+                      <span>
+                        {
+                          item
+                            .consumos_fifo
+                            ?.length ||
+                          0
+                        } lote(s)
+                      </span>
+                    </div>
+
+
+                    <div className="tabla-scroll">
+
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>
+                              Lote
+                            </th>
+                            <th>
+                              Fecha de compra
+                            </th>
+                            <th>
+                              Material
+                            </th>
+                            <th>
+                              Color
+                            </th>
+                            <th>
+                              Descontado
+                            </th>
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                          {
+                            (
+                              item
+                                .consumos_fifo ||
+                              []
+                            ).map(
+                              (
+                                consumo: any
+                              ) => (
+                                <tr
+                                  key={
+                                    consumo
+                                      .movimiento_materia_prima_id
+                                  }
+                                >
+                                  <td>
+                                    <strong>
+                                      {
+                                        consumo
+                                          .nombre_lote
+                                      }
+                                    </strong>
+                                  </td>
+
+                                  <td>
+                                    {
+                                      fechaTexto(
+                                        consumo
+                                          .fecha_compra
+                                      )
+                                    }
+                                  </td>
+
+                                  <td>
+                                    {
+                                      consumo.material
+                                    }
+                                  </td>
+
+                                  <td>
+                                    {
+                                      consumo.color
+                                    }
+                                  </td>
+
+                                  <td>
+                                    <strong className="merma-cantidad">
+                                      -{
+                                        cantidad(
+                                          consumo
+                                            .cantidad
+                                        )
+                                      } KG
+                                    </strong>
+                                  </td>
+                                </tr>
+                              )
+                            )
+                          }
+
+                          {
+                            (
+                              item
+                                .consumos_fifo ||
+                              []
+                            ).length ===
+                              0 &&
+                            (
+                              <tr>
+                                <td colSpan={5}>
+                                  No se encontraron lotes afectados.
+                                </td>
+                              </tr>
+                            )
+                          }
+                        </tbody>
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                </details>
+
+              </article>
+            )
+          )
+        }
+
+      </div>
+
+    </div>
+  );
+}
+
+
+export default MermaDetalle;
+
+
+<<<END OF FILE>>>
+
+
+---
+
+## FILE: src\pages\mermas\MermasLista.tsx
+
+<<<START OF FILE>>>
+
+import {
+  useCallback,
+  useEffect,
+  useState
+} from 'react';
+
+import type {
+  FormEvent
+} from 'react';
+
+import {
+  Link
+} from 'react-router-dom';
+
+import {
+  apiFetch
+} from '../../services/api';
+
+import FeedbackToast
+  from '../../components/common/FeedbackToast';
+
+import '../../styles/mermas.css';
+
+
+type FeedbackTipo =
+  | 'success'
+  | 'error'
+  | 'info'
+  | 'warning';
+
+
+type Filtros = {
+  q: string;
+  fecha_desde: string;
+  fecha_hasta: string;
+};
+
+
+const filtrosVacios: Filtros = {
+  q: '',
+  fecha_desde: '',
+  fecha_hasta: ''
+};
+
+
+function MermasLista() {
+  const [
+    mermas,
+    setMermas
+  ] = useState<any[]>([]);
+
+  const [
+    cargando,
+    setCargando
+  ] = useState(true);
+
+  const [
+    page,
+    setPage
+  ] = useState(1);
+
+  const [
+    paginacion,
+    setPaginacion
+  ] = useState({
+    page: 1,
+    limit: 10,
+    total: 0,
+    totalPaginas: 0
+  });
+
+  const [
+    filtros,
+    setFiltros
+  ] = useState<Filtros>({
+    ...filtrosVacios
+  });
+
+  const [
+    filtrosAplicados,
+    setFiltrosAplicados
+  ] = useState<Filtros>({
+    ...filtrosVacios
+  });
+
+  const [
+    feedback,
+    setFeedback
+  ] = useState<{
+    tipo: FeedbackTipo;
+    mensaje: string;
+  }>({
+    tipo: 'info',
+    mensaje: ''
+  });
+
+
+  const cargarMermas =
+    useCallback(
+      async (
+        pagina: number,
+        filtrosConsulta: Filtros
+      ) => {
+        const params =
+          new URLSearchParams();
+
+        params.set(
+          'page',
+          String(pagina)
+        );
+
+        params.set(
+          'limit',
+          '10'
+        );
+
+        if (
+          filtrosConsulta.q.trim()
+        ) {
+          params.set(
+            'q',
+            filtrosConsulta.q.trim()
+          );
+        }
+
+        if (
+          filtrosConsulta.fecha_desde
+        ) {
+          params.set(
+            'fecha_desde',
+            filtrosConsulta.fecha_desde
+          );
+        }
+
+        if (
+          filtrosConsulta.fecha_hasta
+        ) {
+          params.set(
+            'fecha_hasta',
+            filtrosConsulta.fecha_hasta
+          );
+        }
+
+        const data =
+          await apiFetch(
+            `/mermas?${params.toString()}`
+          );
+
+        setMermas(
+          data.mermas || []
+        );
+
+        setPaginacion(
+          data.paginacion
+        );
+      },
+      []
+    );
+
+
+  useEffect(() => {
+    const cargar =
+      async () => {
+        setCargando(true);
+
+        try {
+          await cargarMermas(
+            page,
+            filtrosAplicados
+          );
+
+        } catch (error: any) {
+          setFeedback({
+            tipo: 'error',
+            mensaje: error.message
+          });
+
+        } finally {
+          setCargando(false);
+        }
+      };
+
+    cargar();
+  }, [
+    page,
+    filtrosAplicados,
+    cargarMermas
+  ]);
+
+
+  const aplicarFiltros = (
+    e: FormEvent
+  ) => {
+    e.preventDefault();
+
+    setPage(1);
+
+    setFiltrosAplicados({
+      q:
+        filtros.q.trim(),
+      fecha_desde:
+        filtros.fecha_desde,
+      fecha_hasta:
+        filtros.fecha_hasta
+    });
+  };
+
+
+  const limpiarFiltros = () => {
+    setFiltros({
+      ...filtrosVacios
+    });
+
+    setPage(1);
+
+    setFiltrosAplicados({
+      ...filtrosVacios
+    });
+  };
+
+
+  const cantidad = (
+    valor: any
+  ) => {
+    return Number(
+      valor || 0
+    ).toFixed(3);
+  };
+
+
+  const fechaTexto = (
+    valor: string | null
+  ) => {
+    if (!valor) {
+      return '-';
+    }
+
+    return valor.slice(
+      0,
+      10
+    );
+  };
+
+
+  return (
+    <div className="pedidos-page merma-page">
+
+      <FeedbackToast
+        tipo={feedback.tipo}
+        mensaje={feedback.mensaje}
+        onClose={() =>
+          setFeedback({
+            ...feedback,
+            mensaje: ''
+          })
+        }
+      />
+
+
+      <div className="pedidos-header merma-header">
+        <div>
+          <h1>
+            Mermas de materia prima
+          </h1>
+
+          <p>
+            Consulta las pérdidas registradas
+            y su impacto en el almacén.
+          </p>
+        </div>
+
+        <Link
+          to="/gestion/mermas/registrar"
+          className="btn-primary-link"
+        >
+          + Registrar merma
+        </Link>
+      </div>
+
+
+      <form
+        className="merma-filtros"
+        onSubmit={
+          aplicarFiltros
+        }
+      >
+
+        <div className="merma-filtro-busqueda">
+          <label>
+            Buscar
+          </label>
+
+          <input
+            value={filtros.q}
+            onChange={(e) =>
+              setFiltros({
+                ...filtros,
+                q:
+                  e.target.value
+              })
+            }
+            placeholder="Material, color u observación..."
+          />
+        </div>
+
+
+        <div>
+          <label>
+            Desde
+          </label>
+
+          <input
+            type="date"
+            value={
+              filtros.fecha_desde
+            }
+            onChange={(e) =>
+              setFiltros({
+                ...filtros,
+                fecha_desde:
+                  e.target.value
+              })
+            }
+          />
+        </div>
+
+
+        <div>
+          <label>
+            Hasta
+          </label>
+
+          <input
+            type="date"
+            value={
+              filtros.fecha_hasta
+            }
+            onChange={(e) =>
+              setFiltros({
+                ...filtros,
+                fecha_hasta:
+                  e.target.value
+              })
+            }
+          />
+        </div>
+
+
+        <button type="submit">
+          Buscar
+        </button>
+
+        <button
+          type="button"
+          className="btn-secondary"
+          onClick={
+            limpiarFiltros
+          }
+        >
+          Limpiar
+        </button>
+
+      </form>
+
+
+      <div className="tabla-card">
+
+        <div className="merma-tabla-header">
+          <div>
+            <h3>
+              Historial de mermas
+            </h3>
+
+            <p>
+              Cada registro conserva la trazabilidad
+              de los lotes afectados.
+            </p>
+          </div>
+
+          <span className="muted">
+            {
+              paginacion.total
+            } registro(s)
+          </span>
+        </div>
+
+
+        {
+          cargando
+            ? (
+              <p>
+                Cargando mermas...
+              </p>
+            )
+            : (
+              <>
+                <div className="tabla-scroll">
+
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>
+                          Fecha
+                        </th>
+                        <th>
+                          Materias primas
+                        </th>
+                        <th>
+                          Total
+                        </th>
+                        <th>
+                          Observación
+                        </th>
+                        <th>
+                          Registrado por
+                        </th>
+                        <th>
+                          Acción
+                        </th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      {
+                        mermas.map(
+                          (merma) => (
+                            <tr
+                              key={
+                                merma.merma_id
+                              }
+                            >
+                              <td>
+                                <strong>
+                                  {
+                                    fechaTexto(
+                                      merma.fecha_merma
+                                    )
+                                  }
+                                </strong>
+                              </td>
+
+                              <td>
+                                {
+                                  merma
+                                    .cantidad_items
+                                }
+                              </td>
+
+                              <td>
+                                <strong className="merma-cantidad">
+                                  {
+                                    cantidad(
+                                      merma
+                                        .total_merma_kg
+                                    )
+                                  } KG
+                                </strong>
+                              </td>
+
+                              <td>
+                                {
+                                  merma
+                                    .observacion ||
+                                  '-'
+                                }
+                              </td>
+
+                              <td>
+                                {
+                                  merma
+                                    .registrado_por
+                                }
+                              </td>
+
+                              <td>
+                                <Link
+                                  className="btn-outline"
+                                  to={
+                                    `/gestion/mermas/${merma.merma_id}`
+                                  }
+                                >
+                                  Ver detalle
+                                </Link>
+                              </td>
+                            </tr>
+                          )
+                        )
+                      }
+
+                      {
+                        mermas.length === 0 &&
+                        (
+                          <tr>
+                            <td colSpan={6}>
+                              No hay mermas registradas
+                              para los filtros seleccionados.
+                            </td>
+                          </tr>
+                        )
+                      }
+                    </tbody>
+                  </table>
+
+                </div>
+
+
+                <div className="paginado">
+
+                  <button
+                    type="button"
+                    disabled={
+                      page <= 1
+                    }
+                    onClick={() =>
+                      setPage(
+                        page - 1
+                      )
+                    }
+                  >
+                    Anterior
+                  </button>
+
+                  <span>
+                    Página {
+                      paginacion.page
+                    } de {
+                      paginacion
+                        .totalPaginas ||
+                      1
+                    }
+                  </span>
+
+                  <button
+                    type="button"
+                    disabled={
+                      page >=
+                      paginacion
+                        .totalPaginas
+                    }
+                    onClick={() =>
+                      setPage(
+                        page + 1
+                      )
+                    }
+                  >
+                    Siguiente
+                  </button>
+
+                </div>
+              </>
+            )
+        }
+
+      </div>
+
+    </div>
+  );
+}
+
+
+export default MermasLista;
+
+
+<<<END OF FILE>>>
+
+
+---
+
+## FILE: src\pages\mermas\RegistrarMerma.tsx
+
+<<<START OF FILE>>>
+
+import {
+  useEffect,
+  useMemo,
+  useState
+} from 'react';
+
+import type {
+  FormEvent
+} from 'react';
+
+import {
+  Link,
+  useNavigate
+} from 'react-router-dom';
+
+import {
+  apiFetch
+} from '../../services/api';
+
+import FeedbackToast
+  from '../../components/common/FeedbackToast';
+
+import ConfirmDialog
+  from '../../components/common/ConfirmDialog';
+
+import {
+  useBloqueoAccion
+} from '../../hooks/useBloqueoAccion';
+
+import '../../styles/mermas.css';
+
+
+type FeedbackTipo =
+  | 'success'
+  | 'error'
+  | 'info'
+  | 'warning';
+
+
+type Disponibilidad = {
+  material_id: number;
+  material: string;
+  color_id: number;
+  color: string;
+  unidad_medida_id: number;
+  unidad: string;
+  cantidad_disponible: number;
+};
+
+
+type DetalleMerma = {
+  local_id: string;
+  material_id: string;
+  color_id: string;
+  cantidad: string;
+  observacion: string;
+};
+
+
+const fechaLocalActual = () => {
+  const hoy =
+    new Date();
+
+  const anio =
+    hoy.getFullYear();
+
+  const mes =
+    String(
+      hoy.getMonth() + 1
+    ).padStart(
+      2,
+      '0'
+    );
+
+  const dia =
+    String(
+      hoy.getDate()
+    ).padStart(
+      2,
+      '0'
+    );
+
+  return `${anio}-${mes}-${dia}`;
+};
+
+
+const nuevaKey = () => {
+  if (
+    typeof crypto !==
+      'undefined' &&
+    typeof crypto.randomUUID ===
+      'function'
+  ) {
+    return crypto.randomUUID();
+  }
+
+  return [
+    'merma',
+    Date.now(),
+    Math.random()
+      .toString(36)
+      .slice(2)
+  ].join('-');
+};
+
+
+const nuevoLocalId = () => {
+  if (
+    typeof crypto !==
+      'undefined' &&
+    typeof crypto.randomUUID ===
+      'function'
+  ) {
+    return crypto.randomUUID();
+  }
+
+  return [
+    Date.now(),
+    Math.random()
+      .toString(36)
+      .slice(2)
+  ].join('-');
+};
+
+
+const crearDetalle =
+  (): DetalleMerma => ({
+    local_id:
+      nuevoLocalId(),
+    material_id: '',
+    color_id: '',
+    cantidad: '',
+    observacion: ''
+  });
+
+
+function RegistrarMerma() {
+  const navigate =
+    useNavigate();
+
+  const [
+    fechaMerma,
+    setFechaMerma
+  ] = useState(
+    fechaLocalActual()
+  );
+
+  const [
+    observacion,
+    setObservacion
+  ] = useState('');
+
+  const [
+    disponibilidad,
+    setDisponibilidad
+  ] = useState<
+    Disponibilidad[]
+  >([]);
+
+  const [
+    detalles,
+    setDetalles
+  ] = useState<
+    DetalleMerma[]
+  >([
+    crearDetalle()
+  ]);
+
+  const [
+    cargando,
+    setCargando
+  ] = useState(true);
+
+  const [
+    confirmando,
+    setConfirmando
+  ] = useState(false);
+
+  const [
+    idempotencyKey,
+    setIdempotencyKey
+  ] = useState(
+    nuevaKey()
+  );
+
+  const [
+    feedback,
+    setFeedback
+  ] = useState<{
+    tipo: FeedbackTipo;
+    mensaje: string;
+  }>({
+    tipo: 'info',
+    mensaje: ''
+  });
+
+  const {
+    procesando,
+    intentarBloquear,
+    liberar
+  } = useBloqueoAccion();
+
+
+  const cargarDisponibilidad =
+    async () => {
+      const data =
+        await apiFetch(
+          '/mermas/disponibilidad'
+        );
+
+      setDisponibilidad(
+        (data.items || [])
+          .map(
+            (item: any) => ({
+              ...item,
+              cantidad_disponible:
+                Number(
+                  item
+                    .cantidad_disponible ||
+                  0
+                )
+            })
+          )
+      );
+    };
+
+
+  useEffect(() => {
+    const cargar =
+      async () => {
+        setCargando(true);
+
+        try {
+          await cargarDisponibilidad();
+
+        } catch (error: any) {
+          setFeedback({
+            tipo: 'error',
+            mensaje: error.message
+          });
+
+        } finally {
+          setCargando(false);
+        }
+      };
+
+    cargar();
+  }, []);
+
+
+  const materiales =
+    useMemo(
+      () => {
+        const mapa =
+          new Map<
+            number,
+            string
+          >();
+
+        disponibilidad
+          .forEach(
+            (item) => {
+              mapa.set(
+                Number(
+                  item.material_id
+                ),
+                item.material
+              );
+            }
+          );
+
+        return Array.from(
+          mapa.entries()
+        ).map(
+          ([
+            id,
+            nombre
+          ]) => ({
+            id,
+            nombre
+          })
+        );
+      },
+      [
+        disponibilidad
+      ]
+    );
+
+
+  const coloresParaMaterial = (
+    materialId: string
+  ) => {
+    if (!materialId) {
+      return [];
+    }
+
+    return disponibilidad
+      .filter(
+        (item) =>
+          Number(
+            item.material_id
+          ) ===
+          Number(
+            materialId
+          )
+      )
+      .map(
+        (item) => ({
+          id:
+            Number(
+              item.color_id
+            ),
+          nombre:
+            item.color
+        })
+      );
+  };
+
+
+  const disponibilidadDetalle = (
+    detalle: DetalleMerma
+  ) => {
+    if (
+      !detalle.material_id ||
+      !detalle.color_id
+    ) {
+      return null;
+    }
+
+    return disponibilidad.find(
+      (item) =>
+        Number(
+          item.material_id
+        ) ===
+          Number(
+            detalle.material_id
+          ) &&
+        Number(
+          item.color_id
+        ) ===
+          Number(
+            detalle.color_id
+          )
+    ) || null;
+  };
+
+
+  const actualizarDetalle = (
+    index: number,
+    cambios:
+      Partial<
+        DetalleMerma
+      >
+  ) => {
+    setDetalles(
+      (actuales) =>
+        actuales.map(
+          (
+            detalle,
+            i
+          ) =>
+            i === index
+              ? {
+                  ...detalle,
+                  ...cambios
+                }
+              : detalle
+        )
+    );
+  };
+
+
+  const agregarDetalle = () => {
+    if (procesando) {
+      return;
+    }
+
+    setDetalles([
+      ...detalles,
+      crearDetalle()
+    ]);
+  };
+
+
+  const quitarDetalle = (
+    index: number
+  ) => {
+    if (procesando) {
+      return;
+    }
+
+    if (
+      detalles.length === 1
+    ) {
+      setFeedback({
+        tipo: 'warning',
+        mensaje:
+          'La merma debe tener al menos una materia prima'
+      });
+
+      return;
+    }
+
+    setDetalles(
+      detalles.filter(
+        (_, i) =>
+          i !== index
+      )
+    );
+  };
+
+
+  const cantidad = (
+    valor: any
+  ) => {
+    return Number(
+      valor || 0
+    ).toFixed(3);
+  };
+
+
+  const totalMerma =
+    useMemo(
+      () =>
+        detalles.reduce(
+          (
+            total,
+            detalle
+          ) =>
+            total +
+            Number(
+              detalle.cantidad ||
+              0
+            ),
+          0
+        ),
+      [
+        detalles
+      ]
+    );
+
+
+  const validar = () => {
+    if (!fechaMerma) {
+      return (
+        'La fecha de merma es obligatoria'
+      );
+    }
+
+    if (
+      disponibilidad.length === 0
+    ) {
+      return (
+        'No hay materia prima disponible para registrar una merma'
+      );
+    }
+
+    const combinaciones =
+      new Set<string>();
+
+    for (
+      let i = 0;
+      i < detalles.length;
+      i++
+    ) {
+      const detalle =
+        detalles[i];
+
+      if (
+        !detalle.material_id ||
+        !detalle.color_id
+      ) {
+        return (
+          `Completa el material y color del producto ${i + 1}`
+        );
+      }
+
+      const stock =
+        disponibilidadDetalle(
+          detalle
+        );
+
+      if (!stock) {
+        return (
+          `La materia prima del producto ${i + 1} no tiene stock disponible`
+        );
+      }
+
+      const key =
+        `${detalle.material_id}:${detalle.color_id}`;
+
+      if (
+        combinaciones.has(
+          key
+        )
+      ) {
+        return (
+          'No se puede repetir la misma materia prima en una sola merma'
+        );
+      }
+
+      combinaciones.add(
+        key
+      );
+
+      const valor =
+        Number(
+          detalle.cantidad
+        );
+
+      if (
+        !Number.isFinite(
+          valor
+        ) ||
+        valor <= 0
+      ) {
+        return (
+          `La cantidad del producto ${i + 1} debe ser mayor a 0`
+        );
+      }
+
+      if (
+        valor >
+        Number(
+          stock
+            .cantidad_disponible
+        ) +
+        0.000001
+      ) {
+        return (
+          `La cantidad del producto ${i + 1} supera el stock disponible`
+        );
+      }
+    }
+
+    return null;
+  };
+
+
+  const solicitarRegistro = (
+    e: FormEvent
+  ) => {
+    e.preventDefault();
+
+    const error =
+      validar();
+
+    if (error) {
+      setFeedback({
+        tipo: 'error',
+        mensaje: error
+      });
+
+      return;
+    }
+
+    setConfirmando(
+      true
+    );
+  };
+
+
+  const registrar = async () => {
+    if (
+      !intentarBloquear()
+    ) {
+      return;
+    }
+
+    try {
+      const data =
+        await apiFetch(
+          '/mermas',
+          {
+            method: 'POST',
+
+            headers: {
+              'Idempotency-Key':
+                idempotencyKey
+            },
+
+            body:
+              JSON.stringify({
+                fecha_merma:
+                  fechaMerma,
+
+                observacion:
+                  observacion
+                    .trim() ||
+                  null,
+
+                detalles:
+                  detalles.map(
+                    (detalle) => ({
+                      material_id:
+                        Number(
+                          detalle
+                            .material_id
+                        ),
+
+                      color_id:
+                        Number(
+                          detalle
+                            .color_id
+                        ),
+
+                      cantidad:
+                        Number(
+                          detalle
+                            .cantidad
+                        ),
+
+                      observacion:
+                        detalle
+                          .observacion
+                          .trim() ||
+                        null
+                    })
+                  )
+              })
+          }
+        );
+
+      setConfirmando(
+        false
+      );
+
+      setFeedback({
+        tipo: 'success',
+        mensaje:
+          data.reutilizada
+            ? 'La merma ya había sido registrada. Se recuperó el resultado existente sin descontar stock nuevamente.'
+            : 'Merma registrada correctamente.'
+      });
+
+      setIdempotencyKey(
+        nuevaKey()
+      );
+
+      setTimeout(() => {
+        navigate(
+          `/gestion/mermas/${data.merma.merma_id}`
+        );
+      }, 700);
+
+    } catch (error: any) {
+      liberar();
+
+      setConfirmando(
+        false
+      );
+
+      setFeedback({
+        tipo: 'error',
+        mensaje: error.message
+      });
+    }
+  };
+
+
+  return (
+    <div className="pedidos-page merma-page">
+
+      <FeedbackToast
+        tipo={feedback.tipo}
+        mensaje={feedback.mensaje}
+        onClose={() =>
+          setFeedback({
+            ...feedback,
+            mensaje: ''
+          })
+        }
+      />
+
+
+      <ConfirmDialog
+        abierto={confirmando}
+        titulo="Registrar merma"
+        descripcion={
+          `Se descontarán ${cantidad(totalMerma)} KG de materia prima del almacén. El sistema utilizará automáticamente el stock disponible más antiguo. ¿Deseas continuar?`
+        }
+        textoConfirmar="Registrar merma"
+        textoProcesando="Registrando..."
+        procesando={procesando}
+        onConfirmar={registrar}
+        onCerrar={() =>
+          !procesando &&
+          setConfirmando(
+            false
+          )
+        }
+      />
+
+
+      <Link
+        to="/gestion/mermas"
+        className="btn-volver"
+      >
+        ← Volver a mermas
+      </Link>
+
+
+      <div className="pedidos-header">
+        <div>
+          <h1>
+            Registrar merma
+          </h1>
+
+          <p>
+            Registra la materia prima perdida
+            y la cantidad afectada.
+          </p>
+        </div>
+      </div>
+
+
+      <form
+        className="merma-form"
+        onSubmit={
+          solicitarRegistro
+        }
+      >
+
+        <section className="merma-seccion">
+
+          <div className="merma-seccion-header">
+            <div>
+              <h3>
+                Datos de la merma
+              </h3>
+
+              <p>
+                Información general del registro.
+              </p>
+            </div>
+          </div>
+
+
+          <div className="merma-cabecera-grid">
+
+            <div>
+              <label>
+                Fecha
+              </label>
+
+              <input
+                type="date"
+                value={fechaMerma}
+                onChange={(e) =>
+                  setFechaMerma(
+                    e.target.value
+                  )
+                }
+                disabled={
+                  procesando
+                }
+              />
+            </div>
+
+
+            <div>
+              <label>
+                Observación general
+              </label>
+
+              <textarea
+                value={
+                  observacion
+                }
+                onChange={(e) =>
+                  setObservacion(
+                    e.target.value
+                  )
+                }
+                rows={3}
+                placeholder="Ejemplo: Material deteriorado durante manipulación"
+                disabled={
+                  procesando
+                }
+              />
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <section className="merma-seccion">
+
+          <div className="merma-seccion-header">
+            <div>
+              <h3>
+                Materia prima afectada
+              </h3>
+
+              <p>
+                Selecciona el material,
+                color y cantidad perdida.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={
+                agregarDetalle
+              }
+              disabled={
+                procesando ||
+                cargando ||
+                disponibilidad.length ===
+                  0
+              }
+            >
+              + Agregar materia prima
+            </button>
+          </div>
+
+
+          {
+            cargando
+              ? (
+                <p>
+                  Cargando stock disponible...
+                </p>
+              )
+              : disponibilidad.length ===
+                  0
+                ? (
+                  <div className="merma-alerta merma-alerta-warning">
+                    No hay materia prima con stock disponible.
+                  </div>
+                )
+                : (
+                  <div className="merma-items">
+
+                    {
+                      detalles.map(
+                        (
+                          detalle,
+                          index
+                        ) => {
+                          const stock =
+                            disponibilidadDetalle(
+                              detalle
+                            );
+
+                          const disponible =
+                            Number(
+                              stock
+                                ?.cantidad_disponible ||
+                              0
+                            );
+
+                          const valor =
+                            Number(
+                              detalle
+                                .cantidad ||
+                              0
+                            );
+
+                          const saldo =
+                            disponible -
+                            valor;
+
+                          return (
+                            <article
+                              className="merma-item-card"
+                              key={
+                                detalle.local_id
+                              }
+                            >
+
+                              <div className="merma-item-header">
+
+                                <strong>
+                                  Materia prima {
+                                    index + 1
+                                  }
+                                </strong>
+
+                                <button
+                                  type="button"
+                                  className="btn-danger"
+                                  onClick={() =>
+                                    quitarDetalle(
+                                      index
+                                    )
+                                  }
+                                  disabled={
+                                    procesando
+                                  }
+                                >
+                                  Quitar
+                                </button>
+
+                              </div>
+
+
+                              <div className="merma-item-grid">
+
+                                <div>
+                                  <label>
+                                    Material
+                                  </label>
+
+                                  <select
+                                    value={
+                                      detalle
+                                        .material_id
+                                    }
+                                    onChange={(e) =>
+                                      actualizarDetalle(
+                                        index,
+                                        {
+                                          material_id:
+                                            e.target.value,
+                                          color_id: '',
+                                          cantidad: ''
+                                        }
+                                      )
+                                    }
+                                    disabled={
+                                      procesando
+                                    }
+                                  >
+                                    <option value="">
+                                      Seleccione
+                                    </option>
+
+                                    {
+                                      materiales.map(
+                                        (material) => (
+                                          <option
+                                            key={
+                                              material.id
+                                            }
+                                            value={
+                                              material.id
+                                            }
+                                          >
+                                            {
+                                              material.nombre
+                                            }
+                                          </option>
+                                        )
+                                      )
+                                    }
+                                  </select>
+                                </div>
+
+
+                                <div>
+                                  <label>
+                                    Color
+                                  </label>
+
+                                  <select
+                                    value={
+                                      detalle
+                                        .color_id
+                                    }
+                                    onChange={(e) =>
+                                      actualizarDetalle(
+                                        index,
+                                        {
+                                          color_id:
+                                            e.target.value,
+                                          cantidad: ''
+                                        }
+                                      )
+                                    }
+                                    disabled={
+                                      procesando ||
+                                      !detalle
+                                        .material_id
+                                    }
+                                  >
+                                    <option value="">
+                                      Seleccione
+                                    </option>
+
+                                    {
+                                      coloresParaMaterial(
+                                        detalle
+                                          .material_id
+                                      ).map(
+                                        (color) => (
+                                          <option
+                                            key={
+                                              color.id
+                                            }
+                                            value={
+                                              color.id
+                                            }
+                                          >
+                                            {
+                                              color.nombre
+                                            }
+                                          </option>
+                                        )
+                                      )
+                                    }
+                                  </select>
+                                </div>
+
+
+                                <div>
+                                  <label>
+                                    Cantidad perdida
+                                  </label>
+
+                                  <div className="merma-input-unidad">
+
+                                    <input
+                                      type="number"
+                                      min="0.001"
+                                      max={
+                                        disponible >
+                                        0
+                                          ? disponible
+                                          : undefined
+                                      }
+                                      step="0.001"
+                                      value={
+                                        detalle
+                                          .cantidad
+                                      }
+                                      onChange={(e) =>
+                                        actualizarDetalle(
+                                          index,
+                                          {
+                                            cantidad:
+                                              e.target.value
+                                          }
+                                        )
+                                      }
+                                      placeholder="0.000"
+                                      disabled={
+                                        procesando ||
+                                        !stock
+                                      }
+                                    />
+
+                                    <span>
+                                      KG
+                                    </span>
+
+                                  </div>
+                                </div>
+
+
+                                <div className="merma-item-observacion">
+                                  <label>
+                                    Observación
+                                  </label>
+
+                                  <input
+                                    value={
+                                      detalle
+                                        .observacion
+                                    }
+                                    onChange={(e) =>
+                                      actualizarDetalle(
+                                        index,
+                                        {
+                                          observacion:
+                                            e.target.value
+                                        }
+                                      )
+                                    }
+                                    placeholder="Opcional"
+                                    disabled={
+                                      procesando
+                                    }
+                                  />
+                                </div>
+
+                              </div>
+
+
+                              {
+                                stock &&
+                                (
+                                  <div className="merma-stock-resumen">
+
+                                    <div>
+                                      <span>
+                                        Disponible
+                                      </span>
+
+                                      <strong>
+                                        {
+                                          cantidad(
+                                            disponible
+                                          )
+                                        } KG
+                                      </strong>
+                                    </div>
+
+
+                                    <div>
+                                      <span>
+                                        Merma ingresada
+                                      </span>
+
+                                      <strong className="merma-cantidad">
+                                        {
+                                          cantidad(
+                                            valor
+                                          )
+                                        } KG
+                                      </strong>
+                                    </div>
+
+
+                                    <div>
+                                      <span>
+                                        Saldo estimado
+                                      </span>
+
+                                      <strong
+                                        className={
+                                          saldo < 0
+                                            ? 'merma-saldo-error'
+                                            : 'merma-saldo-ok'
+                                        }
+                                      >
+                                        {
+                                          cantidad(
+                                            Math.max(
+                                              saldo,
+                                              0
+                                            )
+                                          )
+                                        } KG
+                                      </strong>
+                                    </div>
+
+                                  </div>
+                                )
+                              }
+
+
+                              {
+                                stock &&
+                                valor >
+                                  disponible &&
+                                (
+                                  <div className="merma-alerta merma-alerta-error">
+                                    La cantidad ingresada supera
+                                    el stock disponible.
+                                  </div>
+                                )
+                              }
+
+                            </article>
+                          );
+                        }
+                      )
+                    }
+
+                  </div>
+                )
+          }
+
+        </section>
+
+
+        <div className="merma-total">
+
+          <div>
+            <span>
+              Total de merma
+            </span>
+
+            <small>
+              {
+                detalles.length
+              } materia(s) prima(s)
+            </small>
+          </div>
+
+          <strong>
+            {
+              cantidad(
+                totalMerma
+              )
+            } KG
+          </strong>
+
+        </div>
+
+
+        <div className="merma-actions">
+
+          <Link
+            to="/gestion/mermas"
+            className="btn-secondary-link"
+          >
+            Cancelar
+          </Link>
+
+          <button
+            type="submit"
+            disabled={
+              procesando ||
+              cargando ||
+              disponibilidad.length ===
+                0
+            }
+          >
+            {
+              procesando
+                ? 'Registrando...'
+                : 'Registrar merma'
+            }
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+  );
+}
+
+
+export default RegistrarMerma;
+
 
 <<<END OF FILE>>>
 
@@ -13854,6 +24793,2721 @@ export default RegistrarPedido;
 
 ---
 
+## FILE: src\pages\producciones\ProduccionDetalle.tsx
+
+<<<START OF FILE>>>
+
+import {
+  useEffect,
+  useMemo,
+  useState
+} from 'react';
+
+import {
+  Link,
+  useParams
+} from 'react-router-dom';
+
+import {
+  apiFetch
+} from '../../services/api';
+
+import FeedbackToast
+  from '../../components/common/FeedbackToast';
+
+import '../../styles/producciones.css';
+
+
+type FeedbackTipo =
+  | 'success'
+  | 'error'
+  | 'info'
+  | 'warning';
+
+
+function ProduccionDetalle() {
+  const {
+    produccion_id
+  } = useParams();
+
+  const [
+    produccion,
+    setProduccion
+  ] = useState<any | null>(
+    null
+  );
+
+  const [
+    cargando,
+    setCargando
+  ] = useState(true);
+
+  const [
+    feedback,
+    setFeedback
+  ] = useState<{
+    tipo: FeedbackTipo;
+    mensaje: string;
+  }>({
+    tipo: 'info',
+    mensaje: ''
+  });
+
+
+  useEffect(() => {
+    const cargar =
+      async () => {
+        setCargando(true);
+
+        try {
+          const data =
+            await apiFetch(
+              `/producciones/${produccion_id}`
+            );
+
+          setProduccion(
+            data.produccion
+          );
+
+        } catch (error: any) {
+          setFeedback({
+            tipo: 'error',
+            mensaje: error.message
+          });
+
+        } finally {
+          setCargando(false);
+        }
+      };
+
+    cargar();
+  }, [
+    produccion_id
+  ]);
+
+
+  const totalProducido =
+    useMemo(
+      () =>
+        (
+          produccion?.detalles ||
+          []
+        ).reduce(
+          (
+            total: number,
+            detalle: any
+          ) =>
+            total +
+            Number(
+              detalle
+                .cantidad_producida ||
+              0
+            ),
+          0
+        ),
+      [
+        produccion
+      ]
+    );
+
+
+  const cantidad = (
+    valor: any
+  ) => {
+    return Number(
+      valor || 0
+    ).toFixed(3);
+  };
+
+
+  const fechaTexto = (
+    valor: string | null
+  ) => {
+    if (!valor) {
+      return '-';
+    }
+
+    return valor.slice(
+      0,
+      10
+    );
+  };
+
+
+  if (cargando) {
+    return (
+      <div className="pedidos-page">
+        <p>
+          Cargando producción...
+        </p>
+      </div>
+    );
+  }
+
+
+  if (!produccion) {
+    return (
+      <div className="pedidos-page">
+
+        <FeedbackToast
+          tipo={feedback.tipo}
+          mensaje={feedback.mensaje}
+          onClose={() =>
+            setFeedback({
+              ...feedback,
+              mensaje: ''
+            })
+          }
+        />
+
+        <Link
+          to="/gestion/producciones"
+          className="btn-volver"
+        >
+          ← Volver
+        </Link>
+
+        <div className="tabla-card">
+          No se pudo cargar la producción.
+        </div>
+
+      </div>
+    );
+  }
+
+
+  return (
+    <div className="pedidos-page producciones-page">
+
+      <FeedbackToast
+        tipo={feedback.tipo}
+        mensaje={feedback.mensaje}
+        onClose={() =>
+          setFeedback({
+            ...feedback,
+            mensaje: ''
+          })
+        }
+      />
+
+
+      <Link
+        to="/gestion/producciones"
+        className="btn-volver"
+      >
+        ← Volver a producción
+      </Link>
+
+
+      <div className="pedidos-header">
+        <div>
+          <h1>
+            Producción #{
+              produccion.produccion_id
+            }
+          </h1>
+
+          <p>
+            Detalle de productos fabricados
+            y materia prima consumida por FIFO.
+          </p>
+        </div>
+      </div>
+
+
+      <div className="prod-detalle-kpis">
+
+        <div>
+          <span>
+            Fecha
+          </span>
+
+          <strong>
+            {
+              fechaTexto(
+                produccion
+                  .fecha_produccion
+              )
+            }
+          </strong>
+        </div>
+
+
+        <div>
+          <span>
+            Productos
+          </span>
+
+          <strong>
+            {
+              produccion
+                .detalles
+                .length
+            }
+          </strong>
+        </div>
+
+
+        <div>
+          <span>
+            Total producido
+          </span>
+
+          <strong>
+            {
+              totalProducido
+                .toFixed(3)
+            } KG
+          </strong>
+        </div>
+
+
+        <div>
+          <span>
+            Registrado por
+          </span>
+
+          <strong>
+            {
+              produccion
+                .registrado_por
+            }
+          </strong>
+        </div>
+
+      </div>
+
+
+      {
+        produccion.observacion &&
+        (
+          <div className="prod-observacion-general">
+            {
+              produccion.observacion
+            }
+          </div>
+        )
+      }
+
+
+      <div className="prod-detalles-lista">
+
+        {
+          produccion
+            .detalles
+            .map(
+              (
+                item: any,
+                index: number
+              ) => (
+                <article
+                  className="prod-detalle-card"
+                  key={
+                    item
+                      .produccion_detalle_id
+                  }
+                >
+
+                  <div className="prod-detalle-card-header">
+
+                    <div>
+                      <span className="prod-detalle-numero">
+                        Producto {
+                          index + 1
+                        }
+                      </span>
+
+                      <h3>
+                        {
+                          item.tipo_producto
+                        }
+                        {' · '}
+                        {
+                          item.material
+                        }
+                        {' · '}
+                        {
+                          item.medida
+                        }
+                        {' · '}
+                        {
+                          item.color
+                        }
+                      </h3>
+                    </div>
+
+
+                    <span className="prod-version-badge">
+                      Composición V{
+                        item
+                          .composicion_version
+                      }
+                    </span>
+
+                  </div>
+
+
+                  <div className="prod-detalle-resumen">
+
+                    <div>
+                      <span>
+                        Producido
+                      </span>
+
+                      <strong>
+                        {
+                          cantidad(
+                            item
+                              .cantidad_producida
+                          )
+                        } {
+                          item.unidad
+                        }
+                      </strong>
+                    </div>
+
+
+                    <div>
+                      <span>
+                        Presentación
+                      </span>
+
+                      <strong>
+                        {
+                          cantidad(
+                            item
+                              .cantidad_presentacion
+                          )
+                        } {
+                          item
+                            .unidad_presentacion
+                        }
+                      </strong>
+                    </div>
+
+
+                    <div>
+                      <span>
+                        Presentaciones
+                      </span>
+
+                      <strong>
+                        {
+                          (
+                            Number(
+                              item
+                                .cantidad_producida
+                            ) /
+                            Number(
+                              item
+                                .cantidad_presentacion
+                            )
+                          )
+                            .toFixed(2)
+                        }
+                      </strong>
+                    </div>
+
+
+                    <div>
+                      <span>
+                        Stock PT después
+                      </span>
+
+                      <strong className="prod-stock-positivo">
+                        {
+                          item
+                            .ingreso_producto_terminado
+                            ? cantidad(
+                                item
+                                  .ingreso_producto_terminado
+                                  .stock_actual
+                              )
+                            : '0.000'
+                        } {
+                          item.unidad
+                        }
+                      </strong>
+                    </div>
+
+                  </div>
+
+
+                  {
+                    item.observacion &&
+                    (
+                      <div className="prod-item-observacion">
+                        {
+                          item.observacion
+                        }
+                      </div>
+                    )
+                  }
+
+
+                  <details className="prod-fifo-details">
+
+                    <summary>
+                      Ver consumo FIFO de materia prima
+                    </summary>
+
+
+                    <div className="prod-fifo-contenido">
+
+                      <div className="prod-fifo-titulo">
+                        <h4>
+                          Lotes utilizados
+                        </h4>
+
+                        <span>
+                          {
+                            item
+                              .consumos_materia_prima
+                              .length
+                          } movimiento(s)
+                        </span>
+                      </div>
+
+
+                      <div className="tabla-scroll">
+
+                        <table>
+                          <thead>
+                            <tr>
+                              <th>
+                                Lote
+                              </th>
+                              <th>
+                                Fecha compra
+                              </th>
+                              <th>
+                                Material
+                              </th>
+                              <th>
+                                Color
+                              </th>
+                              <th>
+                                Consumido
+                              </th>
+                            </tr>
+                          </thead>
+
+                          <tbody>
+                            {
+                              item
+                                .consumos_materia_prima
+                                .map(
+                                  (
+                                    consumo: any
+                                  ) => (
+                                    <tr
+                                      key={
+                                        consumo
+                                          .movimiento_materia_prima_id
+                                      }
+                                    >
+                                      <td>
+                                        <strong>
+                                          {
+                                            consumo
+                                              .nombre_lote
+                                          }
+                                        </strong>
+                                      </td>
+
+                                      <td>
+                                        {
+                                          fechaTexto(
+                                            consumo
+                                              .fecha_compra
+                                          )
+                                        }
+                                      </td>
+
+                                      <td>
+                                        {
+                                          consumo.material
+                                        }
+                                      </td>
+
+                                      <td>
+                                        {
+                                          consumo.color
+                                        }
+                                      </td>
+
+                                      <td>
+                                        <strong className="prod-consumo-negativo">
+                                          -{
+                                            cantidad(
+                                              consumo
+                                                .cantidad
+                                            )
+                                          } KG
+                                        </strong>
+                                      </td>
+                                    </tr>
+                                  )
+                                )
+                            }
+
+                            {
+                              item
+                                .consumos_materia_prima
+                                .length ===
+                                0 &&
+                              (
+                                <tr>
+                                  <td colSpan={5}>
+                                    No se encontraron movimientos FIFO.
+                                  </td>
+                                </tr>
+                              )
+                            }
+                          </tbody>
+                        </table>
+
+                      </div>
+
+                    </div>
+
+                  </details>
+
+                </article>
+              )
+            )
+        }
+
+      </div>
+
+    </div>
+  );
+}
+
+
+export default ProduccionDetalle;
+
+
+<<<END OF FILE>>>
+
+
+---
+
+## FILE: src\pages\producciones\ProduccionesLista.tsx
+
+<<<START OF FILE>>>
+
+import {
+  useCallback,
+  useEffect,
+  useState
+} from 'react';
+
+import {
+  Link
+} from 'react-router-dom';
+
+import {
+  apiFetch
+} from '../../services/api';
+
+import FeedbackToast
+  from '../../components/common/FeedbackToast';
+
+import '../../styles/producciones.css';
+
+
+type FeedbackTipo =
+  | 'success'
+  | 'error'
+  | 'info'
+  | 'warning';
+
+
+function ProduccionesLista() {
+  const [
+    producciones,
+    setProducciones
+  ] = useState<any[]>([]);
+
+  const [
+    cargando,
+    setCargando
+  ] = useState(true);
+
+  const [
+    page,
+    setPage
+  ] = useState(1);
+
+  const [
+    paginacion,
+    setPaginacion
+  ] = useState({
+    page: 1,
+    limit: 10,
+    total: 0,
+    totalPaginas: 0
+  });
+
+  const [
+    feedback,
+    setFeedback
+  ] = useState<{
+    tipo: FeedbackTipo;
+    mensaje: string;
+  }>({
+    tipo: 'info',
+    mensaje: ''
+  });
+
+
+  const cargarProducciones =
+    useCallback(
+      async (
+        pagina: number
+      ) => {
+        const data =
+          await apiFetch(
+            `/producciones?page=${pagina}&limit=10`
+          );
+
+        setProducciones(
+          data.producciones || []
+        );
+
+        setPaginacion(
+          data.paginacion
+        );
+      },
+      []
+    );
+
+
+  useEffect(() => {
+    const cargar =
+      async () => {
+        setCargando(true);
+
+        try {
+          await cargarProducciones(
+            page
+          );
+
+        } catch (error: any) {
+          setFeedback({
+            tipo: 'error',
+            mensaje: error.message
+          });
+
+        } finally {
+          setCargando(false);
+        }
+      };
+
+    cargar();
+  }, [
+    page,
+    cargarProducciones
+  ]);
+
+
+  const fechaTexto = (
+    valor: string | null
+  ) => {
+    if (!valor) {
+      return '-';
+    }
+
+    return valor.slice(
+      0,
+      10
+    );
+  };
+
+
+  const cantidad = (
+    valor: any
+  ) => {
+    return Number(
+      valor || 0
+    ).toFixed(3);
+  };
+
+
+  return (
+    <div className="pedidos-page producciones-page">
+
+      <FeedbackToast
+        tipo={feedback.tipo}
+        mensaje={feedback.mensaje}
+        onClose={() =>
+          setFeedback({
+            ...feedback,
+            mensaje: ''
+          })
+        }
+      />
+
+
+      <div className="pedidos-header producciones-header">
+        <div>
+          <h1>
+            Producción
+          </h1>
+
+          <p>
+            Registra el producto fabricado y consulta
+            el consumo de materia prima realizado por FIFO.
+          </p>
+        </div>
+
+        <Link
+          to="/gestion/producciones/registrar"
+          className="btn-primary-link"
+        >
+          + Registrar producción
+        </Link>
+      </div>
+
+
+      <div className="tabla-card">
+
+        <div className="prod-tabla-cabecera">
+          <div>
+            <h3>
+              Producciones registradas
+            </h3>
+
+            <p>
+              Historial de ingresos al almacén
+              de producto terminado.
+            </p>
+          </div>
+
+          <span className="muted">
+            {
+              paginacion.total
+            } producción(es)
+          </span>
+        </div>
+
+
+        {
+          cargando
+            ? (
+              <p>
+                Cargando producciones...
+              </p>
+            )
+            : (
+              <>
+                <div className="tabla-scroll">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>
+                          Producción
+                        </th>
+                        <th>
+                          Fecha
+                        </th>
+                        <th>
+                          Productos
+                        </th>
+                        <th>
+                          Total producido
+                        </th>
+                        <th>
+                          Observación
+                        </th>
+                        <th>
+                          Registrado por
+                        </th>
+                        <th>
+                          Acción
+                        </th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      {
+                        producciones.map(
+                          (produccion) => (
+                            <tr
+                              key={
+                                produccion
+                                  .produccion_id
+                              }
+                            >
+                              <td>
+                                <strong>
+                                  #{
+                                    produccion
+                                      .produccion_id
+                                  }
+                                </strong>
+                              </td>
+
+                              <td>
+                                {
+                                  fechaTexto(
+                                    produccion
+                                      .fecha_produccion
+                                  )
+                                }
+                              </td>
+
+                              <td>
+                                {
+                                  produccion
+                                    .cantidad_items
+                                }
+                              </td>
+
+                              <td>
+                                <strong>
+                                  {
+                                    cantidad(
+                                      produccion
+                                        .total_producido_kg
+                                    )
+                                  } KG
+                                </strong>
+                              </td>
+
+                              <td>
+                                {
+                                  produccion
+                                    .observacion ||
+                                  '-'
+                                }
+                              </td>
+
+                              <td>
+                                {
+                                  produccion
+                                    .registrado_por
+                                }
+                              </td>
+
+                              <td>
+                                <Link
+                                  className="btn-outline"
+                                  to={
+                                    `/gestion/producciones/${produccion.produccion_id}`
+                                  }
+                                >
+                                  Ver detalle
+                                </Link>
+                              </td>
+                            </tr>
+                          )
+                        )
+                      }
+
+                      {
+                        producciones.length === 0 &&
+                        (
+                          <tr>
+                            <td colSpan={7}>
+                              Todavía no hay producciones registradas.
+                            </td>
+                          </tr>
+                        )
+                      }
+                    </tbody>
+                  </table>
+                </div>
+
+
+                <div className="paginado">
+
+                  <button
+                    type="button"
+                    disabled={
+                      page <= 1
+                    }
+                    onClick={() =>
+                      setPage(
+                        page - 1
+                      )
+                    }
+                  >
+                    Anterior
+                  </button>
+
+                  <span>
+                    Página {
+                      paginacion.page
+                    } de {
+                      paginacion
+                        .totalPaginas ||
+                      1
+                    }
+                  </span>
+
+                  <button
+                    type="button"
+                    disabled={
+                      page >=
+                      paginacion
+                        .totalPaginas
+                    }
+                    onClick={() =>
+                      setPage(
+                        page + 1
+                      )
+                    }
+                  >
+                    Siguiente
+                  </button>
+
+                </div>
+              </>
+            )
+        }
+
+      </div>
+
+    </div>
+  );
+}
+
+
+export default ProduccionesLista;
+
+
+<<<END OF FILE>>>
+
+
+---
+
+## FILE: src\pages\producciones\RegistrarProduccion.tsx
+
+<<<START OF FILE>>>
+
+import {
+  useEffect,
+  useMemo,
+  useState
+} from 'react';
+
+import type {
+  FormEvent
+} from 'react';
+
+import {
+  Link,
+  useNavigate
+} from 'react-router-dom';
+
+import {
+  apiFetch
+} from '../../services/api';
+
+import FeedbackToast
+  from '../../components/common/FeedbackToast';
+
+import ConfirmDialog
+  from '../../components/common/ConfirmDialog';
+
+import {
+  useBloqueoAccion
+} from '../../hooks/useBloqueoAccion';
+
+import '../../styles/producciones.css';
+
+
+type FeedbackTipo =
+  | 'success'
+  | 'error'
+  | 'info'
+  | 'warning';
+
+
+type Opcion = {
+  id: number;
+  nombre: string;
+};
+
+
+type OpcionesProducto = {
+  tipos: Opcion[];
+  materiales: Opcion[];
+  medidas: Opcion[];
+  colores: Opcion[];
+};
+
+
+type DetalleProduccionForm = {
+  local_id: string;
+
+  tipo_producto_id: string;
+  material_id: string;
+  medida_id: string;
+  color_id: string;
+
+  opciones: OpcionesProducto;
+
+  producto: any | null;
+  buscandoProducto: boolean;
+
+  cantidad_producida: string;
+  cantidad_presentacion: string;
+  observacion: string;
+};
+
+
+const fechaLocalActual = () => {
+  const hoy =
+    new Date();
+
+  const anio =
+    hoy.getFullYear();
+
+  const mes =
+    String(
+      hoy.getMonth() + 1
+    ).padStart(
+      2,
+      '0'
+    );
+
+  const dia =
+    String(
+      hoy.getDate()
+    ).padStart(
+      2,
+      '0'
+    );
+
+  return `${anio}-${mes}-${dia}`;
+};
+
+
+const nuevaKey = () => {
+  if (
+    typeof crypto !==
+      'undefined' &&
+    typeof crypto.randomUUID ===
+      'function'
+  ) {
+    return crypto.randomUUID();
+  }
+
+  return [
+    'produccion',
+    Date.now(),
+    Math.random()
+      .toString(36)
+      .slice(2)
+  ].join('-');
+};
+
+
+const nuevoLocalId = () => {
+  if (
+    typeof crypto !==
+      'undefined' &&
+    typeof crypto.randomUUID ===
+      'function'
+  ) {
+    return crypto.randomUUID();
+  }
+
+  return [
+    Date.now(),
+    Math.random()
+      .toString(36)
+      .slice(2)
+  ].join('-');
+};
+
+
+const crearDetalle = (
+  tipos: Opcion[]
+): DetalleProduccionForm => ({
+  local_id:
+    nuevoLocalId(),
+
+  tipo_producto_id: '',
+  material_id: '',
+  medida_id: '',
+  color_id: '',
+
+  opciones: {
+    tipos,
+    materiales: [],
+    medidas: [],
+    colores: []
+  },
+
+  producto: null,
+  buscandoProducto: false,
+
+  cantidad_producida: '',
+  cantidad_presentacion: '',
+  observacion: ''
+});
+
+
+function RegistrarProduccion() {
+  const navigate =
+    useNavigate();
+
+  const [
+    fechaProduccion,
+    setFechaProduccion
+  ] = useState(
+    fechaLocalActual()
+  );
+
+  const [
+    observacion,
+    setObservacion
+  ] = useState('');
+
+  const [
+    tiposBase,
+    setTiposBase
+  ] = useState<Opcion[]>([]);
+
+  const [
+    unidadKgId,
+    setUnidadKgId
+  ] = useState<number | null>(
+    null
+  );
+
+  const [
+    detalles,
+    setDetalles
+  ] = useState<
+    DetalleProduccionForm[]
+  >([]);
+
+  const [
+    cargandoInicial,
+    setCargandoInicial
+  ] = useState(true);
+
+  const [
+    confirmando,
+    setConfirmando
+  ] = useState(false);
+
+  const [
+    idempotencyKey,
+    setIdempotencyKey
+  ] = useState(
+    nuevaKey()
+  );
+
+  const [
+    feedback,
+    setFeedback
+  ] = useState<{
+    tipo: FeedbackTipo;
+    mensaje: string;
+  }>({
+    tipo: 'info',
+    mensaje: ''
+  });
+
+  const {
+    procesando,
+    intentarBloquear,
+    liberar
+  } = useBloqueoAccion();
+
+
+  useEffect(() => {
+    const cargar =
+      async () => {
+        setCargandoInicial(
+          true
+        );
+
+        try {
+          const [
+            opcionesData,
+            unidadesData
+          ] = await Promise.all([
+            apiFetch(
+              '/productos-terminados/opciones'
+            ),
+            apiFetch(
+              '/catalogos/unidades-medida'
+            )
+          ]);
+
+          const tipos:
+            Opcion[] =
+            opcionesData.tipos ||
+            [];
+
+          const unidadKg =
+            (
+              unidadesData.unidades ||
+              []
+            ).find(
+              (item: any) =>
+                String(
+                  item.codigo
+                ).toUpperCase() ===
+                'KG'
+            );
+
+          if (!unidadKg) {
+            throw new Error(
+              'No se encontró la unidad KG en el catálogo'
+            );
+          }
+
+          setTiposBase(
+            tipos
+          );
+
+          setUnidadKgId(
+            Number(
+              unidadKg.unidad_medida_id
+            )
+          );
+
+          setDetalles([
+            crearDetalle(
+              tipos
+            )
+          ]);
+
+        } catch (error: any) {
+          setFeedback({
+            tipo: 'error',
+            mensaje: error.message
+          });
+
+        } finally {
+          setCargandoInicial(
+            false
+          );
+        }
+      };
+
+    cargar();
+  }, []);
+
+
+  const actualizarDetalle = (
+    index: number,
+    cambios:
+      Partial<
+        DetalleProduccionForm
+      >
+  ) => {
+    setDetalles(
+      (actuales) =>
+        actuales.map(
+          (
+            detalle,
+            i
+          ) =>
+            i === index
+              ? {
+                  ...detalle,
+                  ...cambios
+                }
+              : detalle
+        )
+    );
+  };
+
+
+  const cargarOpciones = async (
+    params:
+      Record<
+        string,
+        string
+      >
+  ) => {
+    const query =
+      new URLSearchParams(
+        params
+      );
+
+    return await apiFetch(
+      `/productos-terminados/opciones?${query.toString()}`
+    );
+  };
+
+
+  const cambiarTipo = async (
+    index: number,
+    valor: string
+  ) => {
+    actualizarDetalle(
+      index,
+      {
+        tipo_producto_id:
+          valor,
+        material_id: '',
+        medida_id: '',
+        color_id: '',
+        producto: null,
+        buscandoProducto:
+          Boolean(valor),
+        opciones: {
+          tipos:
+            tiposBase,
+          materiales: [],
+          medidas: [],
+          colores: []
+        }
+      }
+    );
+
+    if (!valor) {
+      return;
+    }
+
+    try {
+      const data =
+        await cargarOpciones({
+          tipo_producto_id:
+            valor
+        });
+
+      actualizarDetalle(
+        index,
+        {
+          buscandoProducto:
+            false,
+          opciones: {
+            tipos:
+              tiposBase,
+            materiales:
+              data.materiales ||
+              [],
+            medidas: [],
+            colores: []
+          }
+        }
+      );
+
+    } catch (error: any) {
+      actualizarDetalle(
+        index,
+        {
+          buscandoProducto:
+            false
+        }
+      );
+
+      setFeedback({
+        tipo: 'error',
+        mensaje: error.message
+      });
+    }
+  };
+
+
+  const cambiarMaterial =
+    async (
+      index: number,
+      valor: string
+    ) => {
+      const detalle =
+        detalles[index];
+
+      actualizarDetalle(
+        index,
+        {
+          material_id:
+            valor,
+          medida_id: '',
+          color_id: '',
+          producto: null,
+          buscandoProducto:
+            Boolean(valor),
+          opciones: {
+            ...detalle.opciones,
+            medidas: [],
+            colores: []
+          }
+        }
+      );
+
+      if (!valor) {
+        return;
+      }
+
+      try {
+        const data =
+          await cargarOpciones({
+            tipo_producto_id:
+              detalle
+                .tipo_producto_id,
+            material_id:
+              valor
+          });
+
+        actualizarDetalle(
+          index,
+          {
+            buscandoProducto:
+              false,
+            opciones: {
+              ...detalle.opciones,
+              medidas:
+                data.medidas ||
+                [],
+              colores: []
+            }
+          }
+        );
+
+      } catch (error: any) {
+        actualizarDetalle(
+          index,
+          {
+            buscandoProducto:
+              false
+          }
+        );
+
+        setFeedback({
+          tipo: 'error',
+          mensaje: error.message
+        });
+      }
+    };
+
+
+  const cambiarMedida =
+    async (
+      index: number,
+      valor: string
+    ) => {
+      const detalle =
+        detalles[index];
+
+      actualizarDetalle(
+        index,
+        {
+          medida_id:
+            valor,
+          color_id: '',
+          producto: null,
+          buscandoProducto:
+            Boolean(valor),
+          opciones: {
+            ...detalle.opciones,
+            colores: []
+          }
+        }
+      );
+
+      if (!valor) {
+        return;
+      }
+
+      try {
+        const data =
+          await cargarOpciones({
+            tipo_producto_id:
+              detalle
+                .tipo_producto_id,
+            material_id:
+              detalle.material_id,
+            medida_id:
+              valor
+          });
+
+        actualizarDetalle(
+          index,
+          {
+            buscandoProducto:
+              false,
+            opciones: {
+              ...detalle.opciones,
+              colores:
+                data.colores ||
+                []
+            }
+          }
+        );
+
+      } catch (error: any) {
+        actualizarDetalle(
+          index,
+          {
+            buscandoProducto:
+              false
+          }
+        );
+
+        setFeedback({
+          tipo: 'error',
+          mensaje: error.message
+        });
+      }
+    };
+
+
+  const cambiarColor =
+    async (
+      index: number,
+      valor: string
+    ) => {
+      const detalle =
+        detalles[index];
+
+      actualizarDetalle(
+        index,
+        {
+          color_id:
+            valor,
+          producto: null,
+          buscandoProducto:
+            Boolean(valor)
+        }
+      );
+
+      if (!valor) {
+        return;
+      }
+
+      try {
+        const opcionesData =
+          await cargarOpciones({
+            tipo_producto_id:
+              detalle
+                .tipo_producto_id,
+            material_id:
+              detalle.material_id,
+            medida_id:
+              detalle.medida_id,
+            color_id:
+              valor
+          });
+
+        if (
+          !opcionesData.producto
+            ?.producto_id
+        ) {
+          actualizarDetalle(
+            index,
+            {
+              buscandoProducto:
+                false,
+              producto: null
+            }
+          );
+
+          setFeedback({
+            tipo: 'warning',
+            mensaje:
+              'No existe un producto terminado con esa selección'
+          });
+
+          return;
+        }
+
+        const productoData =
+          await apiFetch(
+            `/productos-terminados/${opcionesData.producto.producto_id}`
+          );
+
+        actualizarDetalle(
+          index,
+          {
+            buscandoProducto:
+              false,
+            producto:
+              productoData
+                .producto
+          }
+        );
+
+      } catch (error: any) {
+        actualizarDetalle(
+          index,
+          {
+            buscandoProducto:
+              false,
+            producto: null
+          }
+        );
+
+        setFeedback({
+          tipo: 'error',
+          mensaje: error.message
+        });
+      }
+    };
+
+
+  const agregarProducto = () => {
+    if (procesando) {
+      return;
+    }
+
+    setDetalles([
+      ...detalles,
+      crearDetalle(
+        tiposBase
+      )
+    ]);
+  };
+
+
+  const quitarProducto = (
+    index: number
+  ) => {
+    if (
+      procesando
+    ) {
+      return;
+    }
+
+    if (
+      detalles.length === 1
+    ) {
+      setFeedback({
+        tipo: 'warning',
+        mensaje:
+          'La producción debe tener al menos un producto'
+      });
+
+      return;
+    }
+
+    setDetalles(
+      detalles.filter(
+        (_, i) =>
+          i !== index
+      )
+    );
+  };
+
+
+  const totalProducido =
+    useMemo(
+      () =>
+        detalles.reduce(
+          (
+            total,
+            detalle
+          ) =>
+            total +
+            Number(
+              detalle
+                .cantidad_producida ||
+              0
+            ),
+          0
+        ),
+      [
+        detalles
+      ]
+    );
+
+
+  const validar = () => {
+    if (!fechaProduccion) {
+      return (
+        'La fecha de producción es obligatoria'
+      );
+    }
+
+    if (
+      !unidadKgId
+    ) {
+      return (
+        'No se pudo determinar la unidad KG'
+      );
+    }
+
+    for (
+      let i = 0;
+      i < detalles.length;
+      i++
+    ) {
+      const detalle =
+        detalles[i];
+
+      if (
+        !detalle.producto
+      ) {
+        return (
+          `El producto ${i + 1} no está completamente seleccionado`
+        );
+      }
+
+      if (
+        !detalle.producto
+          .composicion_vigente
+      ) {
+        return (
+          `El producto ${i + 1} no tiene composición definida`
+        );
+      }
+
+      const cantidad =
+        Number(
+          detalle
+            .cantidad_producida
+        );
+
+      const presentacion =
+        Number(
+          detalle
+            .cantidad_presentacion
+        );
+
+      if (
+        !Number.isFinite(
+          cantidad
+        ) ||
+        cantidad <= 0
+      ) {
+        return (
+          `La cantidad producida del producto ${i + 1} debe ser mayor a 0`
+        );
+      }
+
+      if (
+        !Number.isFinite(
+          presentacion
+        ) ||
+        presentacion <= 0
+      ) {
+        return (
+          `La presentación del producto ${i + 1} debe ser mayor a 0`
+        );
+      }
+
+      const cantidadMil =
+        Math.round(
+          cantidad * 1000
+        );
+
+      const presentacionMil =
+        Math.round(
+          presentacion * 1000
+        );
+
+      if (
+        presentacionMil <= 0 ||
+        cantidadMil %
+          presentacionMil !==
+          0
+      ) {
+        return (
+          `La cantidad producida del producto ${i + 1} debe ser múltiplo de su presentación`
+        );
+      }
+    }
+
+    return null;
+  };
+
+
+  const solicitarRegistro = (
+    e: FormEvent
+  ) => {
+    e.preventDefault();
+
+    const error =
+      validar();
+
+    if (error) {
+      setFeedback({
+        tipo: 'error',
+        mensaje: error
+      });
+
+      return;
+    }
+
+    setConfirmando(
+      true
+    );
+  };
+
+
+  const registrar = async () => {
+    if (
+      !intentarBloquear()
+    ) {
+      return;
+    }
+
+    try {
+      const data =
+        await apiFetch(
+          '/producciones',
+          {
+            method: 'POST',
+
+            headers: {
+              'Idempotency-Key':
+                idempotencyKey
+            },
+
+            body:
+              JSON.stringify({
+                fecha_produccion:
+                  fechaProduccion,
+
+                observacion:
+                  observacion
+                    .trim() ||
+                  null,
+
+                detalles:
+                  detalles.map(
+                    (detalle) => ({
+                      producto_id:
+                        Number(
+                          detalle
+                            .producto
+                            .producto_id
+                        ),
+
+                      cantidad_producida:
+                        Number(
+                          detalle
+                            .cantidad_producida
+                        ),
+
+                      cantidad_presentacion:
+                        Number(
+                          detalle
+                            .cantidad_presentacion
+                        ),
+
+                      unidad_presentacion_id:
+                        unidadKgId,
+
+                      observacion:
+                        detalle
+                          .observacion
+                          .trim() ||
+                        null
+                    })
+                  )
+              })
+          }
+        );
+
+      setConfirmando(
+        false
+      );
+
+      setFeedback({
+        tipo: 'success',
+        mensaje:
+          data.reutilizada
+            ? 'La producción ya había sido registrada. Se recuperó el resultado existente sin duplicar stock.'
+            : 'Producción registrada correctamente.'
+      });
+
+      setIdempotencyKey(
+        nuevaKey()
+      );
+
+      setTimeout(() => {
+        navigate(
+          `/gestion/producciones/${data.produccion.produccion_id}`
+        );
+      }, 800);
+
+    } catch (error: any) {
+      liberar();
+
+      setConfirmando(
+        false
+      );
+
+      setFeedback({
+        tipo: 'error',
+        mensaje: error.message
+      });
+    }
+  };
+
+
+  return (
+    <div className="pedidos-page producciones-page">
+
+      <FeedbackToast
+        tipo={feedback.tipo}
+        mensaje={feedback.mensaje}
+        onClose={() =>
+          setFeedback({
+            ...feedback,
+            mensaje: ''
+          })
+        }
+      />
+
+
+      <ConfirmDialog
+        abierto={confirmando}
+        titulo="Registrar producción"
+        descripcion={
+          `Se registrarán ${detalles.length} producto(s) por un total de ${totalProducido.toFixed(3)} KG. La operación descontará materia prima por FIFO e ingresará el producto terminado al almacén. ¿Deseas continuar?`
+        }
+        textoConfirmar="Registrar producción"
+        textoProcesando="Registrando..."
+        procesando={procesando}
+        onConfirmar={registrar}
+        onCerrar={() =>
+          !procesando &&
+          setConfirmando(
+            false
+          )
+        }
+      />
+
+
+      <Link
+        to="/gestion/producciones"
+        className="btn-volver"
+      >
+        ← Volver a producción
+      </Link>
+
+
+      <div className="pedidos-header">
+        <div>
+          <h1>
+            Registrar producción
+          </h1>
+
+          <p>
+            Selecciona los productos fabricados.
+            El sistema descontará automáticamente
+            la materia prima por FIFO.
+          </p>
+        </div>
+      </div>
+
+
+      <form
+        className="prod-form"
+        onSubmit={
+          solicitarRegistro
+        }
+      >
+
+        <section className="prod-seccion">
+
+          <div className="prod-seccion-header">
+            <div>
+              <h3>
+                Datos de producción
+              </h3>
+
+              <p>
+                Información general del registro.
+              </p>
+            </div>
+          </div>
+
+
+          <div className="prod-cabecera-grid">
+
+            <div>
+              <label>
+                Fecha de producción
+              </label>
+
+              <input
+                type="date"
+                value={
+                  fechaProduccion
+                }
+                onChange={(e) =>
+                  setFechaProduccion(
+                    e.target.value
+                  )
+                }
+                disabled={
+                  procesando
+                }
+              />
+            </div>
+
+
+            <div className="prod-campo-ancho">
+              <label>
+                Observación
+              </label>
+
+              <textarea
+                value={
+                  observacion
+                }
+                onChange={(e) =>
+                  setObservacion(
+                    e.target.value
+                  )
+                }
+                rows={3}
+                placeholder="Observación general de la producción"
+                disabled={
+                  procesando
+                }
+              />
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <section className="prod-seccion">
+
+          <div className="prod-seccion-header">
+            <div>
+              <h3>
+                Productos fabricados
+              </h3>
+
+              <p>
+                Selecciona el producto fabricado.
+                La composición se carga automáticamente.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={
+                agregarProducto
+              }
+              disabled={
+                procesando ||
+                cargandoInicial
+              }
+            >
+              + Agregar producto
+            </button>
+          </div>
+
+
+          <div className="prod-items">
+
+            {
+              detalles.map(
+                (
+                  detalle,
+                  index
+                ) => {
+                  const composicion =
+                    detalle.producto
+                      ?.composicion_vigente;
+
+                  const cantidadProducida =
+                    Number(
+                      detalle
+                        .cantidad_producida ||
+                      0
+                    );
+
+                  return (
+                    <article
+                      key={
+                        detalle.local_id
+                      }
+                      className="prod-item-card"
+                    >
+
+                      <div className="prod-item-header">
+                        <div>
+                          <strong>
+                            Producto {
+                              index + 1
+                            }
+                          </strong>
+
+                          <span>
+                            Tipo, material, medida y color
+                          </span>
+                        </div>
+
+                        <button
+                          type="button"
+                          className="btn-danger"
+                          onClick={() =>
+                            quitarProducto(
+                              index
+                            )
+                          }
+                          disabled={
+                            procesando
+                          }
+                        >
+                          Quitar
+                        </button>
+                      </div>
+
+
+                      <div className="prod-producto-grid">
+
+                        <div>
+                          <label>
+                            Tipo
+                          </label>
+
+                          <select
+                            value={
+                              detalle
+                                .tipo_producto_id
+                            }
+                            onChange={(e) =>
+                              cambiarTipo(
+                                index,
+                                e.target.value
+                              )
+                            }
+                            disabled={
+                              procesando ||
+                              cargandoInicial
+                            }
+                          >
+                            <option value="">
+                              Seleccione
+                            </option>
+
+                            {
+                              detalle
+                                .opciones
+                                .tipos
+                                .map(
+                                  (opcion) => (
+                                    <option
+                                      key={
+                                        opcion.id
+                                      }
+                                      value={
+                                        opcion.id
+                                      }
+                                    >
+                                      {
+                                        opcion.nombre
+                                      }
+                                    </option>
+                                  )
+                                )
+                            }
+                          </select>
+                        </div>
+
+
+                        <div>
+                          <label>
+                            Material
+                          </label>
+
+                          <select
+                            value={
+                              detalle
+                                .material_id
+                            }
+                            onChange={(e) =>
+                              cambiarMaterial(
+                                index,
+                                e.target.value
+                              )
+                            }
+                            disabled={
+                              procesando ||
+                              !detalle
+                                .tipo_producto_id ||
+                              detalle
+                                .buscandoProducto
+                            }
+                          >
+                            <option value="">
+                              Seleccione
+                            </option>
+
+                            {
+                              detalle
+                                .opciones
+                                .materiales
+                                .map(
+                                  (opcion) => (
+                                    <option
+                                      key={
+                                        opcion.id
+                                      }
+                                      value={
+                                        opcion.id
+                                      }
+                                    >
+                                      {
+                                        opcion.nombre
+                                      }
+                                    </option>
+                                  )
+                                )
+                            }
+                          </select>
+                        </div>
+
+
+                        <div>
+                          <label>
+                            Medida
+                          </label>
+
+                          <select
+                            value={
+                              detalle
+                                .medida_id
+                            }
+                            onChange={(e) =>
+                              cambiarMedida(
+                                index,
+                                e.target.value
+                              )
+                            }
+                            disabled={
+                              procesando ||
+                              !detalle
+                                .material_id ||
+                              detalle
+                                .buscandoProducto
+                            }
+                          >
+                            <option value="">
+                              Seleccione
+                            </option>
+
+                            {
+                              detalle
+                                .opciones
+                                .medidas
+                                .map(
+                                  (opcion) => (
+                                    <option
+                                      key={
+                                        opcion.id
+                                      }
+                                      value={
+                                        opcion.id
+                                      }
+                                    >
+                                      {
+                                        opcion.nombre
+                                      }
+                                    </option>
+                                  )
+                                )
+                            }
+                          </select>
+                        </div>
+
+
+                        <div>
+                          <label>
+                            Color
+                          </label>
+
+                          <select
+                            value={
+                              detalle
+                                .color_id
+                            }
+                            onChange={(e) =>
+                              cambiarColor(
+                                index,
+                                e.target.value
+                              )
+                            }
+                            disabled={
+                              procesando ||
+                              !detalle
+                                .medida_id ||
+                              detalle
+                                .buscandoProducto
+                            }
+                          >
+                            <option value="">
+                              Seleccione
+                            </option>
+
+                            {
+                              detalle
+                                .opciones
+                                .colores
+                                .map(
+                                  (opcion) => (
+                                    <option
+                                      key={
+                                        opcion.id
+                                      }
+                                      value={
+                                        opcion.id
+                                      }
+                                    >
+                                      {
+                                        opcion.nombre
+                                      }
+                                    </option>
+                                  )
+                                )
+                            }
+                          </select>
+                        </div>
+
+                      </div>
+
+
+                      {
+                        detalle.buscandoProducto &&
+                        (
+                          <div className="prod-producto-estado">
+                            Consultando producto...
+                          </div>
+                        )
+                      }
+
+
+                      {
+                        detalle.producto &&
+                        !composicion &&
+                        (
+                          <div className="prod-alerta prod-alerta-warning">
+                            Este producto existe, pero todavía no tiene
+                            composición definida. No se puede producir.
+                          </div>
+                        )
+                      }
+
+
+                      {
+                        composicion &&
+                        (
+                          <div className="prod-composicion-preview">
+
+                            <div className="prod-composicion-titulo">
+                              <div>
+                                <strong>
+                                  Composición vigente
+                                </strong>
+
+                                <span>
+                                  Versión {
+                                    composicion
+                                      .version_numero
+                                  }
+                                </span>
+                              </div>
+
+                              <span className="prod-badge-ok">
+                                Lista para producir
+                              </span>
+                            </div>
+
+
+                            <div className="prod-receta-grid">
+
+                              {
+                                composicion
+                                  .detalles
+                                  .map(
+                                    (
+                                      componente: any
+                                    ) => {
+                                      const requerido =
+                                        cantidadProducida >
+                                        0
+                                          ? cantidadProducida *
+                                            Number(
+                                              componente
+                                                .porcentaje
+                                            ) /
+                                            100
+                                          : 0;
+
+                                      return (
+                                        <div
+                                          key={
+                                            componente
+                                              .producto_composicion_detalle_id
+                                          }
+                                          className="prod-receta-item"
+                                        >
+                                          <div>
+                                            <strong>
+                                              {
+                                                componente
+                                                  .material
+                                              }
+                                            </strong>
+
+                                            <span>
+                                              {
+                                                componente
+                                                  .color
+                                              }
+                                            </span>
+                                          </div>
+
+                                          <div className="prod-receta-cantidad">
+                                            <strong>
+                                              {
+                                                Number(
+                                                  componente
+                                                    .porcentaje
+                                                )
+                                                  .toFixed(
+                                                    2
+                                                  )
+                                              }%
+                                            </strong>
+
+                                            {
+                                              cantidadProducida >
+                                                0 &&
+                                              (
+                                                <small>
+                                                  {
+                                                    requerido
+                                                      .toFixed(
+                                                        3
+                                                      )
+                                                  } KG
+                                                </small>
+                                              )
+                                            }
+                                          </div>
+                                        </div>
+                                      );
+                                    }
+                                  )
+                              }
+
+                            </div>
+
+                          </div>
+                        )
+                      }
+
+
+                      <div className="prod-cantidades-grid">
+
+                        <div>
+                          <label>
+                            Cantidad producida
+                          </label>
+
+                          <div className="prod-input-unidad">
+                            <input
+                              type="number"
+                              value={
+                                detalle
+                                  .cantidad_producida
+                              }
+                              onChange={(e) =>
+                                actualizarDetalle(
+                                  index,
+                                  {
+                                    cantidad_producida:
+                                      e.target.value
+                                  }
+                                )
+                              }
+                              min="0.001"
+                              step="0.001"
+                              placeholder="0.000"
+                              disabled={
+                                procesando
+                              }
+                            />
+
+                            <span>
+                              KG
+                            </span>
+                          </div>
+                        </div>
+
+
+                        <div>
+                          <label>
+                            Presentación
+                          </label>
+
+                          <div className="prod-input-unidad">
+                            <input
+                              type="number"
+                              value={
+                                detalle
+                                  .cantidad_presentacion
+                              }
+                              onChange={(e) =>
+                                actualizarDetalle(
+                                  index,
+                                  {
+                                    cantidad_presentacion:
+                                      e.target.value
+                                  }
+                                )
+                              }
+                              min="0.001"
+                              step="0.001"
+                              placeholder="Ej. 50"
+                              disabled={
+                                procesando
+                              }
+                            />
+
+                            <span>
+                              KG
+                            </span>
+                          </div>
+
+                          {
+                            Number(
+                              detalle
+                                .cantidad_producida ||
+                              0
+                            ) > 0 &&
+                            Number(
+                              detalle
+                                .cantidad_presentacion ||
+                              0
+                            ) > 0 &&
+                            (
+                              <small className="prod-presentaciones-info">
+                                {
+                                  (
+                                    Number(
+                                      detalle
+                                        .cantidad_producida
+                                    ) /
+                                    Number(
+                                      detalle
+                                        .cantidad_presentacion
+                                    )
+                                  )
+                                    .toFixed(
+                                      2
+                                    )
+                                } presentación(es)
+                              </small>
+                            )
+                          }
+                        </div>
+
+
+                        <div className="prod-campo-ancho">
+                          <label>
+                            Observación del producto
+                          </label>
+
+                          <input
+                            value={
+                              detalle
+                                .observacion
+                            }
+                            onChange={(e) =>
+                              actualizarDetalle(
+                                index,
+                                {
+                                  observacion:
+                                    e.target.value
+                                }
+                              )
+                            }
+                            placeholder="Opcional"
+                            disabled={
+                              procesando
+                            }
+                          />
+                        </div>
+
+                      </div>
+
+                    </article>
+                  );
+                }
+              )
+            }
+
+          </div>
+
+        </section>
+
+
+        <div className="prod-total">
+
+          <div>
+            <span>
+              Total de la producción
+            </span>
+
+            <small>
+              {
+                detalles.length
+              } producto(s)
+            </small>
+          </div>
+
+          <strong>
+            {
+              totalProducido
+                .toFixed(3)
+            } KG
+          </strong>
+
+        </div>
+
+
+        <div className="prod-form-actions">
+
+          <Link
+            to="/gestion/producciones"
+            className="btn-secondary-link"
+          >
+            Cancelar
+          </Link>
+
+          <button
+            type="submit"
+            disabled={
+              procesando ||
+              cargandoInicial
+            }
+          >
+            {
+              procesando
+                ? 'Registrando...'
+                : 'Registrar producción'
+            }
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+  );
+}
+
+
+export default RegistrarProduccion;
+
+
+<<<END OF FILE>>>
+
+
+---
+
 ## FILE: src\pages\Productos.tsx
 
 <<<START OF FILE>>>
@@ -14069,6 +27723,2749 @@ function Productos() {
 }
 
 export default Productos;
+
+<<<END OF FILE>>>
+
+
+---
+
+## FILE: src\pages\productosTerminados\ProductosTerminadosLista.tsx
+
+<<<START OF FILE>>>
+
+import {
+  useCallback,
+  useEffect,
+  useState
+} from 'react';
+
+import type {
+  FormEvent
+} from 'react';
+
+import {
+  Link
+} from 'react-router-dom';
+
+import {
+  apiFetch
+} from '../../services/api';
+
+import FeedbackToast
+  from '../../components/common/FeedbackToast';
+
+import '../../styles/productosTerminados.css';
+
+
+type FeedbackTipo =
+  | 'success'
+  | 'error'
+  | 'info'
+  | 'warning';
+
+
+type Filtros = {
+  q: string;
+  tipo_producto_id: string;
+  material_id: string;
+  medida_id: string;
+  color_id: string;
+  estado_composicion: string;
+};
+
+
+const filtrosVacios: Filtros = {
+  q: '',
+  tipo_producto_id: '',
+  material_id: '',
+  medida_id: '',
+  color_id: '',
+  estado_composicion: 'TODOS'
+};
+
+
+function ProductosTerminadosLista() {
+  const [
+    productos,
+    setProductos
+  ] = useState<any[]>([]);
+
+  const [
+    tipos,
+    setTipos
+  ] = useState<any[]>([]);
+
+  const [
+    materiales,
+    setMateriales
+  ] = useState<any[]>([]);
+
+  const [
+    medidas,
+    setMedidas
+  ] = useState<any[]>([]);
+
+  const [
+    colores,
+    setColores
+  ] = useState<any[]>([]);
+
+  const [
+    cargando,
+    setCargando
+  ] = useState(true);
+
+  const [
+    page,
+    setPage
+  ] = useState(1);
+
+  const [
+    paginacion,
+    setPaginacion
+  ] = useState({
+    page: 1,
+    limit: 10,
+    total: 0,
+    totalPaginas: 0
+  });
+
+  const [
+    filtros,
+    setFiltros
+  ] = useState<Filtros>({
+    ...filtrosVacios
+  });
+
+  const [
+    filtrosAplicados,
+    setFiltrosAplicados
+  ] = useState<Filtros>({
+    ...filtrosVacios
+  });
+
+  const [
+    feedback,
+    setFeedback
+  ] = useState<{
+    tipo: FeedbackTipo;
+    mensaje: string;
+  }>({
+    tipo: 'info',
+    mensaje: ''
+  });
+
+
+  const cargarCatalogos =
+    useCallback(
+      async () => {
+        const [
+          tiposData,
+          materialesData,
+          medidasData,
+          coloresData
+        ] = await Promise.all([
+          apiFetch(
+            '/catalogos/tiposProducto'
+          ),
+          apiFetch(
+            '/catalogos/materiales'
+          ),
+          apiFetch(
+            '/catalogos/medidas'
+          ),
+          apiFetch(
+            '/catalogos/colores'
+          )
+        ]);
+
+        setTipos(
+          tiposData.items || []
+        );
+
+        setMateriales(
+          materialesData.items || []
+        );
+
+        setMedidas(
+          medidasData.items || []
+        );
+
+        setColores(
+          coloresData.items || []
+        );
+      },
+      []
+    );
+
+
+  const cargarProductos =
+    useCallback(
+      async (
+        pagina: number,
+        filtrosActuales: Filtros
+      ) => {
+        const params =
+          new URLSearchParams();
+
+        params.set(
+          'page',
+          String(pagina)
+        );
+
+        params.set(
+          'limit',
+          '10'
+        );
+
+        params.set(
+          'estado_composicion',
+          filtrosActuales
+            .estado_composicion
+        );
+
+        if (
+          filtrosActuales.q.trim()
+        ) {
+          params.set(
+            'q',
+            filtrosActuales.q.trim()
+          );
+        }
+
+        if (
+          filtrosActuales
+            .tipo_producto_id
+        ) {
+          params.set(
+            'tipo_producto_id',
+            filtrosActuales
+              .tipo_producto_id
+          );
+        }
+
+        if (
+          filtrosActuales.material_id
+        ) {
+          params.set(
+            'material_id',
+            filtrosActuales.material_id
+          );
+        }
+
+        if (
+          filtrosActuales.medida_id
+        ) {
+          params.set(
+            'medida_id',
+            filtrosActuales.medida_id
+          );
+        }
+
+        if (
+          filtrosActuales.color_id
+        ) {
+          params.set(
+            'color_id',
+            filtrosActuales.color_id
+          );
+        }
+
+        const data =
+          await apiFetch(
+            `/productos-terminados?${params.toString()}`
+          );
+
+        setProductos(
+          data.productos || []
+        );
+
+        setPaginacion(
+          data.paginacion
+        );
+      },
+      []
+    );
+
+
+  useEffect(() => {
+    const iniciar =
+      async () => {
+        setCargando(true);
+
+        try {
+          await Promise.all([
+            cargarCatalogos(),
+            cargarProductos(
+              1,
+              filtrosVacios
+            )
+          ]);
+
+        } catch (error: any) {
+          setFeedback({
+            tipo: 'error',
+            mensaje: error.message
+          });
+
+        } finally {
+          setCargando(false);
+        }
+      };
+
+    iniciar();
+  }, [
+    cargarCatalogos,
+    cargarProductos
+  ]);
+
+
+  useEffect(() => {
+    if (cargando) {
+      return;
+    }
+
+    cargarProductos(
+      page,
+      filtrosAplicados
+    ).catch(
+      (error: any) => {
+        setFeedback({
+          tipo: 'error',
+          mensaje: error.message
+        });
+      }
+    );
+  }, [
+    page,
+    filtrosAplicados,
+    cargarProductos,
+    cargando
+  ]);
+
+
+  const aplicarFiltros = (
+    e: FormEvent
+  ) => {
+    e.preventDefault();
+
+    setPage(1);
+
+    setFiltrosAplicados({
+      q:
+        filtros.q.trim(),
+      tipo_producto_id:
+        filtros.tipo_producto_id,
+      material_id:
+        filtros.material_id,
+      medida_id:
+        filtros.medida_id,
+      color_id:
+        filtros.color_id,
+      estado_composicion:
+        filtros.estado_composicion
+    });
+  };
+
+
+  const limpiarFiltros = () => {
+    setFiltros({
+      ...filtrosVacios
+    });
+
+    setPage(1);
+
+    setFiltrosAplicados({
+      ...filtrosVacios
+    });
+  };
+
+
+  return (
+    <div className="pedidos-page productos-terminados-page">
+
+      <FeedbackToast
+        tipo={feedback.tipo}
+        mensaje={feedback.mensaje}
+        onClose={() =>
+          setFeedback({
+            ...feedback,
+            mensaje: ''
+          })
+        }
+      />
+
+
+      <div className="pedidos-header productos-terminados-header">
+        <div>
+          <h1>
+            Productos terminados
+          </h1>
+
+          <p>
+            Administra los productos que se fabrican
+            y define la materia prima que utiliza cada uno.
+          </p>
+        </div>
+
+        <Link
+          to="/gestion/productos-terminados/registrar"
+          className="btn-primary-link"
+        >
+          + Registrar producto
+        </Link>
+      </div>
+
+
+      <form
+        className="pt-filtros"
+        onSubmit={aplicarFiltros}
+      >
+
+        <div className="pt-filtro-busqueda">
+          <label>
+            Buscar
+          </label>
+
+          <input
+            value={filtros.q}
+            onChange={(e) =>
+              setFiltros({
+                ...filtros,
+                q: e.target.value
+              })
+            }
+            placeholder="Tipo, material, medida o color..."
+          />
+        </div>
+
+
+        <div>
+          <label>
+            Tipo
+          </label>
+
+          <select
+            value={
+              filtros.tipo_producto_id
+            }
+            onChange={(e) =>
+              setFiltros({
+                ...filtros,
+                tipo_producto_id:
+                  e.target.value
+              })
+            }
+          >
+            <option value="">
+              Todos
+            </option>
+
+            {tipos.map(
+              (tipo) => (
+                <option
+                  key={tipo.id}
+                  value={tipo.id}
+                >
+                  {tipo.nombre}
+                </option>
+              )
+            )}
+          </select>
+        </div>
+
+
+        <div>
+          <label>
+            Material
+          </label>
+
+          <select
+            value={
+              filtros.material_id
+            }
+            onChange={(e) =>
+              setFiltros({
+                ...filtros,
+                material_id:
+                  e.target.value
+              })
+            }
+          >
+            <option value="">
+              Todos
+            </option>
+
+            {materiales.map(
+              (material) => (
+                <option
+                  key={material.id}
+                  value={material.id}
+                >
+                  {material.nombre}
+                </option>
+              )
+            )}
+          </select>
+        </div>
+
+
+        <div>
+          <label>
+            Medida
+          </label>
+
+          <select
+            value={
+              filtros.medida_id
+            }
+            onChange={(e) =>
+              setFiltros({
+                ...filtros,
+                medida_id:
+                  e.target.value
+              })
+            }
+          >
+            <option value="">
+              Todas
+            </option>
+
+            {medidas.map(
+              (medida) => (
+                <option
+                  key={medida.id}
+                  value={medida.id}
+                >
+                  {medida.nombre}
+                </option>
+              )
+            )}
+          </select>
+        </div>
+
+
+        <div>
+          <label>
+            Color
+          </label>
+
+          <select
+            value={
+              filtros.color_id
+            }
+            onChange={(e) =>
+              setFiltros({
+                ...filtros,
+                color_id:
+                  e.target.value
+              })
+            }
+          >
+            <option value="">
+              Todos
+            </option>
+
+            {colores.map(
+              (color) => (
+                <option
+                  key={color.id}
+                  value={color.id}
+                >
+                  {color.nombre}
+                </option>
+              )
+            )}
+          </select>
+        </div>
+
+
+        <div>
+          <label>
+            Composición
+          </label>
+
+          <select
+            value={
+              filtros
+                .estado_composicion
+            }
+            onChange={(e) =>
+              setFiltros({
+                ...filtros,
+                estado_composicion:
+                  e.target.value
+              })
+            }
+          >
+            <option value="TODOS">
+              Todos
+            </option>
+
+            <option value="CONFIGURADO">
+              Definida
+            </option>
+
+            <option value="SIN_COMPOSICION">
+              Pendiente
+            </option>
+          </select>
+        </div>
+
+
+        <button type="submit">
+          Buscar
+        </button>
+
+        <button
+          type="button"
+          className="btn-secondary"
+          onClick={limpiarFiltros}
+        >
+          Limpiar
+        </button>
+
+      </form>
+
+
+      <div className="tabla-card">
+
+        <div className="pt-tabla-cabecera">
+          <div>
+            <h3>
+              Catálogo de productos
+            </h3>
+
+            <p>
+              Cada producto se identifica por
+              tipo, material, medida y color.
+            </p>
+          </div>
+
+          <span className="muted">
+            {
+              paginacion.total
+            } producto(s)
+          </span>
+        </div>
+
+
+        {cargando ? (
+          <p>
+            Cargando productos...
+          </p>
+        ) : (
+          <>
+            <div className="tabla-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>
+                      Tipo
+                    </th>
+                    <th>
+                      Material
+                    </th>
+                    <th>
+                      Medida
+                    </th>
+                    <th>
+                      Color
+                    </th>
+                    <th>
+                      Composición
+                    </th>
+                    <th>
+                      Acción
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {productos.map(
+                    (producto) => (
+                      <tr
+                        key={
+                          producto.producto_id
+                        }
+                      >
+                        <td>
+                          <strong>
+                            {
+                              producto
+                                .tipo_producto
+                            }
+                          </strong>
+                        </td>
+
+                        <td>
+                          {
+                            producto.material
+                          }
+                        </td>
+
+                        <td>
+                          {
+                            producto.medida
+                          }
+                        </td>
+
+                        <td>
+                          {
+                            producto.color
+                          }
+                        </td>
+
+                        <td>
+                          {
+                            producto
+                              .estado_composicion ===
+                              'CONFIGURADO'
+                              ? (
+                                <div className="pt-composicion-estado">
+                                  <span className="pt-badge pt-badge-ok">
+                                    Definida
+                                  </span>
+
+                                  <small>
+                                    Versión {
+                                      producto
+                                        .composicion_version
+                                    }
+                                  </small>
+                                </div>
+                              )
+                              : (
+                                <span className="pt-badge pt-badge-pendiente">
+                                  Pendiente de definir
+                                </span>
+                              )
+                          }
+                        </td>
+
+                        <td>
+                          <Link
+                            className="btn-outline"
+                            to={
+                              `/gestion/productos-terminados/${producto.producto_id}`
+                            }
+                          >
+                            Ver producto
+                          </Link>
+                        </td>
+                      </tr>
+                    )
+                  )}
+
+                  {
+                    productos.length === 0 &&
+                    (
+                      <tr>
+                        <td colSpan={6}>
+                          No hay productos para
+                          los filtros seleccionados.
+                        </td>
+                      </tr>
+                    )
+                  }
+                </tbody>
+              </table>
+            </div>
+
+
+            <div className="paginado">
+
+              <button
+                type="button"
+                disabled={
+                  page <= 1
+                }
+                onClick={() =>
+                  setPage(
+                    page - 1
+                  )
+                }
+              >
+                Anterior
+              </button>
+
+              <span>
+                Página {
+                  paginacion.page
+                } de {
+                  paginacion
+                    .totalPaginas ||
+                  1
+                }
+              </span>
+
+              <button
+                type="button"
+                disabled={
+                  page >=
+                  paginacion.totalPaginas
+                }
+                onClick={() =>
+                  setPage(
+                    page + 1
+                  )
+                }
+              >
+                Siguiente
+              </button>
+
+            </div>
+          </>
+        )}
+
+      </div>
+
+    </div>
+  );
+}
+
+
+export default ProductosTerminadosLista;
+
+
+<<<END OF FILE>>>
+
+
+---
+
+## FILE: src\pages\productosTerminados\ProductoTerminadoDetalle.tsx
+
+<<<START OF FILE>>>
+
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState
+} from 'react';
+
+import type {
+  ChangeEvent,
+  FormEvent
+} from 'react';
+
+import {
+  Link,
+  useParams
+} from 'react-router-dom';
+
+import {
+  apiFetch
+} from '../../services/api';
+
+import FeedbackToast
+  from '../../components/common/FeedbackToast';
+
+import ConfirmDialog
+  from '../../components/common/ConfirmDialog';
+
+import {
+  useBloqueoAccion
+} from '../../hooks/useBloqueoAccion';
+
+import '../../styles/productosTerminados.css';
+
+
+type FeedbackTipo =
+  | 'success'
+  | 'error'
+  | 'info'
+  | 'warning';
+
+
+type ComponenteForm = {
+  material_id: string;
+  color_id: string;
+  porcentaje: string;
+};
+
+
+const componenteVacio:
+  ComponenteForm = {
+  material_id: '',
+  color_id: '',
+  porcentaje: ''
+};
+
+
+function ProductoTerminadoDetalle() {
+  const {
+    producto_id
+  } = useParams();
+
+  const [
+    producto,
+    setProducto
+  ] = useState<any | null>(
+    null
+  );
+
+  const [
+    composiciones,
+    setComposiciones
+  ] = useState<any[]>([]);
+
+  const [
+    paginacion,
+    setPaginacion
+  ] = useState({
+    page: 1,
+    limit: 10,
+    total: 0,
+    totalPaginas: 0
+  });
+
+  const [
+    pageHistorial,
+    setPageHistorial
+  ] = useState(1);
+
+  const [
+    materiales,
+    setMateriales
+  ] = useState<any[]>([]);
+
+  const [
+    colores,
+    setColores
+  ] = useState<any[]>([]);
+
+  const [
+    cargando,
+    setCargando
+  ] = useState(true);
+
+  const [
+    editorAbierto,
+    setEditorAbierto
+  ] = useState(false);
+
+  const [
+    observacion,
+    setObservacion
+  ] = useState('');
+
+  const [
+    componentes,
+    setComponentes
+  ] = useState<
+    ComponenteForm[]
+  >([
+    {
+      ...componenteVacio
+    }
+  ]);
+
+  const [
+    confirmarPublicacion,
+    setConfirmarPublicacion
+  ] = useState(false);
+
+  const [
+    feedback,
+    setFeedback
+  ] = useState<{
+    tipo: FeedbackTipo;
+    mensaje: string;
+  }>({
+    tipo: 'info',
+    mensaje: ''
+  });
+
+  const {
+    procesando,
+    intentarBloquear,
+    liberar
+  } = useBloqueoAccion();
+
+
+  const cargarProducto =
+    useCallback(
+      async () => {
+        const data =
+          await apiFetch(
+            `/productos-terminados/${producto_id}`
+          );
+
+        setProducto(
+          data.producto
+        );
+      },
+      [
+        producto_id
+      ]
+    );
+
+
+  const cargarHistorial =
+    useCallback(
+      async (
+        pagina: number
+      ) => {
+        const data =
+          await apiFetch(
+            `/productos-terminados/${producto_id}/composiciones?page=${pagina}&limit=10`
+          );
+
+        setComposiciones(
+          data.composiciones ||
+          []
+        );
+
+        setPaginacion(
+          data.paginacion
+        );
+      },
+      [
+        producto_id
+      ]
+    );
+
+
+  const cargarCatalogos =
+    useCallback(
+      async () => {
+        const [
+          materialesData,
+          coloresData
+        ] = await Promise.all([
+          apiFetch(
+            '/catalogos/materiales'
+          ),
+          apiFetch(
+            '/catalogos/colores'
+          )
+        ]);
+
+        setMateriales(
+          materialesData.items ||
+          []
+        );
+
+        setColores(
+          coloresData.items ||
+          []
+        );
+      },
+      []
+    );
+
+
+  useEffect(() => {
+    const iniciar =
+      async () => {
+        setCargando(true);
+
+        try {
+          await Promise.all([
+            cargarProducto(),
+            cargarHistorial(1),
+            cargarCatalogos()
+          ]);
+
+        } catch (error: any) {
+          setFeedback({
+            tipo: 'error',
+            mensaje: error.message
+          });
+
+        } finally {
+          setCargando(false);
+        }
+      };
+
+    iniciar();
+  }, [
+    cargarProducto,
+    cargarHistorial,
+    cargarCatalogos
+  ]);
+
+
+  useEffect(() => {
+    if (cargando) {
+      return;
+    }
+
+    cargarHistorial(
+      pageHistorial
+    ).catch(
+      (error: any) => {
+        setFeedback({
+          tipo: 'error',
+          mensaje: error.message
+        });
+      }
+    );
+  }, [
+    pageHistorial,
+    cargarHistorial,
+    cargando
+  ]);
+
+
+  const totalPorcentaje =
+    useMemo(
+      () =>
+        Number(
+          componentes
+            .reduce(
+              (
+                total,
+                componente
+              ) =>
+                total +
+                Number(
+                  componente
+                    .porcentaje ||
+                  0
+                ),
+              0
+            )
+            .toFixed(6)
+        ),
+      [
+        componentes
+      ]
+    );
+
+
+  const actualizarComponente = (
+    index: number,
+    e: ChangeEvent<
+      HTMLInputElement |
+      HTMLSelectElement
+    >
+  ) => {
+    if (procesando) {
+      return;
+    }
+
+    const nuevos = [
+      ...componentes
+    ];
+
+    nuevos[index] = {
+      ...nuevos[index],
+      [e.target.name]:
+        e.target.value
+    };
+
+    setComponentes(
+      nuevos
+    );
+  };
+
+
+  const agregarComponente = () => {
+    if (procesando) {
+      return;
+    }
+
+    setComponentes([
+      ...componentes,
+      {
+        ...componenteVacio
+      }
+    ]);
+  };
+
+
+  const quitarComponente = (
+    index: number
+  ) => {
+    if (procesando) {
+      return;
+    }
+
+    if (
+      componentes.length === 1
+    ) {
+      setFeedback({
+        tipo: 'warning',
+        mensaje:
+          'La composición debe tener al menos una materia prima'
+      });
+
+      return;
+    }
+
+    setComponentes(
+      componentes.filter(
+        (_, i) =>
+          i !== index
+      )
+    );
+  };
+
+
+  const abrirEditor = () => {
+    setObservacion('');
+
+    setComponentes([
+      {
+        ...componenteVacio
+      }
+    ]);
+
+    setEditorAbierto(true);
+  };
+
+
+  const cerrarEditor = () => {
+    if (procesando) {
+      return;
+    }
+
+    setEditorAbierto(false);
+
+    setConfirmarPublicacion(
+      false
+    );
+  };
+
+
+  const validarComposicion = () => {
+    const usados =
+      new Set<string>();
+
+    for (
+      let i = 0;
+      i < componentes.length;
+      i++
+    ) {
+      const componente =
+        componentes[i];
+
+      if (
+        !componente.material_id
+      ) {
+        return (
+          `La materia prima ${i + 1} debe tener material`
+        );
+      }
+
+      if (
+        !componente.color_id
+      ) {
+        return (
+          `La materia prima ${i + 1} debe tener color`
+        );
+      }
+
+      const porcentaje =
+        Number(
+          componente.porcentaje
+        );
+
+      if (
+        !Number.isFinite(
+          porcentaje
+        ) ||
+        porcentaje <= 0 ||
+        porcentaje > 100
+      ) {
+        return (
+          `El porcentaje de la materia prima ${i + 1} debe ser mayor a 0 y menor o igual a 100`
+        );
+      }
+
+      const clave =
+        `${componente.material_id}-${componente.color_id}`;
+
+      if (
+        usados.has(
+          clave
+        )
+      ) {
+        return (
+          `La materia prima ${i + 1} repite el mismo material y color`
+        );
+      }
+
+      usados.add(
+        clave
+      );
+    }
+
+    if (
+      Math.abs(
+        totalPorcentaje -
+        100
+      ) > 0.000001
+    ) {
+      return (
+        `La composición debe sumar 100%. Actualmente suma ${totalPorcentaje}%`
+      );
+    }
+
+    return null;
+  };
+
+
+  const solicitarPublicacion = (
+    e: FormEvent
+  ) => {
+    e.preventDefault();
+
+    const error =
+      validarComposicion();
+
+    if (error) {
+      setFeedback({
+        tipo: 'error',
+        mensaje: error
+      });
+
+      return;
+    }
+
+    setConfirmarPublicacion(
+      true
+    );
+  };
+
+
+  const publicarComposicion =
+    async () => {
+      if (
+        !intentarBloquear()
+      ) {
+        return;
+      }
+
+      try {
+        const data =
+          await apiFetch(
+            `/productos-terminados/${producto_id}/composiciones`,
+            {
+              method: 'POST',
+              body:
+                JSON.stringify({
+                  observacion:
+                    observacion
+                      .trim() ||
+                    null,
+
+                  detalles:
+                    componentes.map(
+                      (componente) => ({
+                        material_id:
+                          Number(
+                            componente
+                              .material_id
+                          ),
+
+                        color_id:
+                          Number(
+                            componente
+                              .color_id
+                          ),
+
+                        porcentaje:
+                          Number(
+                            componente
+                              .porcentaje
+                          )
+                      })
+                    )
+                })
+            }
+          );
+
+        setConfirmarPublicacion(
+          false
+        );
+
+        setEditorAbierto(
+          false
+        );
+
+        setFeedback({
+          tipo: 'success',
+          mensaje:
+            `Composición versión ${data.composicion.version_numero} publicada correctamente`
+        });
+
+        await Promise.all([
+          cargarProducto(),
+          cargarHistorial(1)
+        ]);
+
+        setPageHistorial(1);
+
+        liberar();
+
+      } catch (error: any) {
+        liberar();
+
+        setConfirmarPublicacion(
+          false
+        );
+
+        setFeedback({
+          tipo: 'error',
+          mensaje: error.message
+        });
+      }
+    };
+
+
+  const fechaTexto = (
+    valor: string | null
+  ) => {
+    if (!valor) {
+      return '-';
+    }
+
+    return new Date(
+      valor
+    ).toLocaleString();
+  };
+
+
+  if (cargando) {
+    return (
+      <div className="pedidos-page">
+        <p>
+          Cargando producto...
+        </p>
+      </div>
+    );
+  }
+
+
+  if (!producto) {
+    return (
+      <div className="pedidos-page">
+
+        <FeedbackToast
+          tipo={feedback.tipo}
+          mensaje={feedback.mensaje}
+          onClose={() =>
+            setFeedback({
+              ...feedback,
+              mensaje: ''
+            })
+          }
+        />
+
+        <Link
+          to="/gestion/productos-terminados"
+          className="btn-volver"
+        >
+          ← Volver
+        </Link>
+
+        <div className="tabla-card">
+          No se pudo cargar el producto.
+        </div>
+
+      </div>
+    );
+  }
+
+
+  const composicionActual =
+    producto
+      .composicion_vigente;
+
+
+  return (
+    <div className="pedidos-page productos-terminados-page">
+
+      <FeedbackToast
+        tipo={feedback.tipo}
+        mensaje={feedback.mensaje}
+        onClose={() =>
+          setFeedback({
+            ...feedback,
+            mensaje: ''
+          })
+        }
+      />
+
+
+      <ConfirmDialog
+        abierto={
+          confirmarPublicacion
+        }
+        titulo={
+          composicionActual
+            ? 'Publicar nueva versión'
+            : 'Publicar composición'
+        }
+        descripcion={
+          composicionActual
+            ? 'La composición actual pasará al historial y esta nueva receta será utilizada en las próximas producciones. ¿Deseas continuar?'
+            : 'Esta receta quedará como la composición vigente del producto. ¿Deseas continuar?'
+        }
+        textoConfirmar="Publicar"
+        textoProcesando="Publicando..."
+        procesando={procesando}
+        onConfirmar={
+          publicarComposicion
+        }
+        onCerrar={() =>
+          !procesando &&
+          setConfirmarPublicacion(
+            false
+          )
+        }
+      />
+
+
+      <Link
+        to="/gestion/productos-terminados"
+        className="btn-volver"
+      >
+        ← Volver a productos terminados
+      </Link>
+
+
+      <div className="pedidos-header pt-detalle-header">
+
+        <div>
+          <h1>
+            {
+              producto.tipo_producto
+            }
+            {' · '}
+            {
+              producto.material
+            }
+            {' · '}
+            {
+              producto.medida
+            }
+            {' · '}
+            {
+              producto.color
+            }
+          </h1>
+
+          <p>
+            Producto terminado y composición
+            de materia prima.
+          </p>
+        </div>
+
+
+        {!editorAbierto && (
+          <button
+            type="button"
+            onClick={abrirEditor}
+          >
+            {
+              composicionActual
+                ? 'Nueva versión de composición'
+                : 'Definir composición'
+            }
+          </button>
+        )}
+
+      </div>
+
+
+      <div className="pt-identidad">
+
+        <div>
+          <span>
+            Tipo
+          </span>
+
+          <strong>
+            {
+              producto.tipo_producto
+            }
+          </strong>
+        </div>
+
+        <div>
+          <span>
+            Material
+          </span>
+
+          <strong>
+            {
+              producto.material
+            }
+          </strong>
+        </div>
+
+        <div>
+          <span>
+            Medida
+          </span>
+
+          <strong>
+            {
+              producto.medida
+            }
+          </strong>
+        </div>
+
+        <div>
+          <span>
+            Color
+          </span>
+
+          <strong>
+            {
+              producto.color
+            }
+          </strong>
+        </div>
+
+      </div>
+
+
+      {
+        composicionActual
+          ? (
+            <div className="pt-composicion-card">
+
+              <div className="pt-composicion-card-header">
+                <div>
+                  <span className="pt-badge pt-badge-ok">
+                    Composición vigente
+                  </span>
+
+                  <h3>
+                    Versión {
+                      composicionActual
+                        .version_numero
+                    }
+                  </h3>
+
+                  <p>
+                    Vigente desde {
+                      fechaTexto(
+                        composicionActual
+                          .fecha_vigencia_desde
+                      )
+                    }
+                  </p>
+                </div>
+
+                <strong className="pt-total-100">
+                  100%
+                </strong>
+              </div>
+
+
+              <div className="pt-composicion-componentes">
+
+                {
+                  composicionActual
+                    .detalles
+                    .map(
+                      (
+                        componente: any
+                      ) => (
+                        <div
+                          className="pt-componente-vigente"
+                          key={
+                            componente
+                              .producto_composicion_detalle_id
+                          }
+                        >
+                          <div className="pt-componente-linea">
+                            <div>
+                              <strong>
+                                {
+                                  componente.material
+                                }
+                              </strong>
+
+                              <span>
+                                {
+                                  componente.color
+                                }
+                              </span>
+                            </div>
+
+                            <strong>
+                              {
+                                Number(
+                                  componente.porcentaje
+                                )
+                                  .toFixed(2)
+                              }%
+                            </strong>
+                          </div>
+
+                          <div className="pt-barra">
+                            <div
+                              className="pt-barra-progreso"
+                              style={{
+                                width:
+                                  `${Math.min(
+                                    100,
+                                    Number(
+                                      componente
+                                        .porcentaje
+                                    )
+                                  )}%`
+                              }}
+                            />
+                          </div>
+                        </div>
+                      )
+                    )
+                }
+
+              </div>
+
+
+              {
+                composicionActual
+                  .observacion &&
+                (
+                  <div className="pt-observacion">
+                    {
+                      composicionActual
+                        .observacion
+                    }
+                  </div>
+                )
+              }
+
+            </div>
+          )
+          : (
+            <div className="pt-sin-composicion">
+
+              <div className="pt-sin-composicion-icono">
+                %
+              </div>
+
+              <div>
+                <h3>
+                  Composición pendiente
+                </h3>
+
+                <p>
+                  Este producto todavía no tiene
+                  definida la materia prima que consume.
+                  Debes configurarla antes de registrar producción.
+                </p>
+              </div>
+
+            </div>
+          )
+      }
+
+
+      {
+        editorAbierto &&
+        (
+          <form
+            className="pt-editor-composicion"
+            onSubmit={
+              solicitarPublicacion
+            }
+          >
+
+            <div className="pt-editor-header">
+
+              <div>
+                <h3>
+                  {
+                    composicionActual
+                      ? 'Nueva versión de composición'
+                      : 'Definir composición'
+                  }
+                </h3>
+
+                <p>
+                  Indica qué materias primas
+                  forman el producto. El total debe ser 100%.
+                </p>
+              </div>
+
+
+              <div
+                className={
+                  Math.abs(
+                    totalPorcentaje -
+                    100
+                  ) <= 0.000001
+                    ? 'pt-suma pt-suma-ok'
+                    : 'pt-suma'
+                }
+              >
+                <span>
+                  Total
+                </span>
+
+                <strong>
+                  {
+                    totalPorcentaje
+                  }%
+                </strong>
+              </div>
+
+            </div>
+
+
+            <div className="pt-componentes-editor">
+
+              {
+                componentes.map(
+                  (
+                    componente,
+                    index
+                  ) => (
+                    <div
+                      className="pt-componente-editor"
+                      key={index}
+                    >
+
+                      <div className="pt-componente-numero">
+                        Materia prima {
+                          index + 1
+                        }
+                      </div>
+
+
+                      <div className="pt-componente-campos">
+
+                        <div>
+                          <label>
+                            Material
+                          </label>
+
+                          <select
+                            name="material_id"
+                            value={
+                              componente
+                                .material_id
+                            }
+                            onChange={(e) =>
+                              actualizarComponente(
+                                index,
+                                e
+                              )
+                            }
+                            disabled={
+                              procesando
+                            }
+                          >
+                            <option value="">
+                              Seleccione
+                            </option>
+
+                            {
+                              materiales.map(
+                                (material) => (
+                                  <option
+                                    key={
+                                      material.id
+                                    }
+                                    value={
+                                      material.id
+                                    }
+                                  >
+                                    {
+                                      material.nombre
+                                    }
+                                  </option>
+                                )
+                              )
+                            }
+                          </select>
+                        </div>
+
+
+                        <div>
+                          <label>
+                            Color
+                          </label>
+
+                          <select
+                            name="color_id"
+                            value={
+                              componente
+                                .color_id
+                            }
+                            onChange={(e) =>
+                              actualizarComponente(
+                                index,
+                                e
+                              )
+                            }
+                            disabled={
+                              procesando
+                            }
+                          >
+                            <option value="">
+                              Seleccione
+                            </option>
+
+                            {
+                              colores.map(
+                                (color) => (
+                                  <option
+                                    key={
+                                      color.id
+                                    }
+                                    value={
+                                      color.id
+                                    }
+                                  >
+                                    {
+                                      color.nombre
+                                    }
+                                  </option>
+                                )
+                              )
+                            }
+                          </select>
+                        </div>
+
+
+                        <div>
+                          <label>
+                            Porcentaje
+                          </label>
+
+                          <div className="pt-porcentaje-input">
+                            <input
+                              type="number"
+                              name="porcentaje"
+                              value={
+                                componente
+                                  .porcentaje
+                              }
+                              onChange={(e) =>
+                                actualizarComponente(
+                                  index,
+                                  e
+                                )
+                              }
+                              min="0.000001"
+                              max="100"
+                              step="0.000001"
+                              placeholder="0"
+                              disabled={
+                                procesando
+                              }
+                            />
+
+                            <span>
+                              %
+                            </span>
+                          </div>
+                        </div>
+
+
+                        <button
+                          type="button"
+                          className="btn-danger"
+                          onClick={() =>
+                            quitarComponente(
+                              index
+                            )
+                          }
+                          disabled={
+                            procesando
+                          }
+                        >
+                          Quitar
+                        </button>
+
+                      </div>
+
+                    </div>
+                  )
+                )
+              }
+
+            </div>
+
+
+            <button
+              type="button"
+              className="pt-agregar-componente"
+              onClick={
+                agregarComponente
+              }
+              disabled={
+                procesando
+              }
+            >
+              + Agregar materia prima
+            </button>
+
+
+            <div className="pt-observacion-editor">
+              <label>
+                Observación de esta versión
+              </label>
+
+              <textarea
+                value={observacion}
+                onChange={(e) =>
+                  setObservacion(
+                    e.target.value
+                  )
+                }
+                rows={3}
+                placeholder="Ejemplo: Ajuste de fórmula por cambio de producción"
+                disabled={
+                  procesando
+                }
+              />
+            </div>
+
+
+            <div className="pt-editor-actions">
+
+              <button
+                type="button"
+                className="btn-secondary"
+                onClick={
+                  cerrarEditor
+                }
+                disabled={
+                  procesando
+                }
+              >
+                Cancelar
+              </button>
+
+              <button
+                type="submit"
+                disabled={
+                  procesando
+                }
+              >
+                Revisar y publicar
+              </button>
+
+            </div>
+
+          </form>
+        )
+      }
+
+
+      <div className="tabla-card pt-historial">
+
+        <div className="pt-tabla-cabecera">
+          <div>
+            <h3>
+              Historial de composiciones
+            </h3>
+
+            <p>
+              Las versiones anteriores se conservan
+              para mantener la trazabilidad de producción.
+            </p>
+          </div>
+        </div>
+
+
+        <div className="tabla-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>
+                  Versión
+                </th>
+                <th>
+                  Estado
+                </th>
+                <th>
+                  Vigente desde
+                </th>
+                <th>
+                  Vigente hasta
+                </th>
+                <th>
+                  Materias primas
+                </th>
+                <th>
+                  Observación
+                </th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {
+                composiciones.map(
+                  (composicion) => (
+                    <tr
+                      key={
+                        composicion
+                          .producto_composicion_id
+                      }
+                    >
+                      <td>
+                        <strong>
+                          V{
+                            composicion
+                              .version_numero
+                          }
+                        </strong>
+                      </td>
+
+                      <td>
+                        <span
+                          className={
+                            composicion.vigente
+                              ? 'pt-badge pt-badge-ok'
+                              : 'pt-badge pt-badge-historico'
+                          }
+                        >
+                          {
+                            composicion.vigente
+                              ? 'Vigente'
+                              : 'Histórica'
+                          }
+                        </span>
+                      </td>
+
+                      <td>
+                        {
+                          fechaTexto(
+                            composicion
+                              .fecha_vigencia_desde
+                          )
+                        }
+                      </td>
+
+                      <td>
+                        {
+                          fechaTexto(
+                            composicion
+                              .fecha_vigencia_hasta
+                          )
+                        }
+                      </td>
+
+                      <td>
+                        {
+                          composicion
+                            .cantidad_componentes
+                        }
+                      </td>
+
+                      <td>
+                        {
+                          composicion
+                            .observacion ||
+                          '-'
+                        }
+                      </td>
+                    </tr>
+                  )
+                )
+              }
+
+              {
+                composiciones.length === 0 &&
+                (
+                  <tr>
+                    <td colSpan={6}>
+                      Este producto todavía no
+                      tiene historial de composiciones.
+                    </td>
+                  </tr>
+                )
+              }
+            </tbody>
+          </table>
+        </div>
+
+
+        <div className="paginado">
+
+          <button
+            type="button"
+            disabled={
+              pageHistorial <= 1
+            }
+            onClick={() =>
+              setPageHistorial(
+                pageHistorial - 1
+              )
+            }
+          >
+            Anterior
+          </button>
+
+          <span>
+            Página {
+              paginacion.page
+            } de {
+              paginacion
+                .totalPaginas ||
+              1
+            }
+          </span>
+
+          <button
+            type="button"
+            disabled={
+              pageHistorial >=
+              paginacion
+                .totalPaginas
+            }
+            onClick={() =>
+              setPageHistorial(
+                pageHistorial + 1
+              )
+            }
+          >
+            Siguiente
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+  );
+}
+
+
+export default ProductoTerminadoDetalle;
+
+
+<<<END OF FILE>>>
+
+
+---
+
+## FILE: src\pages\productosTerminados\RegistrarProductoTerminado.tsx
+
+<<<START OF FILE>>>
+
+import {
+  useEffect,
+  useState
+} from 'react';
+
+import type {
+  ChangeEvent,
+  FormEvent
+} from 'react';
+
+import {
+  Link,
+  useNavigate
+} from 'react-router-dom';
+
+import {
+  apiFetch
+} from '../../services/api';
+
+import FeedbackToast
+  from '../../components/common/FeedbackToast';
+
+import {
+  useBloqueoAccion
+} from '../../hooks/useBloqueoAccion';
+
+import '../../styles/productosTerminados.css';
+
+
+type FeedbackTipo =
+  | 'success'
+  | 'error'
+  | 'info'
+  | 'warning';
+
+
+function RegistrarProductoTerminado() {
+  const navigate =
+    useNavigate();
+
+  const [
+    tipos,
+    setTipos
+  ] = useState<any[]>([]);
+
+  const [
+    materiales,
+    setMateriales
+  ] = useState<any[]>([]);
+
+  const [
+    medidas,
+    setMedidas
+  ] = useState<any[]>([]);
+
+  const [
+    colores,
+    setColores
+  ] = useState<any[]>([]);
+
+  const [
+    cargandoCatalogos,
+    setCargandoCatalogos
+  ] = useState(true);
+
+  const [
+    form,
+    setForm
+  ] = useState({
+    tipo_producto_id: '',
+    material_id: '',
+    medida_id: '',
+    color_id: '',
+    descripcion: ''
+  });
+
+  const [
+    feedback,
+    setFeedback
+  ] = useState<{
+    tipo: FeedbackTipo;
+    mensaje: string;
+  }>({
+    tipo: 'info',
+    mensaje: ''
+  });
+
+  const {
+    procesando,
+    intentarBloquear,
+    liberar
+  } = useBloqueoAccion();
+
+
+  useEffect(() => {
+    const cargar =
+      async () => {
+        setCargandoCatalogos(
+          true
+        );
+
+        try {
+          const [
+            tiposData,
+            materialesData,
+            medidasData,
+            coloresData
+          ] = await Promise.all([
+            apiFetch(
+              '/catalogos/tiposProducto'
+            ),
+            apiFetch(
+              '/catalogos/materiales'
+            ),
+            apiFetch(
+              '/catalogos/medidas'
+            ),
+            apiFetch(
+              '/catalogos/colores'
+            )
+          ]);
+
+          setTipos(
+            tiposData.items || []
+          );
+
+          setMateriales(
+            materialesData.items || []
+          );
+
+          setMedidas(
+            medidasData.items || []
+          );
+
+          setColores(
+            coloresData.items || []
+          );
+
+        } catch (error: any) {
+          setFeedback({
+            tipo: 'error',
+            mensaje: error.message
+          });
+
+        } finally {
+          setCargandoCatalogos(
+            false
+          );
+        }
+      };
+
+    cargar();
+  }, []);
+
+
+  const handleChange = (
+    e: ChangeEvent<
+      HTMLInputElement |
+      HTMLSelectElement |
+      HTMLTextAreaElement
+    >
+  ) => {
+    setForm({
+      ...form,
+      [e.target.name]:
+        e.target.value
+    });
+  };
+
+
+  const registrarProducto = async (
+    e: FormEvent
+  ) => {
+    e.preventDefault();
+
+    if (
+      !intentarBloquear()
+    ) {
+      return;
+    }
+
+    if (
+      !form.tipo_producto_id ||
+      !form.material_id ||
+      !form.medida_id ||
+      !form.color_id
+    ) {
+      liberar();
+
+      setFeedback({
+        tipo: 'error',
+        mensaje:
+          'Tipo, material, medida y color son obligatorios'
+      });
+
+      return;
+    }
+
+    try {
+      const data =
+        await apiFetch(
+          '/productos-terminados',
+          {
+            method: 'POST',
+            body:
+              JSON.stringify({
+                tipo_producto_id:
+                  Number(
+                    form
+                      .tipo_producto_id
+                  ),
+
+                material_id:
+                  Number(
+                    form
+                      .material_id
+                  ),
+
+                medida_id:
+                  Number(
+                    form
+                      .medida_id
+                  ),
+
+                color_id:
+                  Number(
+                    form
+                      .color_id
+                  ),
+
+                descripcion:
+                  form.descripcion
+                    .trim() ||
+                  null
+              })
+          }
+        );
+
+      setFeedback({
+        tipo: 'success',
+        mensaje:
+          'Producto terminado registrado correctamente'
+      });
+
+      setTimeout(() => {
+        navigate(
+          `/gestion/productos-terminados/${data.producto.producto_id}`
+        );
+      }, 700);
+
+    } catch (error: any) {
+      liberar();
+
+      setFeedback({
+        tipo: 'error',
+        mensaje: error.message
+      });
+    }
+  };
+
+
+  return (
+    <div className="pedidos-page productos-terminados-page">
+
+      <FeedbackToast
+        tipo={feedback.tipo}
+        mensaje={feedback.mensaje}
+        onClose={() =>
+          setFeedback({
+            ...feedback,
+            mensaje: ''
+          })
+        }
+      />
+
+
+      <Link
+        to="/gestion/productos-terminados"
+        className="btn-volver"
+      >
+        ← Volver a productos terminados
+      </Link>
+
+
+      <div className="pedidos-header">
+        <div>
+          <h1>
+            Registrar producto terminado
+          </h1>
+
+          <p>
+            Define el producto que se fabrica.
+            La presentación se registrará después
+            al ingresar producción.
+          </p>
+        </div>
+      </div>
+
+
+      <form
+        className="form-card pt-form-registro"
+        onSubmit={registrarProducto}
+      >
+
+        <div className="pt-form-intro">
+          <h3>
+            Identidad del producto
+          </h3>
+
+          <p>
+            Selecciona las cuatro características
+            que identifican al producto terminado.
+          </p>
+        </div>
+
+
+        <div className="pt-form-grid">
+
+          <div>
+            <label>
+              Tipo de producto
+            </label>
+
+            <select
+              name="tipo_producto_id"
+              value={
+                form.tipo_producto_id
+              }
+              onChange={handleChange}
+              disabled={
+                procesando ||
+                cargandoCatalogos
+              }
+            >
+              <option value="">
+                Seleccione
+              </option>
+
+              {tipos.map(
+                (tipo) => (
+                  <option
+                    key={tipo.id}
+                    value={tipo.id}
+                  >
+                    {tipo.nombre}
+                  </option>
+                )
+              )}
+            </select>
+          </div>
+
+
+          <div>
+            <label>
+              Material
+            </label>
+
+            <select
+              name="material_id"
+              value={
+                form.material_id
+              }
+              onChange={handleChange}
+              disabled={
+                procesando ||
+                cargandoCatalogos
+              }
+            >
+              <option value="">
+                Seleccione
+              </option>
+
+              {materiales.map(
+                (material) => (
+                  <option
+                    key={material.id}
+                    value={material.id}
+                  >
+                    {material.nombre}
+                  </option>
+                )
+              )}
+            </select>
+          </div>
+
+
+          <div>
+            <label>
+              Medida
+            </label>
+
+            <select
+              name="medida_id"
+              value={
+                form.medida_id
+              }
+              onChange={handleChange}
+              disabled={
+                procesando ||
+                cargandoCatalogos
+              }
+            >
+              <option value="">
+                Seleccione
+              </option>
+
+              {medidas.map(
+                (medida) => (
+                  <option
+                    key={medida.id}
+                    value={medida.id}
+                  >
+                    {medida.nombre}
+                  </option>
+                )
+              )}
+            </select>
+          </div>
+
+
+          <div>
+            <label>
+              Color
+            </label>
+
+            <select
+              name="color_id"
+              value={
+                form.color_id
+              }
+              onChange={handleChange}
+              disabled={
+                procesando ||
+                cargandoCatalogos
+              }
+            >
+              <option value="">
+                Seleccione
+              </option>
+
+              {colores.map(
+                (color) => (
+                  <option
+                    key={color.id}
+                    value={color.id}
+                  >
+                    {color.nombre}
+                  </option>
+                )
+              )}
+            </select>
+          </div>
+
+
+          <div className="pt-form-ancho">
+            <label>
+              Descripción opcional
+            </label>
+
+            <textarea
+              name="descripcion"
+              value={
+                form.descripcion
+              }
+              onChange={handleChange}
+              rows={3}
+              placeholder="Observación o detalle adicional del producto"
+              disabled={procesando}
+            />
+          </div>
+
+        </div>
+
+
+        <div className="pt-form-nota">
+          <strong>
+            Importante:
+          </strong>
+          {' '}
+          la composición de materias primas
+          se define después de crear el producto.
+        </div>
+
+
+        <div className="pt-form-actions">
+
+          <Link
+            to="/gestion/productos-terminados"
+            className="btn-secondary-link"
+          >
+            Cancelar
+          </Link>
+
+          <button
+            type="submit"
+            disabled={
+              procesando ||
+              cargandoCatalogos
+            }
+          >
+            {
+              procesando
+                ? 'Registrando...'
+                : 'Registrar producto'
+            }
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+  );
+}
+
+
+export default RegistrarProductoTerminado;
+
 
 <<<END OF FILE>>>
 
@@ -14509,6 +30906,1988 @@ export const apiFetch = async (
 };
 
 export default API_URL;
+
+<<<END OF FILE>>>
+
+
+---
+
+## FILE: src\styles\almacenMateriaPrima.css
+
+<<<START OF FILE>>>
+
+.almacen-mp-page {
+  width: 100%;
+  min-width: 0;
+}
+
+.almacen-mp-header {
+  align-items: center;
+}
+
+
+/* =========================================================
+   INDICADORES
+   ========================================================= */
+
+.almacen-mp-indicadores {
+  display: grid;
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.almacen-mp-kpi {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  background: white;
+  border-radius: 16px;
+  padding: 18px 20px;
+  box-shadow:
+    0 8px 20px
+    rgba(15, 23, 42, 0.06);
+}
+
+.almacen-mp-kpi span {
+  color: #64748b;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.almacen-mp-kpi strong {
+  color: #0f172a;
+  font-size: 1.4rem;
+}
+
+.almacen-mp-kpi small {
+  color: #94a3b8;
+}
+
+
+/* =========================================================
+   TABS
+   ========================================================= */
+
+.almacen-mp-tabs {
+  display: flex;
+  gap: 6px;
+  width: fit-content;
+  margin-bottom: 16px;
+  padding: 5px;
+  border-radius: 12px;
+  background: #e5e7eb;
+}
+
+.almacen-mp-tab {
+  border: 0;
+  border-radius: 9px;
+  padding: 10px 18px;
+  background: transparent;
+  color: #475569;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.almacen-mp-tab-activo {
+  background: #2563eb;
+  color: white;
+  box-shadow:
+    0 5px 12px
+    rgba(37, 99, 235, 0.25);
+}
+
+
+/* =========================================================
+   FILTROS
+   ========================================================= */
+
+.almacen-mp-filtros {
+  display: grid;
+  gap: 14px;
+  align-items: end;
+  padding: 18px;
+  margin-bottom: 20px;
+  border-radius: 16px;
+  background: white;
+  box-shadow:
+    0 8px 20px
+    rgba(15, 23, 42, 0.06);
+}
+
+.almacen-mp-filtros-resumen {
+  grid-template-columns:
+    minmax(280px, 2fr)
+    minmax(180px, 1fr)
+    minmax(180px, 1fr)
+    auto
+    auto;
+}
+
+.almacen-mp-filtros-lotes {
+  grid-template-columns:
+    minmax(340px, 2fr)
+    minmax(220px, 1fr)
+    minmax(180px, 0.8fr)
+    auto
+    auto;
+}
+
+.almacen-mp-filtros > div {
+  min-width: 0;
+}
+
+.almacen-mp-filtros label {
+  display: block;
+  margin: 0 0 6px;
+  font-weight: 700;
+}
+
+.almacen-mp-filtros input,
+.almacen-mp-filtros select {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   TABLAS
+   ========================================================= */
+
+.almacen-mp-tabla-cabecera {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.almacen-mp-tabla-cabecera h3,
+.almacen-mp-tabla-cabecera p {
+  margin: 0;
+}
+
+.almacen-mp-tabla-cabecera p {
+  margin-top: 4px;
+  color: #64748b;
+}
+
+.almacen-mp-tabla-simple td,
+.almacen-mp-tabla-simple th {
+  vertical-align: middle;
+}
+
+.almacen-mp-disponible {
+  color: #047857;
+}
+
+
+/* =========================================================
+   DETALLE DE LOTE
+   ========================================================= */
+
+.almacen-mp-lote-meta {
+  display: grid;
+  grid-template-columns:
+    2fr 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.almacen-mp-lote-meta > div,
+.almacen-mp-detalle-resumen > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 17px 18px;
+  border-radius: 14px;
+  background: white;
+  box-shadow:
+    0 8px 20px
+    rgba(15, 23, 42, 0.06);
+}
+
+.almacen-mp-lote-meta span,
+.almacen-mp-detalle-resumen span {
+  color: #64748b;
+  font-size: 0.88rem;
+}
+
+.almacen-mp-lote-meta small {
+  color: #94a3b8;
+}
+
+.almacen-mp-detalle-resumen {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.almacen-mp-detalle-resumen-3 {
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+}
+
+.almacen-mp-detalle-resumen strong {
+  font-size: 1.2rem;
+}
+
+
+/* =========================================================
+   HISTORIAL COLAPSABLE
+   ========================================================= */
+
+.almacen-mp-historial {
+  margin-top: 18px;
+  border-radius: 14px;
+  background: white;
+  box-shadow:
+    0 8px 20px
+    rgba(15, 23, 42, 0.06);
+  overflow: hidden;
+}
+
+.almacen-mp-historial > summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 17px 20px;
+  font-weight: 700;
+  color: #1e40af;
+}
+
+.almacen-mp-historial > summary::-webkit-details-marker {
+  display: none;
+}
+
+.almacen-mp-historial > summary::after {
+  content: '▾';
+  float: right;
+}
+
+.almacen-mp-historial[open] > summary::after {
+  content: '▴';
+}
+
+.almacen-mp-historial-contenido {
+  border-top: 1px solid #e5e7eb;
+  padding: 20px;
+}
+
+.almacen-mp-movimientos-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 18px;
+  margin-bottom: 16px;
+}
+
+.almacen-mp-movimientos-header h3,
+.almacen-mp-movimientos-header p {
+  margin: 0;
+}
+
+.almacen-mp-movimientos-header p {
+  margin-top: 4px;
+  color: #64748b;
+}
+
+.almacen-mp-movimiento-filtro {
+  min-width: 220px;
+}
+
+.almacen-mp-movimiento-filtro label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+.almacen-mp-movimiento-filtro select {
+  width: 100%;
+}
+
+.almacen-mp-movimiento {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 5px 9px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.almacen-mp-movimiento-entrada {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.almacen-mp-movimiento-salida {
+  color: #991b1b;
+  background: #fee2e2;
+}
+
+.almacen-mp-cantidad-entrada {
+  color: #047857;
+}
+
+.almacen-mp-cantidad-salida {
+  color: #b91c1c;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1150px) {
+  .almacen-mp-indicadores {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .almacen-mp-filtros-resumen,
+  .almacen-mp-filtros-lotes {
+    grid-template-columns:
+      repeat(2, minmax(180px, 1fr));
+  }
+
+  .almacen-mp-lote-meta {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .almacen-mp-detalle-resumen-3 {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .almacen-mp-indicadores,
+  .almacen-mp-filtros-resumen,
+  .almacen-mp-filtros-lotes,
+  .almacen-mp-lote-meta,
+  .almacen-mp-detalle-resumen-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .almacen-mp-tabs {
+    width: 100%;
+  }
+
+  .almacen-mp-tab {
+    flex: 1;
+  }
+
+  .almacen-mp-tabla-cabecera,
+  .almacen-mp-movimientos-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .almacen-mp-movimiento-filtro {
+    min-width: 0;
+  }
+}
+
+
+<<<END OF FILE>>>
+
+
+---
+
+## FILE: src\styles\almacenProductoTerminado.css
+
+<<<START OF FILE>>>
+
+.almacen-pt-page {
+  width: 100%;
+  min-width: 0;
+}
+
+.almacen-pt-header {
+  align-items: center;
+}
+
+
+/* =========================================================
+   INDICADORES
+   ========================================================= */
+
+.apt-indicadores {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.apt-kpi {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 18px 20px;
+  border-radius: 16px;
+  background: white;
+  box-shadow:
+    0 8px 20px
+    rgba(15, 23, 42, 0.06);
+}
+
+.apt-kpi span {
+  color: #64748b;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.apt-kpi strong {
+  color: #0f172a;
+  font-size: 1.4rem;
+}
+
+.apt-kpi small {
+  color: #94a3b8;
+}
+
+
+/* =========================================================
+   TABS
+   ========================================================= */
+
+.apt-tabs {
+  display: flex;
+  gap: 6px;
+  width: fit-content;
+  margin-bottom: 16px;
+  padding: 5px;
+  border-radius: 12px;
+  background: #e5e7eb;
+}
+
+.apt-tab {
+  border: 0;
+  border-radius: 9px;
+  padding: 10px 18px;
+  background: transparent;
+  color: #475569;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.apt-tab-activo {
+  background: #2563eb;
+  color: white;
+  box-shadow:
+    0 5px 12px
+    rgba(37, 99, 235, 0.25);
+}
+
+
+/* =========================================================
+   FILTROS
+   ========================================================= */
+
+.apt-filtros {
+  display: grid;
+  grid-template-columns:
+    minmax(240px, 1.8fr)
+    repeat(4, minmax(130px, 0.8fr))
+    auto
+    auto;
+  gap: 12px;
+  align-items: end;
+  padding: 18px;
+  margin-bottom: 20px;
+  border-radius: 16px;
+  background: white;
+  box-shadow:
+    0 8px 20px
+    rgba(15, 23, 42, 0.06);
+}
+
+.apt-filtros-presentaciones {
+  grid-template-columns:
+    minmax(220px, 1.6fr)
+    repeat(5, minmax(120px, 0.75fr))
+    auto
+    auto;
+}
+
+.apt-filtros > div {
+  min-width: 0;
+}
+
+.apt-filtros label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+.apt-filtros input,
+.apt-filtros select {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   TABLAS
+   ========================================================= */
+
+.apt-tabla-cabecera {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.apt-tabla-cabecera h3,
+.apt-tabla-cabecera p {
+  margin: 0;
+}
+
+.apt-tabla-cabecera p {
+  margin-top: 4px;
+  color: #64748b;
+}
+
+.apt-stock-positivo {
+  color: #047857;
+}
+
+.apt-stock-salida {
+  color: #b91c1c;
+}
+
+.apt-subtexto {
+  margin-top: 2px;
+  color: #64748b;
+  font-size: 0.82rem;
+}
+
+.apt-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 9px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.apt-badge-ok {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.apt-badge-agotado {
+  color: #475569;
+  background: #e2e8f0;
+}
+
+.apt-badge-salida {
+  color: #991b1b;
+  background: #fee2e2;
+}
+
+
+/* =========================================================
+   DETALLE
+   ========================================================= */
+
+.apt-detalle-principal {
+  display: grid;
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.apt-detalle-principal > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 17px 18px;
+  border-radius: 14px;
+  background: white;
+  box-shadow:
+    0 8px 20px
+    rgba(15, 23, 42, 0.06);
+}
+
+.apt-detalle-principal span {
+  color: #64748b;
+  font-size: 0.86rem;
+}
+
+.apt-detalle-principal strong {
+  font-size: 1.15rem;
+}
+
+.apt-presentacion-destacada {
+  border: 1px solid #bfdbfe;
+  background: #eff6ff !important;
+}
+
+
+/* =========================================================
+   MOVIMIENTOS
+   ========================================================= */
+
+.apt-movimientos-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: flex-end;
+  margin-bottom: 16px;
+}
+
+.apt-movimientos-header h3,
+.apt-movimientos-header p {
+  margin: 0;
+}
+
+.apt-movimientos-header p {
+  margin-top: 4px;
+  color: #64748b;
+}
+
+.apt-movimiento-filtro {
+  min-width: 230px;
+}
+
+.apt-movimiento-filtro label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+.apt-movimiento-filtro select {
+  width: 100%;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1350px) {
+  .apt-filtros,
+  .apt-filtros-presentaciones {
+    grid-template-columns:
+      repeat(4, minmax(150px, 1fr));
+  }
+
+  .apt-filtro-busqueda {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 950px) {
+  .apt-indicadores,
+  .apt-detalle-principal {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .apt-indicadores,
+  .apt-detalle-principal,
+  .apt-filtros,
+  .apt-filtros-presentaciones {
+    grid-template-columns: 1fr;
+  }
+
+  .apt-filtro-busqueda {
+    grid-column: auto;
+  }
+
+  .apt-tabs {
+    width: 100%;
+  }
+
+  .apt-tab {
+    flex: 1;
+  }
+
+  .apt-tabla-cabecera,
+  .apt-movimientos-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .apt-movimiento-filtro {
+    min-width: 0;
+  }
+}
+
+
+<<<END OF FILE>>>
+
+
+---
+
+## FILE: src\styles\comprasMateriaPrima.css
+
+<<<START OF FILE>>>
+
+.compra-mp-page {
+  min-width: 0;
+  width: 100%;
+}
+
+.compra-mp-registro-page {
+  width: 100%;
+  max-width: none;
+}
+
+.compra-mp-page textarea {
+  width: 100%;
+  padding: 11px 13px;
+  border: 1px solid #d1d5db;
+  border-radius: 9px;
+  font: inherit;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.btn-primary-link,
+.btn-secondary-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.btn-primary-link {
+  background: #111827;
+  color: white;
+}
+
+.btn-secondary-link {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+
+/* =========================================================
+   LISTADO
+   ========================================================= */
+
+.compra-mp-filtros {
+  background: white;
+  border-radius: 16px;
+  padding: 18px;
+  display: grid;
+  grid-template-columns: 2fr 1.4fr auto auto;
+  gap: 14px;
+  align-items: end;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+}
+
+.compra-mp-filtros label {
+  margin-top: 0;
+}
+
+.compra-mp-tabla-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.compra-mp-tabla-header h3 {
+  margin: 0 0 4px;
+}
+
+.tabla-scroll {
+  width: 100%;
+  overflow-x: auto;
+}
+
+
+/* =========================================================
+   FORMULARIO PRINCIPAL
+
+   Override importante:
+   algunos formularios del proyecto utilizan max-width.
+   Este formulario necesita aprovechar el espacio del layout.
+   ========================================================= */
+
+.compra-mp-form.form-card {
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 26px 28px;
+  border-radius: 16px;
+}
+
+.compra-mp-seccion {
+  width: 100%;
+}
+
+.compra-mp-seccion + .compra-mp-seccion {
+  margin-top: 28px;
+  padding-top: 26px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.compra-mp-seccion-titulo {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.compra-mp-seccion-titulo h3 {
+  margin: 0;
+}
+
+.compra-mp-seccion-titulo p {
+  margin: 5px 0 0;
+  color: #6b7280;
+}
+
+
+/* =========================================================
+   CABECERA DEL LOTE
+   ========================================================= */
+
+.compra-mp-cabecera-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(220px, 1fr));
+  gap: 18px 20px;
+  align-items: start;
+}
+
+.compra-mp-cabecera-grid > div {
+  min-width: 0;
+}
+
+.compra-mp-cabecera-grid label,
+.compra-mp-item-grid label {
+  display: block;
+  margin: 0 0 7px;
+  font-weight: 700;
+}
+
+.compra-mp-cabecera-grid input,
+.compra-mp-cabecera-grid select,
+.compra-mp-item-grid input,
+.compra-mp-item-grid select {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.compra-mp-campo-ancho {
+  grid-column: 1 / -1;
+}
+
+
+/* =========================================================
+   CABECERA DE ITEMS
+   ========================================================= */
+
+.compra-mp-items-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.compra-mp-items-header h3,
+.compra-mp-items-header p {
+  margin: 0;
+}
+
+.compra-mp-items-header p {
+  margin-top: 5px;
+}
+
+
+/* =========================================================
+   ITEMS
+   ========================================================= */
+
+.compra-mp-items {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.compra-mp-item-card {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #dfe3e8;
+  border-radius: 14px;
+  padding: 20px;
+  background: #f9fafb;
+}
+
+.compra-mp-item-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.compra-mp-item-title > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.compra-mp-item-title strong {
+  font-size: 1rem;
+}
+
+.compra-mp-item-subtitle {
+  color: #6b7280;
+  font-size: 0.88rem;
+}
+
+
+/*
+ * Distribución deliberadamente desigual:
+ *
+ * Material    23%
+ * Color       16%
+ * Cantidad    20%
+ * Precio      20%
+ * Subtotal    17%
+ *
+ * Así Cantidad/Precio ya no quedan comprimidos.
+ */
+.compra-mp-item-grid {
+  display: grid;
+  grid-template-columns:
+    minmax(190px, 1.35fr)
+    minmax(145px, 0.95fr)
+    minmax(190px, 1.15fr)
+    minmax(190px, 1.15fr)
+    minmax(170px, 1fr);
+  gap: 18px;
+  align-items: end;
+}
+
+.compra-mp-item-grid > div {
+  min-width: 0;
+}
+
+
+/* =========================================================
+   CANTIDAD + KG
+   ========================================================= */
+
+.compra-mp-input-unidad {
+  width: 100%;
+  display: grid;
+  grid-template-columns:
+    minmax(120px, 1fr)
+    54px;
+  align-items: stretch;
+}
+
+.compra-mp-input-unidad input {
+  width: 100%;
+  min-width: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.compra-mp-input-unidad span {
+  height: 100%;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d1d5db;
+  border-left: 0;
+  border-radius: 0 8px 8px 0;
+  background: #e5e7eb;
+  font-weight: 700;
+  color: #374151;
+}
+
+
+/* =========================================================
+   PRECIO
+   ========================================================= */
+
+.compra-mp-input-moneda {
+  width: 100%;
+  display: grid;
+  grid-template-columns:
+    48px
+    minmax(120px, 1fr);
+  align-items: stretch;
+}
+
+.compra-mp-input-moneda span {
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d1d5db;
+  border-right: 0;
+  border-radius: 8px 0 0 8px;
+  background: #e5e7eb;
+  font-weight: 700;
+  color: #374151;
+}
+
+.compra-mp-input-moneda input {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+
+/* =========================================================
+   SUBTOTAL
+   ========================================================= */
+
+.compra-mp-subtotal-box {
+  min-height: 40px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 7px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #eef0f3;
+  white-space: nowrap;
+}
+
+.compra-mp-subtotal-box span {
+  color: #6b7280;
+}
+
+.compra-mp-subtotal-box strong {
+  font-size: 0.98rem;
+}
+
+.compra-mp-item-descripcion {
+  margin-top: 2px;
+}
+
+
+/* =========================================================
+   TOTAL
+   ========================================================= */
+
+.compra-mp-total {
+  margin-top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 20px 22px;
+  background: #f3f4f6;
+  border-radius: 12px;
+}
+
+.compra-mp-total > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.compra-mp-total small {
+  color: #6b7280;
+}
+
+.compra-mp-total strong {
+  font-size: 1.55rem;
+  white-space: nowrap;
+}
+
+.compra-mp-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+
+/* =========================================================
+   DETALLE DE LOTE
+   ========================================================= */
+
+.compra-mp-resumen {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.compra-mp-resumen > div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background: white;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+}
+
+.compra-mp-resumen span,
+.compra-mp-resumen small {
+  color: #6b7280;
+}
+
+.compra-mp-resumen strong {
+  font-size: 1.05rem;
+}
+
+.compra-mp-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  color: #4b5563;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1450px) {
+  .compra-mp-item-grid {
+    grid-template-columns:
+      minmax(180px, 1.25fr)
+      minmax(140px, 0.9fr)
+      minmax(180px, 1.1fr)
+      minmax(180px, 1.1fr);
+  }
+
+  .compra-mp-item-subtotal {
+    grid-column: span 1;
+  }
+
+  .compra-mp-item-descripcion {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 1150px) {
+  .compra-mp-cabecera-grid {
+    grid-template-columns:
+      repeat(2, minmax(220px, 1fr));
+  }
+
+  .compra-mp-item-grid {
+    grid-template-columns:
+      repeat(2, minmax(240px, 1fr));
+  }
+
+  .compra-mp-item-descripcion {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 900px) {
+  .compra-mp-filtros {
+    grid-template-columns:
+      1fr 1fr;
+  }
+
+  .compra-mp-resumen {
+    grid-template-columns:
+      1fr 1fr;
+  }
+
+  .compra-mp-form.form-card {
+    padding: 22px;
+  }
+}
+
+@media (max-width: 680px) {
+  .compra-mp-filtros,
+  .compra-mp-cabecera-grid,
+  .compra-mp-resumen,
+  .compra-mp-item-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .compra-mp-campo-ancho,
+  .compra-mp-item-descripcion {
+    grid-column: auto;
+  }
+
+  .compra-mp-items-header,
+  .compra-mp-form-actions,
+  .compra-mp-meta,
+  .compra-mp-total {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .compra-mp-total strong {
+    font-size: 1.35rem;
+  }
+
+  .compra-mp-form.form-card {
+    padding: 18px;
+  }
+}
+
+
+<<<END OF FILE>>>
+
+
+---
+
+## FILE: src\styles\entregasStock.css
+
+<<<START OF FILE>>>
+
+.entrega-stock-page {
+  width: 100%;
+  min-width: 0;
+}
+
+.entrega-form.form-card {
+  max-width: none;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 24px;
+}
+
+.entrega-form-header h3,
+.entrega-form-header p {
+  margin: 0;
+}
+
+.entrega-form-header p {
+  margin-top: 5px;
+  color: #64748b;
+}
+
+.entrega-cabecera-grid {
+  display: grid;
+  grid-template-columns:
+    minmax(220px, 0.7fr)
+    minmax(300px, 2fr);
+  gap: 18px;
+  margin: 20px 0 24px;
+}
+
+.entrega-cabecera-grid > div {
+  min-width: 0;
+}
+
+.entrega-cabecera-grid label,
+.entrega-input-grid label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+.entrega-cabecera-grid input,
+.entrega-cabecera-grid textarea,
+.entrega-input-grid input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.entrega-producto-card {
+  padding: 18px;
+}
+
+.entrega-producto-nombre {
+  font-size: 1rem;
+}
+
+.entrega-producto-estados {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.entrega-stock-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.entrega-stock-ok {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.entrega-stock-error {
+  color: #991b1b;
+  background: #fee2e2;
+}
+
+.entrega-stock-warning {
+  color: #92400e;
+  background: #fef3c7;
+}
+
+.entrega-producto-resumen {
+  display: grid;
+  grid-template-columns:
+    repeat(6, minmax(120px, 1fr));
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.entrega-producto-resumen > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 11px 12px;
+  border-radius: 10px;
+  background: white;
+  border: 1px solid #e5e7eb;
+}
+
+.entrega-producto-resumen span {
+  color: #64748b;
+  font-size: 0.8rem;
+}
+
+.entrega-producto-resumen strong {
+  font-size: 0.95rem;
+}
+
+.entrega-stock-valor-ok {
+  color: #047857;
+}
+
+.entrega-stock-valor-error {
+  color: #b91c1c;
+}
+
+.entrega-alerta {
+  margin: 12px 0;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.entrega-alerta-error {
+  color: #991b1b;
+  background: #fee2e2;
+}
+
+.entrega-alerta-warning {
+  color: #92400e;
+  background: #fef3c7;
+}
+
+.entrega-regla {
+  margin: 12px 0;
+  padding: 11px 13px;
+  border-radius: 10px;
+  color: #1e3a8a;
+  background: #eff6ff;
+}
+
+.entrega-input-grid {
+  display: grid;
+  grid-template-columns:
+    minmax(220px, 0.8fr)
+    minmax(260px, 1.2fr);
+  gap: 14px;
+  align-items: end;
+}
+
+.entrega-input-unidad {
+  display: grid;
+  grid-template-columns:
+    minmax(100px, 1fr)
+    55px;
+}
+
+.entrega-input-unidad input {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.entrega-input-unidad span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d1d5db;
+  border-left: 0;
+  border-radius: 0 8px 8px 0;
+  background: #e5e7eb;
+  color: #374151;
+  font-weight: 700;
+}
+
+.entrega-validacion-error {
+  margin-top: 10px;
+  color: #b91c1c;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.entrega-total-box {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.entrega-total-box > div {
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: #f1f5f9;
+}
+
+.entrega-total-box span {
+  color: #64748b;
+  font-size: 0.82rem;
+}
+
+.entrega-total-box strong {
+  font-size: 1.05rem;
+}
+
+.entrega-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 18px;
+}
+
+.entrega-historial-header h3,
+.entrega-historial-header p {
+  margin: 0;
+}
+
+.entrega-historial-header p {
+  margin-top: 4px;
+  margin-bottom: 16px;
+  color: #64748b;
+}
+
+@media (max-width: 1350px) {
+  .entrega-producto-resumen {
+    grid-template-columns:
+      repeat(3, minmax(140px, 1fr));
+  }
+}
+
+@media (max-width: 850px) {
+  .entrega-cabecera-grid,
+  .entrega-input-grid,
+  .entrega-producto-resumen {
+    grid-template-columns: 1fr;
+  }
+
+  .entrega-producto-estados {
+    justify-content: flex-start;
+  }
+
+  .entrega-total-box {
+    flex-direction: column;
+  }
+
+  .entrega-total-box > div {
+    min-width: 0;
+  }
+}
+
+
+<<<END OF FILE>>>
+
+
+---
+
+## FILE: src\styles\mermas.css
+
+<<<START OF FILE>>>
+
+.merma-page {
+  width: 100%;
+  min-width: 0;
+}
+
+.merma-header {
+  align-items: center;
+}
+
+
+/* =========================================================
+   LISTADO
+   ========================================================= */
+
+.merma-filtros {
+  display: grid;
+  grid-template-columns:
+    minmax(260px, 1.7fr)
+    minmax(160px, 0.8fr)
+    minmax(160px, 0.8fr)
+    auto
+    auto;
+  gap: 12px;
+  align-items: end;
+  padding: 18px;
+  margin-bottom: 20px;
+  border-radius: 16px;
+  background: white;
+  box-shadow:
+    0 8px 20px
+    rgba(15, 23, 42, 0.06);
+}
+
+.merma-filtros label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+.merma-filtros input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.merma-tabla-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.merma-tabla-header h3,
+.merma-tabla-header p {
+  margin: 0;
+}
+
+.merma-tabla-header p {
+  margin-top: 4px;
+  color: #64748b;
+}
+
+.merma-cantidad {
+  color: #b91c1c;
+}
+
+
+/* =========================================================
+   FORMULARIO
+   ========================================================= */
+
+.merma-form {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 26px 28px;
+  border-radius: 16px;
+  background: white;
+  box-shadow:
+    0 8px 20px
+    rgba(15, 23, 42, 0.06);
+}
+
+.merma-seccion + .merma-seccion {
+  margin-top: 28px;
+  padding-top: 26px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.merma-seccion-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.merma-seccion-header h3,
+.merma-seccion-header p {
+  margin: 0;
+}
+
+.merma-seccion-header p {
+  margin-top: 4px;
+  color: #64748b;
+}
+
+.merma-cabecera-grid {
+  display: grid;
+  grid-template-columns:
+    minmax(220px, 0.7fr)
+    minmax(320px, 2fr);
+  gap: 18px;
+}
+
+.merma-cabecera-grid > div {
+  min-width: 0;
+}
+
+.merma-cabecera-grid label,
+.merma-item-grid label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+.merma-cabecera-grid input,
+.merma-cabecera-grid textarea,
+.merma-item-grid input,
+.merma-item-grid select {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.merma-cabecera-grid textarea {
+  resize: vertical;
+}
+
+.merma-items {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.merma-item-card {
+  padding: 18px;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #f8fafc;
+}
+
+.merma-item-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.merma-item-grid {
+  display: grid;
+  grid-template-columns:
+    minmax(180px, 1fr)
+    minmax(160px, 1fr)
+    minmax(190px, 1fr)
+    minmax(240px, 1.4fr);
+  gap: 14px;
+  align-items: end;
+}
+
+.merma-input-unidad {
+  display: grid;
+  grid-template-columns:
+    minmax(100px, 1fr)
+    54px;
+}
+
+.merma-input-unidad input {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.merma-input-unidad span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d1d5db;
+  border-left: 0;
+  border-radius: 0 8px 8px 0;
+  background: #e5e7eb;
+  color: #374151;
+  font-weight: 700;
+}
+
+.merma-stock-resumen {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(150px, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.merma-stock-resumen > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 11px 12px;
+  border-radius: 10px;
+  background: white;
+  border: 1px solid #e5e7eb;
+}
+
+.merma-stock-resumen span {
+  color: #64748b;
+  font-size: 0.82rem;
+}
+
+.merma-saldo-ok {
+  color: #047857;
+}
+
+.merma-saldo-error {
+  color: #b91c1c;
+}
+
+.merma-alerta {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.merma-alerta-error {
+  color: #991b1b;
+  background: #fee2e2;
+}
+
+.merma-alerta-warning {
+  color: #92400e;
+  background: #fef3c7;
+}
+
+.merma-total {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
+  margin-top: 24px;
+  padding: 18px 21px;
+  border-radius: 12px;
+  background: #f1f5f9;
+}
+
+.merma-total > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.merma-total span {
+  font-weight: 700;
+}
+
+.merma-total small {
+  color: #64748b;
+}
+
+.merma-total strong {
+  color: #b91c1c;
+  font-size: 1.4rem;
+}
+
+.merma-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+
+/* =========================================================
+   DETALLE
+   ========================================================= */
+
+.merma-detalle-kpis {
+  display: grid;
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.merma-detalle-kpis > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: white;
+  box-shadow:
+    0 8px 20px
+    rgba(15, 23, 42, 0.06);
+}
+
+.merma-detalle-kpis span {
+  color: #64748b;
+  font-size: 0.86rem;
+}
+
+.merma-detalle-kpis strong {
+  font-size: 1.04rem;
+}
+
+.merma-observacion-general {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border-radius: 11px;
+  background: #f8fafc;
+  color: #475569;
+}
+
+.merma-detalles {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.merma-detalle-card {
+  padding: 20px;
+  border-radius: 16px;
+  background: white;
+  box-shadow:
+    0 8px 20px
+    rgba(15, 23, 42, 0.06);
+}
+
+.merma-detalle-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.merma-detalle-header span {
+  color: #64748b;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.merma-detalle-header h3 {
+  margin: 4px 0 0;
+}
+
+.merma-item-nota {
+  margin-top: 13px;
+  padding: 11px 13px;
+  border-radius: 9px;
+  color: #475569;
+  background: #f8fafc;
+}
+
+.merma-fifo {
+  margin-top: 15px;
+  border: 1px solid #e2e8f0;
+  border-radius: 11px;
+  overflow: hidden;
+}
+
+.merma-fifo > summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 13px 15px;
+  color: #1d4ed8;
+  font-weight: 700;
+  background: #f8fafc;
+}
+
+.merma-fifo > summary::-webkit-details-marker {
+  display: none;
+}
+
+.merma-fifo > summary::after {
+  content: '▾';
+  float: right;
+}
+
+.merma-fifo[open] > summary::after {
+  content: '▴';
+}
+
+.merma-fifo-contenido {
+  padding: 15px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.merma-fifo-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.merma-fifo-header h4,
+.merma-fifo-header p {
+  margin: 0;
+}
+
+.merma-fifo-header p {
+  margin-top: 4px;
+  color: #64748b;
+}
+
+.merma-fifo-header > span {
+  color: #64748b;
+  font-size: 0.86rem;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1200px) {
+  .merma-item-grid {
+    grid-template-columns:
+      repeat(2, minmax(180px, 1fr));
+  }
+
+  .merma-detalle-kpis {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 800px) {
+  .merma-filtros,
+  .merma-cabecera-grid,
+  .merma-item-grid,
+  .merma-stock-resumen,
+  .merma-detalle-kpis {
+    grid-template-columns: 1fr;
+  }
+
+  .merma-seccion-header,
+  .merma-item-header,
+  .merma-total,
+  .merma-actions,
+  .merma-detalle-header,
+  .merma-fifo-header,
+  .merma-tabla-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .merma-form {
+    padding: 18px;
+  }
+}
+
 
 <<<END OF FILE>>>
 
@@ -15109,6 +33488,1128 @@ export default API_URL;
     grid-template-columns: 1fr;
   }
 }
+
+<<<END OF FILE>>>
+
+
+---
+
+## FILE: src\styles\producciones.css
+
+<<<START OF FILE>>>
+
+.producciones-page {
+  width: 100%;
+  min-width: 0;
+}
+
+.producciones-header {
+  align-items: center;
+}
+
+.producciones-page textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px 13px;
+  border: 1px solid #d1d5db;
+  border-radius: 9px;
+  font: inherit;
+  resize: vertical;
+}
+
+
+/* =========================================================
+   LISTADO
+   ========================================================= */
+
+.prod-tabla-cabecera {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.prod-tabla-cabecera h3,
+.prod-tabla-cabecera p {
+  margin: 0;
+}
+
+.prod-tabla-cabecera p {
+  margin-top: 4px;
+  color: #64748b;
+}
+
+
+/* =========================================================
+   FORMULARIO
+   ========================================================= */
+
+.prod-form {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 26px 28px;
+  border-radius: 16px;
+  background: white;
+  box-shadow:
+    0 8px 20px
+    rgba(15, 23, 42, 0.06);
+}
+
+.prod-seccion + .prod-seccion {
+  margin-top: 28px;
+  padding-top: 26px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.prod-seccion-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.prod-seccion-header h3,
+.prod-seccion-header p {
+  margin: 0;
+}
+
+.prod-seccion-header p {
+  margin-top: 4px;
+  color: #64748b;
+}
+
+.prod-cabecera-grid {
+  display: grid;
+  grid-template-columns:
+    minmax(220px, 0.7fr)
+    minmax(320px, 2fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.prod-cabecera-grid > div,
+.prod-producto-grid > div,
+.prod-cantidades-grid > div {
+  min-width: 0;
+}
+
+.prod-cabecera-grid label,
+.prod-producto-grid label,
+.prod-cantidades-grid label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+.prod-cabecera-grid input,
+.prod-producto-grid select,
+.prod-cantidades-grid input {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.prod-campo-ancho {
+  grid-column: 1 / -1;
+}
+
+
+/* =========================================================
+   PRODUCTOS
+   ========================================================= */
+
+.prod-items {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.prod-item-card {
+  padding: 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 15px;
+  background: #f8fafc;
+}
+
+.prod-item-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 17px;
+}
+
+.prod-item-header > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.prod-item-header span {
+  color: #64748b;
+  font-size: 0.88rem;
+}
+
+.prod-producto-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(4, minmax(160px, 1fr));
+  gap: 14px;
+}
+
+.prod-producto-estado {
+  margin-top: 12px;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.prod-alerta {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.prod-alerta-warning {
+  color: #92400e;
+  background: #fef3c7;
+}
+
+
+/* =========================================================
+   PREVIEW DE COMPOSICION
+   ========================================================= */
+
+.prod-composicion-preview {
+  margin-top: 16px;
+  padding: 16px;
+  border-radius: 12px;
+  background: white;
+  border: 1px solid #dbeafe;
+}
+
+.prod-composicion-titulo {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 13px;
+}
+
+.prod-composicion-titulo > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.prod-composicion-titulo span {
+  color: #64748b;
+  font-size: 0.86rem;
+}
+
+.prod-badge-ok {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 9px;
+  border-radius: 999px;
+  color: #166534 !important;
+  background: #dcfce7;
+  font-size: 0.76rem !important;
+  font-weight: 700;
+}
+
+.prod-receta-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(180px, 1fr));
+  gap: 10px;
+}
+
+.prod-receta-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 12px;
+  border-radius: 10px;
+  background: #f8fafc;
+}
+
+.prod-receta-item > div {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.prod-receta-item span,
+.prod-receta-item small {
+  color: #64748b;
+}
+
+.prod-receta-cantidad {
+  align-items: flex-end;
+}
+
+
+/* =========================================================
+   CANTIDADES
+   ========================================================= */
+
+.prod-cantidades-grid {
+  display: grid;
+  grid-template-columns:
+    minmax(220px, 1fr)
+    minmax(220px, 1fr);
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.prod-input-unidad {
+  display: grid;
+  grid-template-columns:
+    minmax(120px, 1fr)
+    54px;
+}
+
+.prod-input-unidad input {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.prod-input-unidad span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  border: 1px solid #d1d5db;
+  border-left: 0;
+  border-radius: 0 8px 8px 0;
+  background: #e5e7eb;
+  color: #374151;
+  font-weight: 700;
+}
+
+.prod-presentaciones-info {
+  display: block;
+  margin-top: 5px;
+  color: #64748b;
+}
+
+.prod-total {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
+  margin-top: 24px;
+  padding: 19px 22px;
+  border-radius: 12px;
+  background: #f1f5f9;
+}
+
+.prod-total > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.prod-total span {
+  font-weight: 700;
+}
+
+.prod-total small {
+  color: #64748b;
+}
+
+.prod-total strong {
+  font-size: 1.45rem;
+}
+
+.prod-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+
+/* =========================================================
+   DETALLE
+   ========================================================= */
+
+.prod-detalle-kpis {
+  display: grid;
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.prod-detalle-kpis > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: white;
+  box-shadow:
+    0 8px 20px
+    rgba(15, 23, 42, 0.06);
+}
+
+.prod-detalle-kpis span {
+  color: #64748b;
+  font-size: 0.86rem;
+}
+
+.prod-detalle-kpis strong {
+  font-size: 1.04rem;
+}
+
+.prod-observacion-general {
+  padding: 14px 16px;
+  border-radius: 11px;
+  background: #eff6ff;
+  color: #1e3a8a;
+}
+
+.prod-detalles-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+}
+
+.prod-detalle-card {
+  padding: 20px;
+  border-radius: 16px;
+  background: white;
+  box-shadow:
+    0 8px 20px
+    rgba(15, 23, 42, 0.06);
+}
+
+.prod-detalle-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.prod-detalle-card-header h3 {
+  margin: 4px 0 0;
+}
+
+.prod-detalle-numero {
+  color: #64748b;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.prod-version-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+  color: #1d4ed8;
+  background: #dbeafe;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.prod-detalle-resumen {
+  display: grid;
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.prod-detalle-resumen > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 12px 13px;
+  border-radius: 10px;
+  background: #f8fafc;
+}
+
+.prod-detalle-resumen span {
+  color: #64748b;
+  font-size: 0.82rem;
+}
+
+.prod-stock-positivo {
+  color: #047857;
+}
+
+.prod-item-observacion {
+  margin-top: 14px;
+  padding: 11px 13px;
+  border-radius: 9px;
+  background: #f8fafc;
+  color: #475569;
+}
+
+
+/* =========================================================
+   FIFO
+   ========================================================= */
+
+.prod-fifo-details {
+  margin-top: 15px;
+  border: 1px solid #e2e8f0;
+  border-radius: 11px;
+  overflow: hidden;
+}
+
+.prod-fifo-details > summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 13px 15px;
+  color: #1d4ed8;
+  font-weight: 700;
+  background: #f8fafc;
+}
+
+.prod-fifo-details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.prod-fifo-details > summary::after {
+  content: '▾';
+  float: right;
+}
+
+.prod-fifo-details[open] > summary::after {
+  content: '▴';
+}
+
+.prod-fifo-contenido {
+  padding: 15px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.prod-fifo-titulo {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.prod-fifo-titulo h4 {
+  margin: 0;
+}
+
+.prod-fifo-titulo span {
+  color: #64748b;
+  font-size: 0.86rem;
+}
+
+.prod-consumo-negativo {
+  color: #b91c1c;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1200px) {
+  .prod-producto-grid,
+  .prod-detalle-kpis,
+  .prod-detalle-resumen {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .prod-receta-grid {
+    grid-template-columns:
+      repeat(2, minmax(180px, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .prod-cabecera-grid,
+  .prod-producto-grid,
+  .prod-cantidades-grid,
+  .prod-receta-grid,
+  .prod-detalle-kpis,
+  .prod-detalle-resumen {
+    grid-template-columns: 1fr;
+  }
+
+  .prod-seccion-header,
+  .prod-item-header,
+  .prod-composicion-titulo,
+  .prod-total,
+  .prod-form-actions,
+  .prod-detalle-card-header,
+  .prod-fifo-titulo {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .prod-campo-ancho {
+    grid-column: auto;
+  }
+
+  .prod-form {
+    padding: 18px;
+  }
+}
+
+
+<<<END OF FILE>>>
+
+
+---
+
+## FILE: src\styles\productosTerminados.css
+
+<<<START OF FILE>>>
+
+.productos-terminados-page {
+  width: 100%;
+  min-width: 0;
+}
+
+.productos-terminados-header {
+  align-items: center;
+}
+
+.productos-terminados-page textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px 13px;
+  border: 1px solid #d1d5db;
+  border-radius: 9px;
+  font: inherit;
+  resize: vertical;
+}
+
+.pt-filtros {
+  display: grid;
+  grid-template-columns:
+    minmax(260px, 1.8fr)
+    repeat(5, minmax(130px, 0.85fr))
+    auto
+    auto;
+  gap: 12px;
+  align-items: end;
+  padding: 18px;
+  margin-bottom: 20px;
+  background: white;
+  border-radius: 16px;
+  box-shadow:
+    0 8px 20px
+    rgba(15, 23, 42, 0.06);
+}
+
+.pt-filtros > div {
+  min-width: 0;
+}
+
+.pt-filtros label {
+  display: block;
+  margin: 0 0 6px;
+  font-weight: 700;
+}
+
+.pt-filtros input,
+.pt-filtros select {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.pt-tabla-cabecera {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.pt-tabla-cabecera h3,
+.pt-tabla-cabecera p {
+  margin: 0;
+}
+
+.pt-tabla-cabecera p {
+  margin-top: 4px;
+  color: #64748b;
+}
+
+.pt-composicion-estado {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pt-composicion-estado small {
+  color: #64748b;
+}
+
+.pt-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 9px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.pt-badge-ok {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.pt-badge-pendiente {
+  color: #92400e;
+  background: #fef3c7;
+}
+
+.pt-badge-historico {
+  color: #475569;
+  background: #e2e8f0;
+}
+
+
+/* =========================================================
+   REGISTRAR PRODUCTO
+   ========================================================= */
+
+.pt-form-registro.form-card {
+  width: 100%;
+  max-width: 1050px;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 26px;
+}
+
+.pt-form-intro h3,
+.pt-form-intro p {
+  margin: 0;
+}
+
+.pt-form-intro p {
+  margin-top: 5px;
+  color: #64748b;
+}
+
+.pt-form-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(220px, 1fr));
+  gap: 18px 20px;
+  margin-top: 22px;
+}
+
+.pt-form-grid > div {
+  min-width: 0;
+}
+
+.pt-form-grid label {
+  display: block;
+  margin: 0 0 7px;
+  font-weight: 700;
+}
+
+.pt-form-grid input,
+.pt-form-grid select {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.pt-form-ancho {
+  grid-column: 1 / -1;
+}
+
+.pt-form-nota {
+  margin-top: 20px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  color: #1e3a8a;
+  background: #eff6ff;
+}
+
+.pt-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+
+/* =========================================================
+   DETALLE / IDENTIDAD
+   ========================================================= */
+
+.pt-detalle-header {
+  align-items: center;
+}
+
+.pt-identidad {
+  display: grid;
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.pt-identidad > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: white;
+  box-shadow:
+    0 8px 20px
+    rgba(15, 23, 42, 0.06);
+}
+
+.pt-identidad span {
+  color: #64748b;
+  font-size: 0.86rem;
+}
+
+.pt-identidad strong {
+  font-size: 1.05rem;
+}
+
+
+/* =========================================================
+   COMPOSICION VIGENTE
+   ========================================================= */
+
+.pt-composicion-card {
+  padding: 22px;
+  margin-bottom: 18px;
+  border-radius: 16px;
+  background: white;
+  box-shadow:
+    0 8px 20px
+    rgba(15, 23, 42, 0.06);
+}
+
+.pt-composicion-card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: flex-start;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.pt-composicion-card-header h3 {
+  margin: 10px 0 3px;
+}
+
+.pt-composicion-card-header p {
+  margin: 0;
+  color: #64748b;
+}
+
+.pt-total-100 {
+  font-size: 1.7rem;
+  color: #047857;
+}
+
+.pt-composicion-componentes {
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+  margin-top: 20px;
+}
+
+.pt-componente-vigente {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pt-componente-linea {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: center;
+}
+
+.pt-componente-linea > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pt-componente-linea span {
+  color: #64748b;
+}
+
+.pt-barra {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e5e7eb;
+}
+
+.pt-barra-progreso {
+  height: 100%;
+  border-radius: inherit;
+  background: #2563eb;
+}
+
+.pt-observacion {
+  margin-top: 20px;
+  padding: 13px 15px;
+  border-radius: 10px;
+  background: #f8fafc;
+  color: #475569;
+}
+
+.pt-sin-composicion {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 22px;
+  margin-bottom: 18px;
+  border: 1px solid #fde68a;
+  border-radius: 16px;
+  background: #fffbeb;
+}
+
+.pt-sin-composicion-icono {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+.pt-sin-composicion h3,
+.pt-sin-composicion p {
+  margin: 0;
+}
+
+.pt-sin-composicion p {
+  margin-top: 4px;
+  color: #78350f;
+}
+
+
+/* =========================================================
+   EDITOR DE COMPOSICION
+   ========================================================= */
+
+.pt-editor-composicion {
+  padding: 22px;
+  margin-bottom: 18px;
+  border-radius: 16px;
+  background: white;
+  box-shadow:
+    0 8px 20px
+    rgba(15, 23, 42, 0.06);
+}
+
+.pt-editor-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.pt-editor-header h3,
+.pt-editor-header p {
+  margin: 0;
+}
+
+.pt-editor-header p {
+  margin-top: 4px;
+  color: #64748b;
+}
+
+.pt-suma {
+  min-width: 105px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  color: #b45309;
+}
+
+.pt-suma span {
+  font-size: 0.8rem;
+}
+
+.pt-suma strong {
+  font-size: 1.55rem;
+}
+
+.pt-suma-ok {
+  color: #047857;
+}
+
+.pt-componentes-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.pt-componente-editor {
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 13px;
+  background: #f8fafc;
+}
+
+.pt-componente-numero {
+  margin-bottom: 10px;
+  font-weight: 700;
+  color: #334155;
+}
+
+.pt-componente-campos {
+  display: grid;
+  grid-template-columns:
+    minmax(180px, 1.3fr)
+    minmax(160px, 1fr)
+    minmax(150px, 0.75fr)
+    auto;
+  gap: 14px;
+  align-items: end;
+}
+
+.pt-componente-campos > div {
+  min-width: 0;
+}
+
+.pt-componente-campos label,
+.pt-observacion-editor label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+.pt-componente-campos select,
+.pt-componente-campos input {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.pt-porcentaje-input {
+  display: grid;
+  grid-template-columns:
+    minmax(90px, 1fr)
+    42px;
+}
+
+.pt-porcentaje-input input {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.pt-porcentaje-input span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d1d5db;
+  border-left: 0;
+  border-radius: 0 8px 8px 0;
+  background: #e5e7eb;
+  font-weight: 700;
+}
+
+.pt-agregar-componente {
+  margin-top: 14px;
+}
+
+.pt-observacion-editor {
+  margin-top: 20px;
+}
+
+.pt-editor-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+
+/* =========================================================
+   HISTORIAL
+   ========================================================= */
+
+.pt-historial {
+  margin-top: 18px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1450px) {
+  .pt-filtros {
+    grid-template-columns:
+      repeat(4, minmax(160px, 1fr));
+  }
+
+  .pt-filtro-busqueda {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 1050px) {
+  .pt-identidad {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .pt-componente-campos {
+    grid-template-columns:
+      repeat(2, minmax(180px, 1fr));
+  }
+}
+
+@media (max-width: 800px) {
+  .pt-filtros,
+  .pt-form-grid,
+  .pt-identidad,
+  .pt-componente-campos {
+    grid-template-columns: 1fr;
+  }
+
+  .pt-filtro-busqueda,
+  .pt-form-ancho {
+    grid-column: auto;
+  }
+
+  .pt-composicion-card-header,
+  .pt-editor-header,
+  .pt-form-actions,
+  .pt-editor-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .pt-suma {
+    align-items: flex-start;
+  }
+}
+
 
 <<<END OF FILE>>>
 

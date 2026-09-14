@@ -1,0 +1,17 @@
+1. ejecutamos primeravaldiacion.sql que esta dentro de Cambio de BBDD.
+2. Ejecutamos 20260913_1340_catalogo_productos_terminados
+3. Ejecutamos 20260913_1425_compra_y_almacen_materia_prima
+4. Ejecutamos segundavaldiacion.sql que esta dentro de cambio de bbddd
+5. Ejecutamos 20260913_1440_composicion_versionada_productos.sql
+6. Ejecutamos terceravaldiacion.sql que esta dentro de cambio de bbddd
+7. Ejecutamos 20260913_1455_produccion_y_almacen_producto_terminado.sql
+8. Ejecutamos cuartavaldiacion.sql que esta dentro de cambio de bbddd
+9. Ejecutamos 20260913_1510_merma_y_trazabilidad_materia_prima.sql
+10. Ejecutamos quintavaldiacion.sql que esta dentro de cambio de bbddd
+11. Ejecutamos 20260913_1525_idempotencia_compra_materia_prima.sql
+12. Ejecutamos sextavaldiacion.sql que esta dentro de cambio de bbddd
+13. Ejecutamos 20260913_1525_idempotencia_compra_materia_prima.sql
+14. Ejecutamos septimavaldiacion.sql que esta dentro de cambio de bbddd
+15. Ejecutamos 20260913_01_produccion_idempotencia.sql
+16. Ejecutamos 20260913_02_entrega_stock_producto_terminado.sql
+17. Ejecutamos 220260913_02_entrega_stock_producto_terminado.sql

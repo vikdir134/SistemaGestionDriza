@@ -1,0 +1,511 @@
+.compra-mp-page {
+  min-width: 0;
+  width: 100%;
+}
+
+.compra-mp-registro-page {
+  width: 100%;
+  max-width: none;
+}
+
+.compra-mp-page textarea {
+  width: 100%;
+  padding: 11px 13px;
+  border: 1px solid #d1d5db;
+  border-radius: 9px;
+  font: inherit;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.btn-primary-link,
+.btn-secondary-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.btn-primary-link {
+  background: #111827;
+  color: white;
+}
+
+.btn-secondary-link {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+
+/* =========================================================
+   LISTADO
+   ========================================================= */
+
+.compra-mp-filtros {
+  background: white;
+  border-radius: 16px;
+  padding: 18px;
+  display: grid;
+  grid-template-columns: 2fr 1.4fr auto auto;
+  gap: 14px;
+  align-items: end;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+}
+
+.compra-mp-filtros label {
+  margin-top: 0;
+}
+
+.compra-mp-tabla-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.compra-mp-tabla-header h3 {
+  margin: 0 0 4px;
+}
+
+.tabla-scroll {
+  width: 100%;
+  overflow-x: auto;
+}
+
+
+/* =========================================================
+   FORMULARIO PRINCIPAL
+
+   Override importante:
+   algunos formularios del proyecto utilizan max-width.
+   Este formulario necesita aprovechar el espacio del layout.
+   ========================================================= */
+
+.compra-mp-form.form-card {
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 26px 28px;
+  border-radius: 16px;
+}
+
+.compra-mp-seccion {
+  width: 100%;
+}
+
+.compra-mp-seccion + .compra-mp-seccion {
+  margin-top: 28px;
+  padding-top: 26px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.compra-mp-seccion-titulo {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.compra-mp-seccion-titulo h3 {
+  margin: 0;
+}
+
+.compra-mp-seccion-titulo p {
+  margin: 5px 0 0;
+  color: #6b7280;
+}
+
+
+/* =========================================================
+   CABECERA DEL LOTE
+   ========================================================= */
+
+.compra-mp-cabecera-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(220px, 1fr));
+  gap: 18px 20px;
+  align-items: start;
+}
+
+.compra-mp-cabecera-grid > div {
+  min-width: 0;
+}
+
+.compra-mp-cabecera-grid label,
+.compra-mp-item-grid label {
+  display: block;
+  margin: 0 0 7px;
+  font-weight: 700;
+}
+
+.compra-mp-cabecera-grid input,
+.compra-mp-cabecera-grid select,
+.compra-mp-item-grid input,
+.compra-mp-item-grid select {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.compra-mp-campo-ancho {
+  grid-column: 1 / -1;
+}
+
+
+/* =========================================================
+   CABECERA DE ITEMS
+   ========================================================= */
+
+.compra-mp-items-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.compra-mp-items-header h3,
+.compra-mp-items-header p {
+  margin: 0;
+}
+
+.compra-mp-items-header p {
+  margin-top: 5px;
+}
+
+
+/* =========================================================
+   ITEMS
+   ========================================================= */
+
+.compra-mp-items {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.compra-mp-item-card {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #dfe3e8;
+  border-radius: 14px;
+  padding: 20px;
+  background: #f9fafb;
+}
+
+.compra-mp-item-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.compra-mp-item-title > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.compra-mp-item-title strong {
+  font-size: 1rem;
+}
+
+.compra-mp-item-subtitle {
+  color: #6b7280;
+  font-size: 0.88rem;
+}
+
+
+/*
+ * Distribución deliberadamente desigual:
+ *
+ * Material    23%
+ * Color       16%
+ * Cantidad    20%
+ * Precio      20%
+ * Subtotal    17%
+ *
+ * Así Cantidad/Precio ya no quedan comprimidos.
+ */
+.compra-mp-item-grid {
+  display: grid;
+  grid-template-columns:
+    minmax(190px, 1.35fr)
+    minmax(145px, 0.95fr)
+    minmax(190px, 1.15fr)
+    minmax(190px, 1.15fr)
+    minmax(170px, 1fr);
+  gap: 18px;
+  align-items: end;
+}
+
+.compra-mp-item-grid > div {
+  min-width: 0;
+}
+
+
+/* =========================================================
+   CANTIDAD + KG
+   ========================================================= */
+
+.compra-mp-input-unidad {
+  width: 100%;
+  display: grid;
+  grid-template-columns:
+    minmax(120px, 1fr)
+    54px;
+  align-items: stretch;
+}
+
+.compra-mp-input-unidad input {
+  width: 100%;
+  min-width: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.compra-mp-input-unidad span {
+  height: 100%;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d1d5db;
+  border-left: 0;
+  border-radius: 0 8px 8px 0;
+  background: #e5e7eb;
+  font-weight: 700;
+  color: #374151;
+}
+
+
+/* =========================================================
+   PRECIO
+   ========================================================= */
+
+.compra-mp-input-moneda {
+  width: 100%;
+  display: grid;
+  grid-template-columns:
+    48px
+    minmax(120px, 1fr);
+  align-items: stretch;
+}
+
+.compra-mp-input-moneda span {
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d1d5db;
+  border-right: 0;
+  border-radius: 8px 0 0 8px;
+  background: #e5e7eb;
+  font-weight: 700;
+  color: #374151;
+}
+
+.compra-mp-input-moneda input {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+
+/* =========================================================
+   SUBTOTAL
+   ========================================================= */
+
+.compra-mp-subtotal-box {
+  min-height: 40px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 7px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #eef0f3;
+  white-space: nowrap;
+}
+
+.compra-mp-subtotal-box span {
+  color: #6b7280;
+}
+
+.compra-mp-subtotal-box strong {
+  font-size: 0.98rem;
+}
+
+.compra-mp-item-descripcion {
+  margin-top: 2px;
+}
+
+
+/* =========================================================
+   TOTAL
+   ========================================================= */
+
+.compra-mp-total {
+  margin-top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 20px 22px;
+  background: #f3f4f6;
+  border-radius: 12px;
+}
+
+.compra-mp-total > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.compra-mp-total small {
+  color: #6b7280;
+}
+
+.compra-mp-total strong {
+  font-size: 1.55rem;
+  white-space: nowrap;
+}
+
+.compra-mp-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+
+/* =========================================================
+   DETALLE DE LOTE
+   ========================================================= */
+
+.compra-mp-resumen {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.compra-mp-resumen > div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background: white;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+}
+
+.compra-mp-resumen span,
+.compra-mp-resumen small {
+  color: #6b7280;
+}
+
+.compra-mp-resumen strong {
+  font-size: 1.05rem;
+}
+
+.compra-mp-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  color: #4b5563;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1450px) {
+  .compra-mp-item-grid {
+    grid-template-columns:
+      minmax(180px, 1.25fr)
+      minmax(140px, 0.9fr)
+      minmax(180px, 1.1fr)
+      minmax(180px, 1.1fr);
+  }
+
+  .compra-mp-item-subtotal {
+    grid-column: span 1;
+  }
+
+  .compra-mp-item-descripcion {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 1150px) {
+  .compra-mp-cabecera-grid {
+    grid-template-columns:
+      repeat(2, minmax(220px, 1fr));
+  }
+
+  .compra-mp-item-grid {
+    grid-template-columns:
+      repeat(2, minmax(240px, 1fr));
+  }
+
+  .compra-mp-item-descripcion {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 900px) {
+  .compra-mp-filtros {
+    grid-template-columns:
+      1fr 1fr;
+  }
+
+  .compra-mp-resumen {
+    grid-template-columns:
+      1fr 1fr;
+  }
+
+  .compra-mp-form.form-card {
+    padding: 22px;
+  }
+}
+
+@media (max-width: 680px) {
+  .compra-mp-filtros,
+  .compra-mp-cabecera-grid,
+  .compra-mp-resumen,
+  .compra-mp-item-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .compra-mp-campo-ancho,
+  .compra-mp-item-descripcion {
+    grid-column: auto;
+  }
+
+  .compra-mp-items-header,
+  .compra-mp-form-actions,
+  .compra-mp-meta,
+  .compra-mp-total {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .compra-mp-total strong {
+    font-size: 1.35rem;
+  }
+
+  .compra-mp-form.form-card {
+    padding: 18px;
+  }
+}

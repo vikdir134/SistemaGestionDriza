@@ -1,0 +1,242 @@
+.compra-mp-page {
+  min-width: 0;
+}
+
+.compra-mp-page textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font: inherit;
+  resize: vertical;
+}
+
+.btn-primary-link,
+.btn-secondary-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.btn-primary-link {
+  background: #111827;
+  color: white;
+}
+
+.btn-secondary-link {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.compra-mp-filtros {
+  background: white;
+  border-radius: 16px;
+  padding: 18px;
+  display: grid;
+  grid-template-columns: 2fr 1.4fr auto auto;
+  gap: 14px;
+  align-items: end;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+}
+
+.compra-mp-filtros label {
+  margin-top: 0;
+}
+
+.compra-mp-tabla-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.compra-mp-tabla-header h3 {
+  margin: 0 0 4px;
+}
+
+.tabla-scroll {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.compra-mp-cabecera-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 18px;
+}
+
+.compra-mp-campo-ancho {
+  grid-column: 1 / -1;
+}
+
+.compra-mp-items-header {
+  margin-top: 26px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+}
+
+.compra-mp-items-header h3,
+.compra-mp-items-header p {
+  margin: 0;
+}
+
+.compra-mp-items-header p {
+  margin-top: 5px;
+}
+
+.compra-mp-items {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.compra-mp-item-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 16px;
+  background: #f9fafb;
+}
+
+.compra-mp-item-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.compra-mp-item-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0 14px;
+}
+
+.compra-mp-input-unidad {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: stretch;
+}
+
+.compra-mp-input-unidad input {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.compra-mp-input-unidad span {
+  min-width: 48px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d1d5db;
+  border-left: 0;
+  border-radius: 0 8px 8px 0;
+  background: #e5e7eb;
+  font-weight: 700;
+  color: #374151;
+}
+
+.compra-mp-total {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 18px;
+  padding: 16px;
+  background: #f3f4f6;
+  border-radius: 12px;
+}
+
+.compra-mp-total strong {
+  font-size: 1.35rem;
+}
+
+.compra-mp-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.compra-mp-resumen {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.compra-mp-resumen > div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background: white;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+}
+
+.compra-mp-resumen span,
+.compra-mp-resumen small {
+  color: #6b7280;
+}
+
+.compra-mp-resumen strong {
+  font-size: 1.05rem;
+}
+
+.compra-mp-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  color: #4b5563;
+}
+
+@media (max-width: 1200px) {
+  .compra-mp-item-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .compra-mp-filtros {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .compra-mp-cabecera-grid,
+  .compra-mp-resumen {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .compra-mp-item-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .compra-mp-filtros,
+  .compra-mp-cabecera-grid,
+  .compra-mp-resumen,
+  .compra-mp-item-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .compra-mp-campo-ancho {
+    grid-column: auto;
+  }
+
+  .compra-mp-items-header,
+  .compra-mp-form-actions,
+  .compra-mp-meta {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
