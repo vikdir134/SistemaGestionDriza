@@ -1,0 +1,141 @@
+.gd-compras-page {
+  width: 100%;
+  min-width: 0;
+}
+
+.gd-compras-register-card,
+.gd-compras-filter-card {
+  margin-bottom: 18px;
+}
+
+.gd-compras-items-space {
+  width: 100%;
+}
+
+.gd-compras-items-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.gd-compra-item-card.ant-card {
+  width: 100%;
+}
+
+.gd-compras-total-card {
+  margin-top: 16px;
+}
+
+.gd-compras-total-row {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 42px;
+}
+
+.gd-compras-total-row
+.ant-statistic-content {
+  font-size: 22px;
+}
+
+.gd-compras-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 18px;
+}
+
+.gd-compras-filter-actions
+.ant-form-item-control-input-content {
+  display: flex;
+  align-items: center;
+}
+
+.gd-compras-table-card
+.ant-card-body {
+  padding-top: 8px;
+}
+
+.gd-compra-provider-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gd-full-width {
+  width: 100%;
+}
+
+
+/* =========================================================
+   LIGHT MODE
+   ========================================================= */
+
+[data-gd-theme='light']
+.gd-compras-page
+.ant-card {
+  border-color: #d7dee8;
+}
+
+[data-gd-theme='light']
+.gd-compras-page
+.ant-card-head {
+  border-bottom-color: #d7dee8;
+}
+
+[data-gd-theme='light']
+.gd-compras-page
+.ant-table {
+  border:
+    1px solid
+    #e0e6ee;
+  border-radius: 10px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 767px) {
+  .gd-compras-items-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .gd-compras-items-heading
+  .ant-btn {
+    width: 100%;
+  }
+
+  .gd-compras-total-row {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .gd-compras-actions {
+    justify-content: stretch;
+  }
+
+  .gd-compras-actions
+  .ant-btn {
+    width: 100%;
+  }
+
+  .gd-compras-filter-actions
+  .ant-space {
+    width: 100%;
+  }
+
+  .gd-compras-filter-actions
+  .ant-space-item {
+    flex: 1;
+  }
+
+  .gd-compras-filter-actions
+  .ant-btn {
+    width: 100%;
+  }
+}

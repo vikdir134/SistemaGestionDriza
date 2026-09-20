@@ -1,0 +1,153 @@
+.gd-entrega-page {
+  width: 100%;
+  min-width: 0;
+}
+
+.gd-entrega-filter-card,
+.gd-entrega-section-card {
+  margin-bottom: 18px;
+}
+
+.gd-entrega-table-card
+.ant-card-body {
+  padding-top: 8px;
+}
+
+.gd-entrega-filter-actions
+.ant-form-item-control-input-content {
+  display: flex;
+  align-items: center;
+}
+
+.gd-entrega-client-cell,
+.gd-entrega-product-title {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gd-entrega-main-rule {
+  margin-bottom: 18px;
+}
+
+.gd-entrega-products-space,
+.gd-entrega-history-space {
+  width: 100%;
+}
+
+.gd-entrega-product-card.ant-card,
+.gd-entrega-history-card.ant-card {
+  width: 100%;
+}
+
+.gd-entrega-product-summary {
+  margin-bottom: 14px;
+}
+
+.gd-entrega-product-summary
+.ant-card {
+  height: 100%;
+}
+
+.gd-entrega-product-summary
+.ant-statistic-content {
+  font-size: 18px;
+}
+
+.gd-entrega-inline-alert {
+  margin-bottom: 14px;
+}
+
+.gd-entrega-selection-summary {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+.gd-entrega-selection-summary
+.ant-card {
+  min-width: 190px;
+}
+
+.gd-entrega-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 18px;
+}
+
+.gd-entrega-history-description {
+  margin-bottom: 14px;
+}
+
+.gd-full-width {
+  width: 100%;
+}
+
+
+/* =========================================================
+   LIGHT MODE
+   ========================================================= */
+
+[data-gd-theme='light']
+.gd-entrega-page
+.ant-card {
+  border-color: #d7dee8;
+}
+
+[data-gd-theme='light']
+.gd-entrega-page
+.ant-card-head {
+  border-bottom-color: #d7dee8;
+}
+
+[data-gd-theme='light']
+.gd-entrega-page
+.ant-table {
+  border:
+    1px solid
+    #e0e6ee;
+  border-radius: 10px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 767px) {
+  .gd-entrega-filter-actions
+  .ant-space {
+    width: 100%;
+  }
+
+  .gd-entrega-filter-actions
+  .ant-space-item {
+    flex: 1;
+  }
+
+  .gd-entrega-filter-actions
+  .ant-btn {
+    width: 100%;
+  }
+
+  .gd-entrega-selection-summary {
+    flex-direction: column;
+  }
+
+  .gd-entrega-selection-summary
+  .ant-card {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .gd-entrega-actions {
+    justify-content: stretch;
+  }
+
+  .gd-entrega-actions
+  .ant-btn {
+    width: 100%;
+  }
+}

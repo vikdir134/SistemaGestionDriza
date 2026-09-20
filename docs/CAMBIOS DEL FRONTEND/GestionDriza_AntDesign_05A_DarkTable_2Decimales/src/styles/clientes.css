@@ -1,0 +1,238 @@
+.gd-clientes-page {
+  width: 100%;
+  min-width: 0;
+}
+
+.gd-back-button.ant-btn {
+  margin:
+    -6px 0
+    12px -10px;
+}
+
+.gd-clientes-filter-card {
+  margin-bottom: 18px;
+}
+
+.gd-clientes-filter-row {
+  display: grid;
+  grid-template-columns:
+    minmax(260px, 1fr)
+    auto;
+  gap: 14px;
+  align-items: center;
+}
+
+.gd-clientes-table-card
+.ant-card-body {
+  padding-top: 8px;
+}
+
+.gd-clientes-form-card.ant-card {
+  max-width: 1180px;
+}
+
+.gd-clientes-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.gd-full-width {
+  width: 100%;
+}
+
+.gd-precios-form-card {
+  max-width: none !important;
+  margin-bottom: 18px;
+}
+
+.gd-precios-filter-card {
+  margin-bottom: 18px;
+}
+
+.gd-filter-actions-item
+.ant-form-item-control-input-content {
+  display: flex;
+  align-items: center;
+}
+
+.gd-precio-cliente {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+
+/* =========================================================
+   LIGHT MODE CONTRAST
+   ========================================================= */
+
+[data-gd-theme='light']
+.gd-clientes-page
+.ant-card {
+  border-color: #d7dee8;
+}
+
+[data-gd-theme='light']
+.gd-clientes-page
+.ant-card-head {
+  border-bottom-color: #d7dee8;
+}
+
+[data-gd-theme='light']
+.gd-clientes-page
+.ant-table-wrapper
+.ant-table {
+  border:
+    1px solid
+    #e0e6ee;
+  border-radius: 10px;
+}
+
+[data-gd-theme='light']
+.gd-clientes-page
+.ant-table-thead
+> tr
+> th {
+  background: #f4f7fb;
+  border-bottom-color: #d7dee8;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 767px) {
+  .gd-clientes-filter-row {
+    grid-template-columns: 1fr;
+  }
+
+  .gd-clientes-filter-row
+  > .ant-space {
+    width: 100%;
+  }
+
+  .gd-clientes-filter-row
+  > .ant-space
+  .ant-space-item {
+    flex: 1;
+  }
+
+  .gd-clientes-filter-row
+  .ant-btn {
+    width: 100%;
+  }
+
+  .gd-clientes-form-actions {
+    justify-content: stretch;
+  }
+
+  .gd-clientes-form-actions
+  .ant-space {
+    width: 100%;
+  }
+
+  .gd-clientes-form-actions
+  .ant-space-item {
+    flex: 1;
+  }
+
+  .gd-clientes-form-actions
+  .ant-btn {
+    width: 100%;
+  }
+
+  .gd-filter-actions-item
+  .ant-space {
+    width: 100%;
+  }
+
+  .gd-filter-actions-item
+  .ant-space-item {
+    flex: 1;
+  }
+
+  .gd-filter-actions-item
+  .ant-btn {
+    width: 100%;
+  }
+}
+
+
+/* =========================================================
+   DARK MODE - TABLE CONSISTENCY
+   ========================================================= */
+
+/*
+ * Ant Design gestiona el hover mediante tokens globales.
+ * Estas reglas aseguran que celdas normales y columnas fijas
+ * utilicen exactamente la misma superficie.
+ */
+
+[data-gd-theme='dark']
+.gd-clientes-page
+.ant-table-tbody
+> tr
+> td {
+  transition:
+    background-color 0.18s ease;
+}
+
+[data-gd-theme='dark']
+.gd-clientes-page
+.ant-table-tbody
+> tr.ant-table-row:hover
+> td,
+[data-gd-theme='dark']
+.gd-clientes-page
+.ant-table-tbody
+> tr
+> td.ant-table-cell-row-hover {
+  background:
+    #242932 !important;
+}
+
+[data-gd-theme='dark']
+.gd-clientes-page
+.ant-table-cell-fix-left,
+[data-gd-theme='dark']
+.gd-clientes-page
+.ant-table-cell-fix-right {
+  background:
+    #141414;
+}
+
+[data-gd-theme='dark']
+.gd-clientes-page
+.ant-table-tbody
+> tr.ant-table-row:hover
+> td.ant-table-cell-fix-left,
+[data-gd-theme='dark']
+.gd-clientes-page
+.ant-table-tbody
+> tr.ant-table-row:hover
+> td.ant-table-cell-fix-right,
+[data-gd-theme='dark']
+.gd-clientes-page
+.ant-table-tbody
+> tr
+> td.ant-table-cell-fix-left.ant-table-cell-row-hover,
+[data-gd-theme='dark']
+.gd-clientes-page
+.ant-table-tbody
+> tr
+> td.ant-table-cell-fix-right.ant-table-cell-row-hover {
+  background:
+    #242932 !important;
+}
+
+[data-gd-theme='dark']
+.gd-clientes-page
+.ant-table-cell-fix-right-first::after,
+[data-gd-theme='dark']
+.gd-clientes-page
+.ant-table-cell-fix-left-last::after {
+  box-shadow:
+    none !important;
+}

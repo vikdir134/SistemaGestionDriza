@@ -1,0 +1,73 @@
+.gd-proveedores-page {
+  width: 100%;
+  min-width: 0;
+}
+
+.gd-proveedores-form-card.ant-card {
+  position: sticky;
+  top: 92px;
+}
+
+.gd-proveedores-table-card
+.ant-card-body {
+  padding-top: 16px;
+}
+
+.gd-proveedores-toolbar {
+  display: grid;
+  grid-template-columns:
+    minmax(240px, 1fr)
+    auto;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+
+/* =========================================================
+   LIGHT MODE
+   ========================================================= */
+
+[data-gd-theme='light']
+.gd-proveedores-page
+.ant-card {
+  border-color: #d7dee8;
+}
+
+[data-gd-theme='light']
+.gd-proveedores-page
+.ant-card-head {
+  border-bottom-color: #d7dee8;
+}
+
+[data-gd-theme='light']
+.gd-proveedores-page
+.ant-table {
+  border:
+    1px solid
+    #e0e6ee;
+  border-radius: 10px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1199px) {
+  .gd-proveedores-form-card.ant-card {
+    position: static;
+  }
+}
+
+@media (max-width: 767px) {
+  .gd-proveedores-toolbar {
+    grid-template-columns:
+      1fr;
+  }
+
+  .gd-proveedores-toolbar
+  .ant-btn {
+    width: 100%;
+  }
+}

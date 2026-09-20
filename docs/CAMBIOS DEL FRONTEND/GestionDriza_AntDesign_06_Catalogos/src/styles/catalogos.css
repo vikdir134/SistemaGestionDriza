@@ -1,0 +1,137 @@
+.gd-catalogos-page {
+  width: 100%;
+  min-width: 0;
+}
+
+.gd-catalogos-main-card
+.ant-card-body {
+  padding:
+    0 24px 24px;
+}
+
+.gd-catalogos-tabs
+.ant-tabs-nav {
+  margin:
+    0 0 20px;
+}
+
+.gd-catalogos-section-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: flex-start;
+  margin-bottom: 18px;
+}
+
+.gd-catalogos-section-header
+> div {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.gd-catalogos-content {
+  display: grid;
+  grid-template-columns:
+    minmax(250px, 330px)
+    minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.gd-catalogos-form-card.ant-card {
+  position: sticky;
+  top: 92px;
+}
+
+.gd-catalogos-list-area {
+  min-width: 0;
+}
+
+.gd-catalogos-toolbar {
+  display: grid;
+  grid-template-columns:
+    minmax(220px, 1fr)
+    auto;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.gd-catalogos-edit-form {
+  padding-top: 10px;
+}
+
+
+/* =========================================================
+   LIGHT MODE
+   ========================================================= */
+
+[data-gd-theme='light']
+.gd-catalogos-page
+.ant-card {
+  border-color: #d7dee8;
+}
+
+[data-gd-theme='light']
+.gd-catalogos-page
+.ant-card-head {
+  border-bottom-color: #d7dee8;
+}
+
+[data-gd-theme='light']
+.gd-catalogos-page
+.ant-table {
+  border:
+    1px solid
+    #e0e6ee;
+  border-radius: 10px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 991px) {
+  .gd-catalogos-content {
+    grid-template-columns: 1fr;
+  }
+
+  .gd-catalogos-form-card.ant-card {
+    position: static;
+  }
+}
+
+@media (max-width: 767px) {
+  .gd-catalogos-main-card
+  .ant-card-body {
+    padding:
+      0 14px
+      16px;
+  }
+
+  .gd-catalogos-section-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .gd-catalogos-toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .gd-catalogos-toolbar
+  .ant-btn {
+    width: 100%;
+  }
+
+  .gd-catalogos-page
+  .ant-tabs-nav-list {
+    min-width: max-content;
+  }
+
+  .gd-catalogos-page
+  .ant-tabs-nav-wrap {
+    overflow-x: auto;
+  }
+}

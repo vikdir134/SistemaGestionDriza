@@ -1,0 +1,159 @@
+.gd-pt-page {
+  width: 100%;
+  min-width: 0;
+}
+
+.gd-pt-filter-card {
+  margin-bottom: 18px;
+}
+
+.gd-pt-table-card
+.ant-card-body {
+  padding-top: 8px;
+}
+
+.gd-pt-producto-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gd-pt-filter-actions-item
+.ant-form-item-control-input-content {
+  display: flex;
+  align-items: center;
+}
+
+.gd-pt-form-card.ant-card {
+  max-width: 1050px;
+}
+
+.gd-pt-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.gd-pt-detail-card {
+  margin-bottom: 18px;
+}
+
+.gd-pt-composition-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.gd-pt-component-card.ant-card {
+  height: 100%;
+}
+
+.gd-pt-component-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.gd-pt-component-head
+> div {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gd-pt-composition-note {
+  margin-top: 16px;
+}
+
+.gd-pt-editor-rule {
+  margin-bottom: 16px;
+}
+
+.gd-pt-list-space {
+  width: 100%;
+}
+
+.gd-pt-editor-observation {
+  margin-top: 18px;
+}
+
+.gd-full-width {
+  width: 100%;
+}
+
+
+/* =========================================================
+   LIGHT MODE
+   ========================================================= */
+
+[data-gd-theme='light']
+.gd-pt-page
+.ant-card {
+  border-color: #d7dee8;
+}
+
+[data-gd-theme='light']
+.gd-pt-page
+.ant-card-head {
+  border-bottom-color: #d7dee8;
+}
+
+[data-gd-theme='light']
+.gd-pt-page
+.ant-table {
+  border:
+    1px solid
+    #e0e6ee;
+  border-radius: 10px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 767px) {
+  .gd-pt-form-actions {
+    justify-content: stretch;
+  }
+
+  .gd-pt-form-actions
+  .ant-space {
+    width: 100%;
+  }
+
+  .gd-pt-form-actions
+  .ant-space-item {
+    flex: 1;
+  }
+
+  .gd-pt-form-actions
+  .ant-btn {
+    width: 100%;
+  }
+
+  .gd-pt-filter-actions-item
+  .ant-space {
+    width: 100%;
+  }
+
+  .gd-pt-filter-actions-item
+  .ant-space-item {
+    flex: 1;
+  }
+
+  .gd-pt-filter-actions-item
+  .ant-btn {
+    width: 100%;
+  }
+
+  .gd-pt-composition-meta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

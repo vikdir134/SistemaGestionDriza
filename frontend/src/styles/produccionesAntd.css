@@ -1,0 +1,211 @@
+.gd-produccion-page {
+  width: 100%;
+  min-width: 0;
+}
+
+.gd-produccion-table-card
+.ant-card-body {
+  padding-top: 8px;
+}
+
+.gd-produccion-section-card {
+  margin-bottom: 18px;
+}
+
+.gd-produccion-products-space {
+  width: 100%;
+}
+
+.gd-produccion-product-card.ant-card {
+  width: 100%;
+}
+
+.gd-produccion-inline-alert {
+  margin-bottom: 14px;
+}
+
+.gd-produccion-recipe-card {
+  margin-bottom: 2px;
+}
+
+.gd-produccion-recipe-item {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr)
+    auto;
+  column-gap: 14px;
+  row-gap: 8px;
+  padding: 12px;
+  border-radius: 10px;
+  background:
+    rgba(148, 163, 184, 0.07);
+}
+
+.gd-produccion-recipe-item
+> div:first-child {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gd-produccion-recipe-values {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.gd-produccion-recipe-item
+.ant-progress {
+  grid-column:
+    1 / -1;
+}
+
+.gd-produccion-total-card {
+  margin-bottom: 18px;
+}
+
+.gd-produccion-total {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: center;
+}
+
+.gd-produccion-total-title.ant-typography {
+  margin:
+    0 0 2px !important;
+}
+
+.gd-produccion-total-value {
+  font-size: 26px;
+}
+
+.gd-produccion-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-bottom: 6px;
+}
+
+.gd-full-width {
+  width: 100%;
+}
+
+
+/* =========================================================
+   DETALLE
+   ========================================================= */
+
+.gd-produccion-summary {
+  margin-bottom: 18px;
+}
+
+.gd-produccion-stat-card.ant-card {
+  height: 100%;
+}
+
+.gd-produccion-stat-card
+.ant-statistic-content {
+  font-size: 21px;
+}
+
+.gd-produccion-detail-alert {
+  margin-bottom: 18px;
+}
+
+.gd-produccion-detail-product.ant-card {
+  width: 100%;
+}
+
+.gd-produccion-product-note {
+  margin-top: 16px;
+}
+
+.gd-produccion-fifo-collapse {
+  margin-top: 16px;
+}
+
+
+/* =========================================================
+   LIGHT MODE
+   ========================================================= */
+
+[data-gd-theme='light']
+.gd-produccion-page
+.ant-card {
+  border-color: #d7dee8;
+}
+
+[data-gd-theme='light']
+.gd-produccion-page
+.ant-card-head {
+  border-bottom-color: #d7dee8;
+}
+
+[data-gd-theme='light']
+.gd-produccion-page
+.ant-table {
+  border:
+    1px solid
+    #e0e6ee;
+  border-radius: 10px;
+}
+
+[data-gd-theme='light']
+.gd-produccion-recipe-item {
+  background: #f8fafc;
+  border:
+    1px solid
+    #e0e6ee;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 767px) {
+  .gd-produccion-total {
+    align-items:
+      flex-start;
+    flex-direction:
+      column;
+  }
+
+  .gd-produccion-actions {
+    justify-content:
+      stretch;
+  }
+
+  .gd-produccion-actions
+  .ant-space {
+    width: 100%;
+  }
+
+  .gd-produccion-actions
+  .ant-space-item {
+    flex: 1;
+  }
+
+  .gd-produccion-actions
+  .ant-btn {
+    width: 100%;
+  }
+
+  .gd-produccion-recipe-item {
+    grid-template-columns:
+      1fr;
+  }
+
+  .gd-produccion-recipe-values {
+    align-items:
+      flex-start;
+  }
+
+  .gd-produccion-recipe-item
+  .ant-progress {
+    grid-column:
+      1;
+  }
+}

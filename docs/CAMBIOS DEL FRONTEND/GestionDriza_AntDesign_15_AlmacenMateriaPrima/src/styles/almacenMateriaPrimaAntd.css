@@ -1,0 +1,179 @@
+.gd-almacen-mp-page {
+  width: 100%;
+  min-width: 0;
+}
+
+.gd-almacen-mp-kpis {
+  margin-bottom: 18px;
+}
+
+.gd-almacen-mp-kpis
+.ant-card {
+  height: 100%;
+}
+
+.gd-almacen-mp-kpis
+.ant-statistic-content {
+  font-size: 21px;
+}
+
+.gd-almacen-mp-tabs-card {
+  margin-bottom: 18px;
+}
+
+.gd-almacen-mp-section-card {
+  margin-bottom: 18px;
+}
+
+.gd-almacen-mp-table-card
+.ant-card-body {
+  padding-top: 8px;
+}
+
+.gd-almacen-mp-filter-actions
+.ant-form-item-control-input-content {
+  display: flex;
+  align-items: center;
+}
+
+.gd-almacen-mp-provider-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gd-almacen-mp-stock-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 140px;
+}
+
+.gd-almacen-mp-detail-stats {
+  display: grid;
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0, 1fr)
+    );
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.gd-almacen-mp-detail-stats
+.ant-card {
+  height: 100%;
+}
+
+.gd-almacen-mp-detail-stats
+.ant-statistic-content {
+  font-size: 22px;
+}
+
+.gd-almacen-mp-global-progress {
+  margin-top: 18px;
+}
+
+.gd-almacen-mp-global-progress-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.gd-almacen-mp-history-collapse {
+  margin-bottom: 18px;
+}
+
+.gd-almacen-mp-history-toolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-end;
+  margin-bottom: 16px;
+}
+
+.gd-almacen-mp-history-filter {
+  width: 220px;
+  flex: 0 0 auto;
+}
+
+
+/* =========================================================
+   LIGHT MODE
+   ========================================================= */
+
+[data-gd-theme='light']
+.gd-almacen-mp-page
+.ant-card,
+[data-gd-theme='light']
+.gd-almacen-mp-page
+.ant-collapse {
+  border-color: #d7dee8;
+}
+
+[data-gd-theme='light']
+.gd-almacen-mp-page
+.ant-card-head {
+  border-bottom-color: #d7dee8;
+}
+
+[data-gd-theme='light']
+.gd-almacen-mp-page
+.ant-table {
+  border:
+    1px solid
+    #e0e6ee;
+  border-radius: 10px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 767px) {
+  .gd-almacen-mp-filter-actions
+  .ant-space {
+    width: 100%;
+  }
+
+  .gd-almacen-mp-filter-actions
+  .ant-space-item {
+    flex: 1;
+  }
+
+  .gd-almacen-mp-filter-actions
+  .ant-btn {
+    width: 100%;
+  }
+
+  .gd-almacen-mp-detail-stats {
+    grid-template-columns:
+      1fr;
+  }
+
+  .gd-almacen-mp-global-progress-head,
+  .gd-almacen-mp-history-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .gd-almacen-mp-history-filter {
+    width: 100%;
+  }
+}
+
+@media (
+  min-width: 768px
+) and (
+  max-width: 1199px
+) {
+  .gd-almacen-mp-detail-stats {
+    grid-template-columns:
+      repeat(
+        3,
+        minmax(0, 1fr)
+      );
+  }
+}

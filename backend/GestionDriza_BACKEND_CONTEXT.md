@@ -7,9 +7,9 @@
 
 - **Proyecto:** GestionDriza
 - **Componente:** Backend
-- **Fecha de generación:** 2026-09-13 18:58:30
-- **Branch Git:** main
-- **Commit Git:** d0d717f362a3f44fb48e6dbb6ac88122a4705711
+- **Fecha de generación:** 2026-09-20 14:42:03
+- **Branch Git:** feature/inventario-produccion-completo
+- **Commit Git:** 0428b419bf986f3b7d1ecc3f5530ea7723a67d82
 - **Cantidad de archivos incluidos:** 58
 
 ---
@@ -5078,11 +5078,27 @@ const registrarCompra = async (req, res) => {
       : null;
 
     for (const [index, item] of detalles.entries()) {
-      if (!item.descripcion_item && !item.material_id) {
+      if (
+        !item.descripcion_item ||
+        !String(item.descripcion_item).trim()
+      ) {
         return res.status(400).json({
-          mensaje: `El item ${index + 1} debe tener material o descripción`
+          mensaje: `El item ${index + 1} debe tener una descripción`
         });
       }
+
+      /*
+       * Regla de negocio:
+       * las compras generales se registran por descripción.
+       *
+       * La materia prima se gestiona exclusivamente desde
+       * el módulo CompraMateriaPrima, que sí genera stock.
+       *
+       * Aunque un cliente envíe material_id, se ignora para
+       * evitar clasificar accidentalmente una compra general
+       * como material.
+       */
+      item.material_id = null;
 
       if (!item.cantidad || Number(item.cantidad) <= 0) {
         return res.status(400).json({
@@ -5137,6 +5153,7 @@ module.exports = {
   obtenerCompra,
   registrarCompra
 };
+
 ~~~
 
 ---
@@ -5363,7 +5380,7 @@ const crearCompraConDetalles = async ({
       const detalleResult = await requestDetalle
         .input('compra_id', sql.Int, compra.compra_id)
         .input('producto_id', sql.Int, null)
-        .input('material_id', sql.Int, item.material_id || null)
+        .input('material_id', sql.Int, null)
         .input('descripcion_item', sql.NVarChar(300), item.descripcion_item || null)
         .input('cantidad', sql.Decimal(18, 3), item.cantidad)
         .input('unidad_medida_id', sql.Int, item.unidad_medida_id)
@@ -5419,6 +5436,7 @@ module.exports = {
   obtenerCompraPorId,
   crearCompraConDetalles
 };
+
 ~~~
 
 ---

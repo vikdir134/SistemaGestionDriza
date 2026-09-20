@@ -1,0 +1,177 @@
+.gd-compra-mp-page {
+  width: 100%;
+  min-width: 0;
+}
+
+.gd-compra-mp-filter-card,
+.gd-compra-mp-section-card {
+  margin-bottom: 18px;
+}
+
+.gd-compra-mp-table-card
+.ant-card-body {
+  padding-top: 8px;
+}
+
+.gd-compra-mp-filter-actions
+.ant-form-item-control-input-content {
+  display: flex;
+  align-items: center;
+}
+
+.gd-compra-mp-provider-cell,
+.gd-compra-mp-material-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gd-compra-mp-stock-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 140px;
+}
+
+.gd-compra-mp-main-rule {
+  margin-bottom: 16px;
+}
+
+.gd-compra-mp-items-space {
+  width: 100%;
+}
+
+.gd-compra-mp-item-card.ant-card {
+  width: 100%;
+}
+
+.gd-compra-mp-total-card {
+  margin-bottom: 18px;
+}
+
+.gd-compra-mp-total-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0, 1fr)
+    );
+  gap: 18px;
+}
+
+.gd-compra-mp-total-grid
+.ant-statistic-content {
+  font-size: 23px;
+}
+
+.gd-compra-mp-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-bottom: 6px;
+}
+
+.gd-compra-mp-summary {
+  margin-bottom: 18px;
+}
+
+.gd-compra-mp-summary
+.ant-card {
+  height: 100%;
+}
+
+.gd-compra-mp-summary
+.ant-statistic-content {
+  font-size: 21px;
+}
+
+.gd-compra-mp-global-progress {
+  margin-top: 18px;
+}
+
+.gd-compra-mp-global-progress-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.gd-full-width {
+  width: 100%;
+}
+
+
+/* =========================================================
+   LIGHT MODE
+   ========================================================= */
+
+[data-gd-theme='light']
+.gd-compra-mp-page
+.ant-card {
+  border-color: #d7dee8;
+}
+
+[data-gd-theme='light']
+.gd-compra-mp-page
+.ant-card-head {
+  border-bottom-color: #d7dee8;
+}
+
+[data-gd-theme='light']
+.gd-compra-mp-page
+.ant-table {
+  border:
+    1px solid
+    #e0e6ee;
+  border-radius: 10px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 767px) {
+  .gd-compra-mp-filter-actions
+  .ant-space {
+    width: 100%;
+  }
+
+  .gd-compra-mp-filter-actions
+  .ant-space-item {
+    flex: 1;
+  }
+
+  .gd-compra-mp-filter-actions
+  .ant-btn {
+    width: 100%;
+  }
+
+  .gd-compra-mp-total-grid {
+    grid-template-columns:
+      1fr;
+  }
+
+  .gd-compra-mp-actions {
+    justify-content: stretch;
+  }
+
+  .gd-compra-mp-actions
+  .ant-space {
+    width: 100%;
+  }
+
+  .gd-compra-mp-actions
+  .ant-space-item {
+    flex: 1;
+  }
+
+  .gd-compra-mp-actions
+  .ant-btn {
+    width: 100%;
+  }
+
+  .gd-compra-mp-global-progress-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

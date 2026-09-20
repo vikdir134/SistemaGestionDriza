@@ -1,0 +1,105 @@
+.gd-deposito-page {
+  width: 100%;
+  min-width: 0;
+}
+
+.gd-deposito-filter-card,
+.gd-deposito-section-card {
+  margin-bottom: 18px;
+}
+
+.gd-deposito-table-card
+.ant-card-body {
+  padding-top: 8px;
+}
+
+.gd-deposito-filter-actions
+.ant-form-item-control-input-content {
+  display: flex;
+  align-items: center;
+}
+
+.gd-deposito-client-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gd-deposito-balance-preview {
+  margin-top: 4px;
+}
+
+.gd-deposito-payment-progress {
+  margin-top: 14px;
+}
+
+.gd-deposito-inline-alert {
+  margin-top: 14px;
+}
+
+.gd-deposito-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 18px;
+}
+
+.gd-full-width {
+  width: 100%;
+}
+
+
+/* =========================================================
+   LIGHT MODE
+   ========================================================= */
+
+[data-gd-theme='light']
+.gd-deposito-page
+.ant-card {
+  border-color: #d7dee8;
+}
+
+[data-gd-theme='light']
+.gd-deposito-page
+.ant-card-head {
+  border-bottom-color: #d7dee8;
+}
+
+[data-gd-theme='light']
+.gd-deposito-page
+.ant-table {
+  border:
+    1px solid
+    #e0e6ee;
+  border-radius: 10px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 767px) {
+  .gd-deposito-filter-actions
+  .ant-space {
+    width: 100%;
+  }
+
+  .gd-deposito-filter-actions
+  .ant-space-item {
+    flex: 1;
+  }
+
+  .gd-deposito-filter-actions
+  .ant-btn {
+    width: 100%;
+  }
+
+  .gd-deposito-actions {
+    justify-content: stretch;
+  }
+
+  .gd-deposito-actions
+  .ant-btn {
+    width: 100%;
+  }
+}
