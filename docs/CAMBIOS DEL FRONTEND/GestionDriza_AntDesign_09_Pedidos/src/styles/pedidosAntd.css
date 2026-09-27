@@ -1,0 +1,153 @@
+.gd-pedido-page {
+  width: 100%;
+  min-width: 0;
+}
+
+.gd-pedido-filter-card,
+.gd-pedido-section-card,
+.gd-pedido-products-card {
+  margin-bottom: 18px;
+}
+
+.gd-pedido-table-card
+.ant-card-body {
+  padding-top: 8px;
+}
+
+.gd-pedido-filter-actions
+.ant-form-item-control-input-content {
+  display: flex;
+  align-items: center;
+}
+
+.gd-pedido-client-cell,
+.gd-pedido-product-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gd-pedido-products-space {
+  width: 100%;
+}
+
+.gd-pedido-product-item.ant-card {
+  width: 100%;
+}
+
+.gd-pedido-delivery-summary {
+  margin-bottom: 14px;
+}
+
+.gd-pedido-delivery-summary
+.ant-card {
+  height: 100%;
+}
+
+.gd-pedido-delivery-summary
+.ant-statistic-content {
+  font-size: 20px;
+}
+
+.gd-pedido-inline-alert {
+  margin-bottom: 16px;
+}
+
+.gd-pedido-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-bottom: 6px;
+}
+
+.gd-pedido-detail-alert {
+  margin-bottom: 18px;
+}
+
+.gd-pedido-summary {
+  margin-bottom: 18px;
+}
+
+.gd-pedido-summary
+.ant-card {
+  height: 100%;
+}
+
+.gd-pedido-summary
+.ant-statistic-content {
+  font-size: 19px;
+}
+
+.gd-pedido-total-card {
+  min-width: 190px;
+}
+
+.gd-full-width {
+  width: 100%;
+}
+
+
+/* =========================================================
+   LIGHT MODE
+   ========================================================= */
+
+[data-gd-theme='light']
+.gd-pedido-page
+.ant-card {
+  border-color: #d7dee8;
+}
+
+[data-gd-theme='light']
+.gd-pedido-page
+.ant-card-head {
+  border-bottom-color: #d7dee8;
+}
+
+[data-gd-theme='light']
+.gd-pedido-page
+.ant-table {
+  border:
+    1px solid
+    #e0e6ee;
+  border-radius: 10px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 767px) {
+  .gd-pedido-actions {
+    justify-content: stretch;
+  }
+
+  .gd-pedido-actions
+  .ant-space {
+    width: 100%;
+  }
+
+  .gd-pedido-actions
+  .ant-space-item {
+    flex: 1;
+  }
+
+  .gd-pedido-actions
+  .ant-btn {
+    width: 100%;
+  }
+
+  .gd-pedido-filter-actions
+  .ant-space {
+    width: 100%;
+  }
+
+  .gd-pedido-filter-actions
+  .ant-space-item {
+    flex: 1;
+  }
+
+  .gd-pedido-filter-actions
+  .ant-btn {
+    width: 100%;
+  }
+}

@@ -1,0 +1,259 @@
+.entrega-stock-page {
+  width: 100%;
+  min-width: 0;
+}
+
+.entrega-form.form-card {
+  max-width: none;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 24px;
+}
+
+.entrega-form-header h3,
+.entrega-form-header p {
+  margin: 0;
+}
+
+.entrega-form-header p {
+  margin-top: 5px;
+  color: #64748b;
+}
+
+.entrega-cabecera-grid {
+  display: grid;
+  grid-template-columns:
+    minmax(220px, 0.7fr)
+    minmax(300px, 2fr);
+  gap: 18px;
+  margin: 20px 0 24px;
+}
+
+.entrega-cabecera-grid > div {
+  min-width: 0;
+}
+
+.entrega-cabecera-grid label,
+.entrega-input-grid label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+.entrega-cabecera-grid input,
+.entrega-cabecera-grid textarea,
+.entrega-input-grid input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.entrega-producto-card {
+  padding: 18px;
+}
+
+.entrega-producto-nombre {
+  font-size: 1rem;
+}
+
+.entrega-producto-estados {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.entrega-stock-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.entrega-stock-ok {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.entrega-stock-error {
+  color: #991b1b;
+  background: #fee2e2;
+}
+
+.entrega-stock-warning {
+  color: #92400e;
+  background: #fef3c7;
+}
+
+.entrega-producto-resumen {
+  display: grid;
+  grid-template-columns:
+    repeat(6, minmax(120px, 1fr));
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.entrega-producto-resumen > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 11px 12px;
+  border-radius: 10px;
+  background: white;
+  border: 1px solid #e5e7eb;
+}
+
+.entrega-producto-resumen span {
+  color: #64748b;
+  font-size: 0.8rem;
+}
+
+.entrega-producto-resumen strong {
+  font-size: 0.95rem;
+}
+
+.entrega-stock-valor-ok {
+  color: #047857;
+}
+
+.entrega-stock-valor-error {
+  color: #b91c1c;
+}
+
+.entrega-alerta {
+  margin: 12px 0;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.entrega-alerta-error {
+  color: #991b1b;
+  background: #fee2e2;
+}
+
+.entrega-alerta-warning {
+  color: #92400e;
+  background: #fef3c7;
+}
+
+.entrega-regla {
+  margin: 12px 0;
+  padding: 11px 13px;
+  border-radius: 10px;
+  color: #1e3a8a;
+  background: #eff6ff;
+}
+
+.entrega-input-grid {
+  display: grid;
+  grid-template-columns:
+    minmax(220px, 0.8fr)
+    minmax(260px, 1.2fr);
+  gap: 14px;
+  align-items: end;
+}
+
+.entrega-input-unidad {
+  display: grid;
+  grid-template-columns:
+    minmax(100px, 1fr)
+    55px;
+}
+
+.entrega-input-unidad input {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.entrega-input-unidad span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d1d5db;
+  border-left: 0;
+  border-radius: 0 8px 8px 0;
+  background: #e5e7eb;
+  color: #374151;
+  font-weight: 700;
+}
+
+.entrega-validacion-error {
+  margin-top: 10px;
+  color: #b91c1c;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.entrega-total-box {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.entrega-total-box > div {
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: #f1f5f9;
+}
+
+.entrega-total-box span {
+  color: #64748b;
+  font-size: 0.82rem;
+}
+
+.entrega-total-box strong {
+  font-size: 1.05rem;
+}
+
+.entrega-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 18px;
+}
+
+.entrega-historial-header h3,
+.entrega-historial-header p {
+  margin: 0;
+}
+
+.entrega-historial-header p {
+  margin-top: 4px;
+  margin-bottom: 16px;
+  color: #64748b;
+}
+
+@media (max-width: 1350px) {
+  .entrega-producto-resumen {
+    grid-template-columns:
+      repeat(3, minmax(140px, 1fr));
+  }
+}
+
+@media (max-width: 850px) {
+  .entrega-cabecera-grid,
+  .entrega-input-grid,
+  .entrega-producto-resumen {
+    grid-template-columns: 1fr;
+  }
+
+  .entrega-producto-estados {
+    justify-content: flex-start;
+  }
+
+  .entrega-total-box {
+    flex-direction: column;
+  }
+
+  .entrega-total-box > div {
+    min-width: 0;
+  }
+}

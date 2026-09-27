@@ -1,0 +1,333 @@
+.gd-app-layout {
+  min-height: 100dvh;
+}
+
+.gd-app-main {
+  min-width: 0;
+  min-height: 100dvh;
+}
+
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+.gd-app-sider {
+  position: sticky !important;
+  top: 0;
+  height: 100dvh;
+  overflow: hidden;
+  box-shadow:
+    8px 0 28px
+    rgba(2, 6, 23, 0.08);
+  z-index: 20;
+}
+
+.gd-sidebar-brand {
+  height: 76px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 18px;
+  border-bottom:
+    1px solid
+    rgba(255, 255, 255, 0.08);
+}
+
+.gd-sidebar-brand-collapsed {
+  justify-content: center;
+  padding: 0;
+}
+
+.gd-sidebar-logo {
+  flex: 0 0 auto;
+  background:
+    linear-gradient(
+      135deg,
+      #2563eb,
+      #60a5fa
+    ) !important;
+  box-shadow:
+    0 10px 26px
+    rgba(37, 99, 235, 0.30);
+}
+
+.gd-sidebar-brand-text {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.gd-sidebar-brand-text strong {
+  overflow: hidden;
+  color: #ffffff;
+  font-size: 17px;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gd-sidebar-brand-text span {
+  margin-top: 3px;
+  overflow: hidden;
+  color:
+    rgba(255, 255, 255, 0.50);
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gd-sidebar-scroll {
+  height:
+    calc(100dvh - 76px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding:
+    10px 8px
+    20px;
+}
+
+.gd-sidebar-scroll::-webkit-scrollbar,
+.gd-mobile-sidebar-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+
+.gd-sidebar-scroll::-webkit-scrollbar-thumb,
+.gd-mobile-sidebar-scroll::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background:
+    rgba(255, 255, 255, 0.16);
+}
+
+.gd-sidebar-menu.ant-menu {
+  border-inline-end: 0 !important;
+  background:
+    transparent !important;
+}
+
+.gd-sidebar-menu
+.ant-menu-item,
+.gd-sidebar-menu
+.ant-menu-submenu-title {
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  margin-block: 4px;
+  border-radius: 9px;
+}
+
+.gd-sidebar-menu
+.ant-menu-item-selected {
+  box-shadow:
+    0 8px 22px
+    rgba(37, 99, 235, 0.24);
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.gd-app-header {
+  position: sticky;
+  top: 0;
+  z-index: 18;
+  height: 68px !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding:
+    0 24px !important;
+  border-bottom:
+    1px solid
+    rgba(148, 163, 184, 0.16);
+  background:
+    rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter:
+    blur(16px);
+}
+
+[data-gd-theme='dark']
+.gd-app-header {
+  background:
+    rgba(20, 20, 20, 0.92) !important;
+}
+
+.gd-header-left,
+.gd-header-actions {
+  display: flex;
+  align-items: center;
+}
+
+.gd-header-left {
+  min-width: 0;
+  gap: 10px;
+}
+
+.gd-header-actions {
+  flex: 0 0 auto;
+  gap: 4px;
+}
+
+.gd-header-breadcrumb {
+  min-width: 0;
+  max-width: 52vw;
+  overflow: hidden;
+}
+
+.gd-header-breadcrumb
+.ant-breadcrumb {
+  white-space: nowrap;
+}
+
+.gd-header-divider {
+  height: 26px !important;
+  margin:
+    0 6px !important;
+}
+
+.gd-user-button.ant-btn {
+  height: auto;
+  padding:
+    5px 8px;
+}
+
+.gd-user-copy {
+  width: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.15;
+  text-align: left;
+}
+
+.gd-user-copy
+.ant-typography {
+  width: 100%;
+}
+
+.gd-user-role {
+  margin-top: 4px;
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   CONTENT
+   ========================================================= */
+
+.gd-app-content {
+  min-width: 0;
+  background: #f5f7fb;
+}
+
+[data-gd-theme='dark']
+.gd-app-content {
+  background: #0b1120;
+}
+
+.gd-content-inner {
+  width: 100%;
+  min-width: 0;
+  max-width: 1720px;
+  margin: 0 auto;
+  padding: 26px 28px 40px;
+}
+
+
+/* =========================================================
+   MOBILE DRAWER
+   ========================================================= */
+
+.gd-mobile-drawer
+.ant-drawer-content {
+  background: #001529;
+}
+
+.gd-mobile-sidebar {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: #001529;
+}
+
+.gd-mobile-sidebar-brand {
+  height: 76px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding:
+    0 18px;
+  border-bottom:
+    1px solid
+    rgba(255, 255, 255, 0.08);
+}
+
+.gd-mobile-sidebar-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding:
+    10px 8px
+    24px;
+}
+
+
+/* =========================================================
+   OLD PAGE COMPATIBILITY
+   ========================================================= */
+
+/*
+ * Durante la migración todavía existen páginas con CSS previo.
+ * Este contenedor evita que el nuevo Layout fuerce anchos
+ * o alturas incompatibles.
+ */
+
+.gd-content-inner > * {
+  max-width: 100%;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 767px) {
+  .gd-app-header {
+    height: 62px !important;
+    padding:
+      0 12px !important;
+  }
+
+  .gd-header-breadcrumb {
+    max-width: 45vw;
+  }
+
+  .gd-header-breadcrumb
+  .ant-breadcrumb {
+    font-size: 12px;
+  }
+
+  .gd-header-divider {
+    display: none;
+  }
+
+  .gd-content-inner {
+    padding:
+      18px 14px
+      32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .gd-header-breadcrumb {
+    display: none;
+  }
+
+  .gd-content-inner {
+    padding:
+      14px 10px
+      28px;
+  }
+}

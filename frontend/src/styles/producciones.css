@@ -1,0 +1,562 @@
+.producciones-page {
+  width: 100%;
+  min-width: 0;
+}
+
+.producciones-header {
+  align-items: center;
+}
+
+.producciones-page textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px 13px;
+  border: 1px solid #d1d5db;
+  border-radius: 9px;
+  font: inherit;
+  resize: vertical;
+}
+
+
+/* =========================================================
+   LISTADO
+   ========================================================= */
+
+.prod-tabla-cabecera {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.prod-tabla-cabecera h3,
+.prod-tabla-cabecera p {
+  margin: 0;
+}
+
+.prod-tabla-cabecera p {
+  margin-top: 4px;
+  color: #64748b;
+}
+
+
+/* =========================================================
+   FORMULARIO
+   ========================================================= */
+
+.prod-form {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 26px 28px;
+  border-radius: 16px;
+  background: white;
+  box-shadow:
+    0 8px 20px
+    rgba(15, 23, 42, 0.06);
+}
+
+.prod-seccion + .prod-seccion {
+  margin-top: 28px;
+  padding-top: 26px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.prod-seccion-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.prod-seccion-header h3,
+.prod-seccion-header p {
+  margin: 0;
+}
+
+.prod-seccion-header p {
+  margin-top: 4px;
+  color: #64748b;
+}
+
+.prod-cabecera-grid {
+  display: grid;
+  grid-template-columns:
+    minmax(220px, 0.7fr)
+    minmax(320px, 2fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.prod-cabecera-grid > div,
+.prod-producto-grid > div,
+.prod-cantidades-grid > div {
+  min-width: 0;
+}
+
+.prod-cabecera-grid label,
+.prod-producto-grid label,
+.prod-cantidades-grid label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+.prod-cabecera-grid input,
+.prod-producto-grid select,
+.prod-cantidades-grid input {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.prod-campo-ancho {
+  grid-column: 1 / -1;
+}
+
+
+/* =========================================================
+   PRODUCTOS
+   ========================================================= */
+
+.prod-items {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.prod-item-card {
+  padding: 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 15px;
+  background: #f8fafc;
+}
+
+.prod-item-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 17px;
+}
+
+.prod-item-header > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.prod-item-header span {
+  color: #64748b;
+  font-size: 0.88rem;
+}
+
+.prod-producto-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(4, minmax(160px, 1fr));
+  gap: 14px;
+}
+
+.prod-producto-estado {
+  margin-top: 12px;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.prod-alerta {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.prod-alerta-warning {
+  color: #92400e;
+  background: #fef3c7;
+}
+
+
+/* =========================================================
+   PREVIEW DE COMPOSICION
+   ========================================================= */
+
+.prod-composicion-preview {
+  margin-top: 16px;
+  padding: 16px;
+  border-radius: 12px;
+  background: white;
+  border: 1px solid #dbeafe;
+}
+
+.prod-composicion-titulo {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 13px;
+}
+
+.prod-composicion-titulo > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.prod-composicion-titulo span {
+  color: #64748b;
+  font-size: 0.86rem;
+}
+
+.prod-badge-ok {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 9px;
+  border-radius: 999px;
+  color: #166534 !important;
+  background: #dcfce7;
+  font-size: 0.76rem !important;
+  font-weight: 700;
+}
+
+.prod-receta-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(180px, 1fr));
+  gap: 10px;
+}
+
+.prod-receta-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 12px;
+  border-radius: 10px;
+  background: #f8fafc;
+}
+
+.prod-receta-item > div {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.prod-receta-item span,
+.prod-receta-item small {
+  color: #64748b;
+}
+
+.prod-receta-cantidad {
+  align-items: flex-end;
+}
+
+
+/* =========================================================
+   CANTIDADES
+   ========================================================= */
+
+.prod-cantidades-grid {
+  display: grid;
+  grid-template-columns:
+    minmax(220px, 1fr)
+    minmax(220px, 1fr);
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.prod-input-unidad {
+  display: grid;
+  grid-template-columns:
+    minmax(120px, 1fr)
+    54px;
+}
+
+.prod-input-unidad input {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.prod-input-unidad span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  border: 1px solid #d1d5db;
+  border-left: 0;
+  border-radius: 0 8px 8px 0;
+  background: #e5e7eb;
+  color: #374151;
+  font-weight: 700;
+}
+
+.prod-presentaciones-info {
+  display: block;
+  margin-top: 5px;
+  color: #64748b;
+}
+
+.prod-total {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
+  margin-top: 24px;
+  padding: 19px 22px;
+  border-radius: 12px;
+  background: #f1f5f9;
+}
+
+.prod-total > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.prod-total span {
+  font-weight: 700;
+}
+
+.prod-total small {
+  color: #64748b;
+}
+
+.prod-total strong {
+  font-size: 1.45rem;
+}
+
+.prod-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+
+/* =========================================================
+   DETALLE
+   ========================================================= */
+
+.prod-detalle-kpis {
+  display: grid;
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.prod-detalle-kpis > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: white;
+  box-shadow:
+    0 8px 20px
+    rgba(15, 23, 42, 0.06);
+}
+
+.prod-detalle-kpis span {
+  color: #64748b;
+  font-size: 0.86rem;
+}
+
+.prod-detalle-kpis strong {
+  font-size: 1.04rem;
+}
+
+.prod-observacion-general {
+  padding: 14px 16px;
+  border-radius: 11px;
+  background: #eff6ff;
+  color: #1e3a8a;
+}
+
+.prod-detalles-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+}
+
+.prod-detalle-card {
+  padding: 20px;
+  border-radius: 16px;
+  background: white;
+  box-shadow:
+    0 8px 20px
+    rgba(15, 23, 42, 0.06);
+}
+
+.prod-detalle-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.prod-detalle-card-header h3 {
+  margin: 4px 0 0;
+}
+
+.prod-detalle-numero {
+  color: #64748b;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.prod-version-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+  color: #1d4ed8;
+  background: #dbeafe;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.prod-detalle-resumen {
+  display: grid;
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.prod-detalle-resumen > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 12px 13px;
+  border-radius: 10px;
+  background: #f8fafc;
+}
+
+.prod-detalle-resumen span {
+  color: #64748b;
+  font-size: 0.82rem;
+}
+
+.prod-stock-positivo {
+  color: #047857;
+}
+
+.prod-item-observacion {
+  margin-top: 14px;
+  padding: 11px 13px;
+  border-radius: 9px;
+  background: #f8fafc;
+  color: #475569;
+}
+
+
+/* =========================================================
+   FIFO
+   ========================================================= */
+
+.prod-fifo-details {
+  margin-top: 15px;
+  border: 1px solid #e2e8f0;
+  border-radius: 11px;
+  overflow: hidden;
+}
+
+.prod-fifo-details > summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 13px 15px;
+  color: #1d4ed8;
+  font-weight: 700;
+  background: #f8fafc;
+}
+
+.prod-fifo-details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.prod-fifo-details > summary::after {
+  content: '▾';
+  float: right;
+}
+
+.prod-fifo-details[open] > summary::after {
+  content: '▴';
+}
+
+.prod-fifo-contenido {
+  padding: 15px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.prod-fifo-titulo {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.prod-fifo-titulo h4 {
+  margin: 0;
+}
+
+.prod-fifo-titulo span {
+  color: #64748b;
+  font-size: 0.86rem;
+}
+
+.prod-consumo-negativo {
+  color: #b91c1c;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1200px) {
+  .prod-producto-grid,
+  .prod-detalle-kpis,
+  .prod-detalle-resumen {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .prod-receta-grid {
+    grid-template-columns:
+      repeat(2, minmax(180px, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .prod-cabecera-grid,
+  .prod-producto-grid,
+  .prod-cantidades-grid,
+  .prod-receta-grid,
+  .prod-detalle-kpis,
+  .prod-detalle-resumen {
+    grid-template-columns: 1fr;
+  }
+
+  .prod-seccion-header,
+  .prod-item-header,
+  .prod-composicion-titulo,
+  .prod-total,
+  .prod-form-actions,
+  .prod-detalle-card-header,
+  .prod-fifo-titulo {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .prod-campo-ancho {
+    grid-column: auto;
+  }
+
+  .prod-form {
+    padding: 18px;
+  }
+}

@@ -1,0 +1,111 @@
+.gd-gasto-page {
+  width: 100%;
+  min-width: 0;
+}
+
+.gd-gasto-config-row {
+  margin-bottom: 20px;
+}
+
+.gd-gasto-type-card.ant-card,
+.gd-gasto-form-card.ant-card {
+  height: 100%;
+}
+
+.gd-gasto-type-card {
+  position: sticky;
+  top: 92px;
+}
+
+.gd-gasto-section-card {
+  margin-bottom: 18px;
+}
+
+.gd-gasto-table-card
+.ant-card-body {
+  padding-top: 8px;
+}
+
+.gd-gasto-form-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.gd-gasto-filter-actions
+.ant-form-item-control-input-content {
+  display: flex;
+  align-items: center;
+}
+
+.gd-gasto-main-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gd-full-width {
+  width: 100%;
+}
+
+
+/* =========================================================
+   LIGHT MODE
+   ========================================================= */
+
+[data-gd-theme='light']
+.gd-gasto-page
+.ant-card {
+  border-color: #d7dee8;
+}
+
+[data-gd-theme='light']
+.gd-gasto-page
+.ant-card-head {
+  border-bottom-color: #d7dee8;
+}
+
+[data-gd-theme='light']
+.gd-gasto-page
+.ant-table {
+  border:
+    1px solid
+    #e0e6ee;
+  border-radius: 10px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1199px) {
+  .gd-gasto-type-card {
+    position: static;
+  }
+}
+
+@media (max-width: 767px) {
+  .gd-gasto-form-actions {
+    justify-content: stretch;
+  }
+
+  .gd-gasto-form-actions
+  .ant-btn {
+    width: 100%;
+  }
+
+  .gd-gasto-filter-actions
+  .ant-space {
+    width: 100%;
+  }
+
+  .gd-gasto-filter-actions
+  .ant-space-item {
+    flex: 1;
+  }
+
+  .gd-gasto-filter-actions
+  .ant-btn {
+    width: 100%;
+  }
+}

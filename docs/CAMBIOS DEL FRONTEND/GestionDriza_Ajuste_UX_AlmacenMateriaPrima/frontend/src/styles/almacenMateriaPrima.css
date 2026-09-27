@@ -1,0 +1,375 @@
+.almacen-mp-page {
+  width: 100%;
+  min-width: 0;
+}
+
+.almacen-mp-header {
+  align-items: center;
+}
+
+
+/* =========================================================
+   INDICADORES
+   ========================================================= */
+
+.almacen-mp-indicadores {
+  display: grid;
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.almacen-mp-kpi {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  background: white;
+  border-radius: 16px;
+  padding: 18px 20px;
+  box-shadow:
+    0 8px 20px
+    rgba(15, 23, 42, 0.06);
+}
+
+.almacen-mp-kpi span {
+  color: #64748b;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.almacen-mp-kpi strong {
+  color: #0f172a;
+  font-size: 1.4rem;
+}
+
+.almacen-mp-kpi small {
+  color: #94a3b8;
+}
+
+
+/* =========================================================
+   TABS
+   ========================================================= */
+
+.almacen-mp-tabs {
+  display: flex;
+  gap: 6px;
+  width: fit-content;
+  margin-bottom: 16px;
+  padding: 5px;
+  border-radius: 12px;
+  background: #e5e7eb;
+}
+
+.almacen-mp-tab {
+  border: 0;
+  border-radius: 9px;
+  padding: 10px 18px;
+  background: transparent;
+  color: #475569;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.almacen-mp-tab-activo {
+  background: #2563eb;
+  color: white;
+  box-shadow:
+    0 5px 12px
+    rgba(37, 99, 235, 0.25);
+}
+
+
+/* =========================================================
+   FILTROS
+   ========================================================= */
+
+.almacen-mp-filtros {
+  display: grid;
+  gap: 14px;
+  align-items: end;
+  padding: 18px;
+  margin-bottom: 20px;
+  border-radius: 16px;
+  background: white;
+  box-shadow:
+    0 8px 20px
+    rgba(15, 23, 42, 0.06);
+}
+
+.almacen-mp-filtros-resumen {
+  grid-template-columns:
+    minmax(280px, 2fr)
+    minmax(180px, 1fr)
+    minmax(180px, 1fr)
+    auto
+    auto;
+}
+
+.almacen-mp-filtros-lotes {
+  grid-template-columns:
+    minmax(340px, 2fr)
+    minmax(220px, 1fr)
+    minmax(180px, 0.8fr)
+    auto
+    auto;
+}
+
+.almacen-mp-filtros > div {
+  min-width: 0;
+}
+
+.almacen-mp-filtros label {
+  display: block;
+  margin: 0 0 6px;
+  font-weight: 700;
+}
+
+.almacen-mp-filtros input,
+.almacen-mp-filtros select {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   TABLAS
+   ========================================================= */
+
+.almacen-mp-tabla-cabecera {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.almacen-mp-tabla-cabecera h3,
+.almacen-mp-tabla-cabecera p {
+  margin: 0;
+}
+
+.almacen-mp-tabla-cabecera p {
+  margin-top: 4px;
+  color: #64748b;
+}
+
+.almacen-mp-tabla-simple td,
+.almacen-mp-tabla-simple th {
+  vertical-align: middle;
+}
+
+.almacen-mp-disponible {
+  color: #047857;
+}
+
+
+/* =========================================================
+   DETALLE DE LOTE
+   ========================================================= */
+
+.almacen-mp-lote-meta {
+  display: grid;
+  grid-template-columns:
+    2fr 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.almacen-mp-lote-meta > div,
+.almacen-mp-detalle-resumen > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 17px 18px;
+  border-radius: 14px;
+  background: white;
+  box-shadow:
+    0 8px 20px
+    rgba(15, 23, 42, 0.06);
+}
+
+.almacen-mp-lote-meta span,
+.almacen-mp-detalle-resumen span {
+  color: #64748b;
+  font-size: 0.88rem;
+}
+
+.almacen-mp-lote-meta small {
+  color: #94a3b8;
+}
+
+.almacen-mp-detalle-resumen {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.almacen-mp-detalle-resumen-3 {
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+}
+
+.almacen-mp-detalle-resumen strong {
+  font-size: 1.2rem;
+}
+
+
+/* =========================================================
+   HISTORIAL COLAPSABLE
+   ========================================================= */
+
+.almacen-mp-historial {
+  margin-top: 18px;
+  border-radius: 14px;
+  background: white;
+  box-shadow:
+    0 8px 20px
+    rgba(15, 23, 42, 0.06);
+  overflow: hidden;
+}
+
+.almacen-mp-historial > summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 17px 20px;
+  font-weight: 700;
+  color: #1e40af;
+}
+
+.almacen-mp-historial > summary::-webkit-details-marker {
+  display: none;
+}
+
+.almacen-mp-historial > summary::after {
+  content: '▾';
+  float: right;
+}
+
+.almacen-mp-historial[open] > summary::after {
+  content: '▴';
+}
+
+.almacen-mp-historial-contenido {
+  border-top: 1px solid #e5e7eb;
+  padding: 20px;
+}
+
+.almacen-mp-movimientos-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 18px;
+  margin-bottom: 16px;
+}
+
+.almacen-mp-movimientos-header h3,
+.almacen-mp-movimientos-header p {
+  margin: 0;
+}
+
+.almacen-mp-movimientos-header p {
+  margin-top: 4px;
+  color: #64748b;
+}
+
+.almacen-mp-movimiento-filtro {
+  min-width: 220px;
+}
+
+.almacen-mp-movimiento-filtro label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+.almacen-mp-movimiento-filtro select {
+  width: 100%;
+}
+
+.almacen-mp-movimiento {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 5px 9px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.almacen-mp-movimiento-entrada {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.almacen-mp-movimiento-salida {
+  color: #991b1b;
+  background: #fee2e2;
+}
+
+.almacen-mp-cantidad-entrada {
+  color: #047857;
+}
+
+.almacen-mp-cantidad-salida {
+  color: #b91c1c;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1150px) {
+  .almacen-mp-indicadores {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .almacen-mp-filtros-resumen,
+  .almacen-mp-filtros-lotes {
+    grid-template-columns:
+      repeat(2, minmax(180px, 1fr));
+  }
+
+  .almacen-mp-lote-meta {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .almacen-mp-detalle-resumen-3 {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .almacen-mp-indicadores,
+  .almacen-mp-filtros-resumen,
+  .almacen-mp-filtros-lotes,
+  .almacen-mp-lote-meta,
+  .almacen-mp-detalle-resumen-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .almacen-mp-tabs {
+    width: 100%;
+  }
+
+  .almacen-mp-tab {
+    flex: 1;
+  }
+
+  .almacen-mp-tabla-cabecera,
+  .almacen-mp-movimientos-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .almacen-mp-movimiento-filtro {
+    min-width: 0;
+  }
+}

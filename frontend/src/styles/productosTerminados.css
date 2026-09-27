@@ -1,0 +1,538 @@
+.productos-terminados-page {
+  width: 100%;
+  min-width: 0;
+}
+
+.productos-terminados-header {
+  align-items: center;
+}
+
+.productos-terminados-page textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px 13px;
+  border: 1px solid #d1d5db;
+  border-radius: 9px;
+  font: inherit;
+  resize: vertical;
+}
+
+.pt-filtros {
+  display: grid;
+  grid-template-columns:
+    minmax(260px, 1.8fr)
+    repeat(5, minmax(130px, 0.85fr))
+    auto
+    auto;
+  gap: 12px;
+  align-items: end;
+  padding: 18px;
+  margin-bottom: 20px;
+  background: white;
+  border-radius: 16px;
+  box-shadow:
+    0 8px 20px
+    rgba(15, 23, 42, 0.06);
+}
+
+.pt-filtros > div {
+  min-width: 0;
+}
+
+.pt-filtros label {
+  display: block;
+  margin: 0 0 6px;
+  font-weight: 700;
+}
+
+.pt-filtros input,
+.pt-filtros select {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.pt-tabla-cabecera {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.pt-tabla-cabecera h3,
+.pt-tabla-cabecera p {
+  margin: 0;
+}
+
+.pt-tabla-cabecera p {
+  margin-top: 4px;
+  color: #64748b;
+}
+
+.pt-composicion-estado {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pt-composicion-estado small {
+  color: #64748b;
+}
+
+.pt-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 9px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.pt-badge-ok {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.pt-badge-pendiente {
+  color: #92400e;
+  background: #fef3c7;
+}
+
+.pt-badge-historico {
+  color: #475569;
+  background: #e2e8f0;
+}
+
+
+/* =========================================================
+   REGISTRAR PRODUCTO
+   ========================================================= */
+
+.pt-form-registro.form-card {
+  width: 100%;
+  max-width: 1050px;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 26px;
+}
+
+.pt-form-intro h3,
+.pt-form-intro p {
+  margin: 0;
+}
+
+.pt-form-intro p {
+  margin-top: 5px;
+  color: #64748b;
+}
+
+.pt-form-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(220px, 1fr));
+  gap: 18px 20px;
+  margin-top: 22px;
+}
+
+.pt-form-grid > div {
+  min-width: 0;
+}
+
+.pt-form-grid label {
+  display: block;
+  margin: 0 0 7px;
+  font-weight: 700;
+}
+
+.pt-form-grid input,
+.pt-form-grid select {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.pt-form-ancho {
+  grid-column: 1 / -1;
+}
+
+.pt-form-nota {
+  margin-top: 20px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  color: #1e3a8a;
+  background: #eff6ff;
+}
+
+.pt-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+
+/* =========================================================
+   DETALLE / IDENTIDAD
+   ========================================================= */
+
+.pt-detalle-header {
+  align-items: center;
+}
+
+.pt-identidad {
+  display: grid;
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.pt-identidad > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: white;
+  box-shadow:
+    0 8px 20px
+    rgba(15, 23, 42, 0.06);
+}
+
+.pt-identidad span {
+  color: #64748b;
+  font-size: 0.86rem;
+}
+
+.pt-identidad strong {
+  font-size: 1.05rem;
+}
+
+
+/* =========================================================
+   COMPOSICION VIGENTE
+   ========================================================= */
+
+.pt-composicion-card {
+  padding: 22px;
+  margin-bottom: 18px;
+  border-radius: 16px;
+  background: white;
+  box-shadow:
+    0 8px 20px
+    rgba(15, 23, 42, 0.06);
+}
+
+.pt-composicion-card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: flex-start;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.pt-composicion-card-header h3 {
+  margin: 10px 0 3px;
+}
+
+.pt-composicion-card-header p {
+  margin: 0;
+  color: #64748b;
+}
+
+.pt-total-100 {
+  font-size: 1.7rem;
+  color: #047857;
+}
+
+.pt-composicion-componentes {
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+  margin-top: 20px;
+}
+
+.pt-componente-vigente {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pt-componente-linea {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: center;
+}
+
+.pt-componente-linea > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pt-componente-linea span {
+  color: #64748b;
+}
+
+.pt-barra {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e5e7eb;
+}
+
+.pt-barra-progreso {
+  height: 100%;
+  border-radius: inherit;
+  background: #2563eb;
+}
+
+.pt-observacion {
+  margin-top: 20px;
+  padding: 13px 15px;
+  border-radius: 10px;
+  background: #f8fafc;
+  color: #475569;
+}
+
+.pt-sin-composicion {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 22px;
+  margin-bottom: 18px;
+  border: 1px solid #fde68a;
+  border-radius: 16px;
+  background: #fffbeb;
+}
+
+.pt-sin-composicion-icono {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+.pt-sin-composicion h3,
+.pt-sin-composicion p {
+  margin: 0;
+}
+
+.pt-sin-composicion p {
+  margin-top: 4px;
+  color: #78350f;
+}
+
+
+/* =========================================================
+   EDITOR DE COMPOSICION
+   ========================================================= */
+
+.pt-editor-composicion {
+  padding: 22px;
+  margin-bottom: 18px;
+  border-radius: 16px;
+  background: white;
+  box-shadow:
+    0 8px 20px
+    rgba(15, 23, 42, 0.06);
+}
+
+.pt-editor-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.pt-editor-header h3,
+.pt-editor-header p {
+  margin: 0;
+}
+
+.pt-editor-header p {
+  margin-top: 4px;
+  color: #64748b;
+}
+
+.pt-suma {
+  min-width: 105px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  color: #b45309;
+}
+
+.pt-suma span {
+  font-size: 0.8rem;
+}
+
+.pt-suma strong {
+  font-size: 1.55rem;
+}
+
+.pt-suma-ok {
+  color: #047857;
+}
+
+.pt-componentes-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.pt-componente-editor {
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 13px;
+  background: #f8fafc;
+}
+
+.pt-componente-numero {
+  margin-bottom: 10px;
+  font-weight: 700;
+  color: #334155;
+}
+
+.pt-componente-campos {
+  display: grid;
+  grid-template-columns:
+    minmax(180px, 1.3fr)
+    minmax(160px, 1fr)
+    minmax(150px, 0.75fr)
+    auto;
+  gap: 14px;
+  align-items: end;
+}
+
+.pt-componente-campos > div {
+  min-width: 0;
+}
+
+.pt-componente-campos label,
+.pt-observacion-editor label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+.pt-componente-campos select,
+.pt-componente-campos input {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.pt-porcentaje-input {
+  display: grid;
+  grid-template-columns:
+    minmax(90px, 1fr)
+    42px;
+}
+
+.pt-porcentaje-input input {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.pt-porcentaje-input span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d1d5db;
+  border-left: 0;
+  border-radius: 0 8px 8px 0;
+  background: #e5e7eb;
+  font-weight: 700;
+}
+
+.pt-agregar-componente {
+  margin-top: 14px;
+}
+
+.pt-observacion-editor {
+  margin-top: 20px;
+}
+
+.pt-editor-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+
+/* =========================================================
+   HISTORIAL
+   ========================================================= */
+
+.pt-historial {
+  margin-top: 18px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1450px) {
+  .pt-filtros {
+    grid-template-columns:
+      repeat(4, minmax(160px, 1fr));
+  }
+
+  .pt-filtro-busqueda {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 1050px) {
+  .pt-identidad {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .pt-componente-campos {
+    grid-template-columns:
+      repeat(2, minmax(180px, 1fr));
+  }
+}
+
+@media (max-width: 800px) {
+  .pt-filtros,
+  .pt-form-grid,
+  .pt-identidad,
+  .pt-componente-campos {
+    grid-template-columns: 1fr;
+  }
+
+  .pt-filtro-busqueda,
+  .pt-form-ancho {
+    grid-column: auto;
+  }
+
+  .pt-composicion-card-header,
+  .pt-editor-header,
+  .pt-form-actions,
+  .pt-editor-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .pt-suma {
+    align-items: flex-start;
+  }
+}
