@@ -63,8 +63,7 @@ import '../../styles/productosTerminadosAntd.css';
 
 
 const {
-  Text,
-  Title
+  Text
 } = Typography;
 
 const {

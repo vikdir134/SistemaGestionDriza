@@ -57,9 +57,7 @@ import PageHeader
   from '../components/ui/PageHeader';
 
 import {
-  formatCantidad,
   formatMonto,
-  formatPrecio
 } from '../utils/formatters';
 
 import '../styles/comprasGeneralesAntd.css';

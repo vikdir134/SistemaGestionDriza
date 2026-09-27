@@ -13,8 +13,7 @@ import {
   Select,
   Skeleton,
   Space,
-  Statistic,
-  Typography
+  Statistic
 } from 'antd';
 
 import {
@@ -57,10 +56,6 @@ import {
 
 import '../../styles/mermasAntd.css';
 
-
-const {
-  Text
-} = Typography;
 
 const {
   TextArea

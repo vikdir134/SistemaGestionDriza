@@ -12,9 +12,7 @@ import {
   Select,
   Skeleton,
   Space,
-  Statistic,
-  Tag,
-  Typography
+  Statistic
 } from 'antd';
 
 import {
@@ -58,10 +56,6 @@ import {
 
 import '../../styles/comprasMateriaPrimaAntd.css';
 
-
-const {
-  Text
-} = Typography;
 
 const {
   TextArea

@@ -16,7 +16,7 @@ import {
   SaveOutlined
 } from '@ant-design/icons';
 
-import dayjs, {
+import type {
   Dayjs
 } from 'dayjs';
 

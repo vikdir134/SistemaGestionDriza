@@ -11,7 +11,6 @@ import {
   Empty,
   Form,
   Input,
-  Progress,
   Row,
   Select,
   Space,
@@ -48,8 +47,7 @@ import PageHeader
   from '../../components/ui/PageHeader';
 
 import {
-  formatCantidad,
-  formatPeso
+  formatCantidad
 } from '../../utils/formatters';
 
 import '../../styles/almacenProductoTerminadoAntd.css';
@@ -181,7 +179,7 @@ function AlmacenProductoTerminado() {
   const [
     formResumen
   ] = Form.useForm<
-    FiltrosBase
+    FiltrosPresentaciones
   >();
 
   const [
