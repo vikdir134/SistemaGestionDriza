@@ -8,6 +8,7 @@ const {
   editarCliente,
   darBajaCliente,
   obtenerPreciosCliente,
+  obtenerUltimoPrecioProductoCliente,
   registrarPrecioCliente
 } = require('./cliente.controller');
 
@@ -33,6 +34,12 @@ router.get(
   '/precios',
   verificarToken,
   obtenerPreciosCliente
+);
+
+router.get(
+  '/precios/ultimo',
+  verificarToken,
+  obtenerUltimoPrecioProductoCliente
 );
 
 router.post(

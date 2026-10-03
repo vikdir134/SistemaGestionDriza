@@ -7,6 +7,7 @@ const {
   actualizarCliente,
   eliminarCliente,
   listarPreciosCliente,
+  obtenerUltimoPrecioClienteProducto,
   crearPrecioCliente
 } = require('./cliente.model');
 
@@ -285,6 +286,58 @@ const obtenerPreciosCliente = async (req, res) => {
   }
 };
 
+const obtenerUltimoPrecioProductoCliente = async (req, res) => {
+  try {
+    const {
+      cliente_id,
+      tipo_producto_id,
+      medida_id,
+      color_id,
+      material_id
+    } = req.query;
+
+    const ids = {
+      cliente_id: Number(cliente_id),
+      tipo_producto_id: Number(tipo_producto_id),
+      medida_id: Number(medida_id),
+      color_id: Number(color_id),
+      material_id: Number(material_id)
+    };
+
+    const idsValidos = Object.values(ids).every(
+      (valor) => Number.isInteger(valor) && valor > 0
+    );
+
+    if (!idsValidos) {
+      return res.status(400).json({
+        mensaje:
+          'Cliente, tipo, medida, color y material son obligatorios para consultar el último precio'
+      });
+    }
+
+    const precio =
+      await obtenerUltimoPrecioClienteProducto(ids);
+
+    res.json({
+      mensaje: precio
+        ? 'Último precio del cliente obtenido correctamente'
+        : 'El cliente no tiene un precio anterior para este producto',
+      precio
+    });
+
+  } catch (error) {
+    console.error(
+      'Error obtener último precio de cliente:',
+      error.message
+    );
+
+    res.status(500).json({
+      mensaje:
+        'Error interno al obtener el último precio del cliente'
+    });
+  }
+};
+
 const registrarPrecioCliente = async (req, res) => {
   try {
     let {
@@ -372,5 +425,6 @@ module.exports = {
   editarCliente,
   darBajaCliente,
   obtenerPreciosCliente,
+  obtenerUltimoPrecioProductoCliente,
   registrarPrecioCliente
 };

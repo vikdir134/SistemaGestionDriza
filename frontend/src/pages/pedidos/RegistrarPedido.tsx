@@ -760,6 +760,9 @@ function RegistrarPedido() {
         unidades={
           unidades
         }
+        clienteId={
+          clienteId
+        }
         procesando={
           procesando
         }

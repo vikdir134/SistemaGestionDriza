@@ -338,6 +338,50 @@ const listarPreciosCliente = async ({
   };
 };
 
+const obtenerUltimoPrecioClienteProducto = async ({
+  cliente_id,
+  tipo_producto_id,
+  medida_id,
+  color_id,
+  material_id
+}) => {
+  const pool = await getConnection();
+
+  const result = await pool.request()
+    .input('cliente_id', sql.Int, cliente_id)
+    .input('tipo_producto_id', sql.Int, tipo_producto_id)
+    .input('medida_id', sql.Int, medida_id)
+    .input('color_id', sql.Int, color_id)
+    .input('material_id', sql.Int, material_id)
+    .query(`
+      SELECT TOP 1
+        ph.precio_cliente_id,
+        ph.cliente_id,
+        ph.tipo_producto_id,
+        ph.medida_id,
+        ph.color_id,
+        ph.material_id,
+        ph.fecha_precio,
+        ph.precio_unitario,
+        ph.moneda_codigo,
+        ph.observacion,
+        ph.created_at
+      FROM crm.ClientePrecioHistorial ph
+      WHERE ph.activo = 1
+        AND ph.cliente_id = @cliente_id
+        AND ph.tipo_producto_id = @tipo_producto_id
+        AND ph.medida_id = @medida_id
+        AND ph.color_id = @color_id
+        AND ph.material_id = @material_id
+      ORDER BY
+        ph.fecha_precio DESC,
+        ph.created_at DESC,
+        ph.precio_cliente_id DESC;
+    `);
+
+  return result.recordset[0] || null;
+};
+
 const crearPrecioCliente = async ({
   cliente_id,
   tipo_producto_id,
@@ -414,5 +458,6 @@ module.exports = {
   actualizarCliente,
   eliminarCliente,
   listarPreciosCliente,
+  obtenerUltimoPrecioClienteProducto,
   crearPrecioCliente
 };

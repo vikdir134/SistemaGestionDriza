@@ -3,6 +3,7 @@ import type {
 } from 'antd';
 
 import {
+  Alert,
   App as AntdApp,
   Button,
   Card,
@@ -23,9 +24,15 @@ import {
 } from '@ant-design/icons';
 
 import {
+  useEffect,
   useMemo,
+  useRef,
   useState
 } from 'react';
+
+import {
+  apiFetch
+} from '../../services/api';
 
 import PedidoItemsEditor, {
   detallePedidoVacio,
@@ -67,6 +74,9 @@ type Props = {
   materiales: any[];
   unidades: any[];
 
+  clienteId:
+    number | null;
+
   procesando?: boolean;
 
   onFeedback?: (
@@ -84,6 +94,21 @@ const clonarDetalle = (
 });
 
 
+type PrecioReferencia = {
+  precio_unitario: number;
+  moneda_codigo: string;
+  fecha_precio: string;
+};
+
+
+const normalizarTexto = (
+  valor: unknown
+) =>
+  String(valor || '')
+    .trim()
+    .toLocaleUpperCase('es-PE');
+
+
 function PedidoItemsModalTable({
   detalles,
   setDetalles,
@@ -93,6 +118,8 @@ function PedidoItemsModalTable({
   colores,
   materiales,
   unidades,
+
+  clienteId,
 
   procesando = false,
   onFeedback
@@ -122,6 +149,149 @@ function PedidoItemsModalTable({
   ] = useState<
     number | null
   >(null);
+
+
+  const [
+    consultandoPrecio,
+    setConsultandoPrecio
+  ] = useState(false);
+
+  const [
+    precioReferencia,
+    setPrecioReferencia
+  ] = useState<
+    PrecioReferencia | null
+  >(null);
+
+  const [
+    sinPrecioHistorico,
+    setSinPrecioHistorico
+  ] = useState(false);
+
+  const ultimaClavePrecioRef =
+    useRef<string | null>(null);
+
+  const solicitudPrecioRef =
+    useRef(0);
+
+
+  const buscarIdNombre = (
+    items: any[],
+    nombre: string
+  ) => {
+    const esperado =
+      normalizarTexto(nombre);
+
+    const exacto =
+      items.find(
+        (item) =>
+          normalizarTexto(
+            item.nombre
+          ) === esperado
+      );
+
+    const aproximado =
+      exacto ||
+      items.find(
+        (item) =>
+          normalizarTexto(
+            item.nombre
+          ).includes(
+            esperado
+          )
+      );
+
+    return aproximado
+      ? String(
+          aproximado.id
+        )
+      : '';
+  };
+
+
+  const buscarIdUnidad = (
+    codigo: string
+  ) => {
+    const esperada =
+      normalizarTexto(codigo);
+
+    const unidad =
+      unidades.find(
+        (item) =>
+          normalizarTexto(
+            item.codigo
+          ) === esperada
+      );
+
+    return unidad
+      ? String(
+          unidad
+            .unidad_medida_id
+        )
+      : '';
+  };
+
+
+  const crearDetallePredeterminado =
+    (): DetallePedidoForm => {
+      const unidadKg =
+        buscarIdUnidad('KG');
+
+      return {
+        ...detallePedidoVacio,
+
+        tipo_producto_id:
+          buscarIdNombre(
+            tipos,
+            'DRIZA'
+          ),
+
+        material_id:
+          buscarIdNombre(
+            materiales,
+            'POLIPROPILENO'
+          ),
+
+        color_id:
+          buscarIdNombre(
+            colores,
+            'BLANCO'
+          ),
+
+        unidad_medida_id:
+          unidadKg,
+
+        unidad_presentacion_id:
+          unidadKg
+      };
+    };
+
+
+  const crearClavePrecio = (
+    detalle:
+      DetallePedidoForm | null,
+    clienteActual =
+      clienteId
+  ) => {
+    if (
+      !clienteActual ||
+      !detalle ||
+      !detalle.tipo_producto_id ||
+      !detalle.medida_id ||
+      !detalle.color_id ||
+      !detalle.material_id
+    ) {
+      return null;
+    }
+
+    return [
+      clienteActual,
+      detalle.tipo_producto_id,
+      detalle.medida_id,
+      detalle.color_id,
+      detalle.material_id
+    ].join('|');
+  };
 
 
   const buscarNombre = (
@@ -303,14 +473,30 @@ function PedidoItemsModalTable({
       return;
     }
 
+    if (!clienteId) {
+      onFeedback?.(
+        'warning',
+        'Selecciona primero un cliente para poder recuperar su último precio'
+      );
+      return;
+    }
+
+    ultimaClavePrecioRef.current =
+      null;
+
+    solicitudPrecioRef.current +=
+      1;
+
+    setConsultandoPrecio(false);
+    setPrecioReferencia(null);
+    setSinPrecioHistorico(false);
+
     setIndiceEditando(
       null
     );
 
     setDetalleModal(
-      clonarDetalle(
-        detallePedidoVacio
-      )
+      crearDetallePredeterminado()
     );
 
     setAbierto(true);
@@ -324,14 +510,29 @@ function PedidoItemsModalTable({
       return;
     }
 
+    const detalle =
+      clonarDetalle(
+        detalles[index]
+      );
+
+    ultimaClavePrecioRef.current =
+      crearClavePrecio(
+        detalle
+      );
+
+    solicitudPrecioRef.current +=
+      1;
+
+    setConsultandoPrecio(false);
+    setPrecioReferencia(null);
+    setSinPrecioHistorico(false);
+
     setIndiceEditando(
       index
     );
 
     setDetalleModal(
-      clonarDetalle(
-        detalles[index]
-      )
+      detalle
     );
 
     setAbierto(true);
@@ -343,10 +544,233 @@ function PedidoItemsModalTable({
       return;
     }
 
+    solicitudPrecioRef.current +=
+      1;
+
     setAbierto(false);
     setDetalleModal(null);
     setIndiceEditando(null);
+    setConsultandoPrecio(false);
+    setPrecioReferencia(null);
+    setSinPrecioHistorico(false);
+    ultimaClavePrecioRef.current =
+      null;
   };
+
+
+  useEffect(() => {
+    if (
+      !abierto ||
+      !detalleModal ||
+      !clienteId
+    ) {
+      return;
+    }
+
+    const clave =
+      crearClavePrecio(
+        detalleModal
+      );
+
+    if (!clave) {
+      setConsultandoPrecio(false);
+      setPrecioReferencia(null);
+      setSinPrecioHistorico(false);
+      ultimaClavePrecioRef.current =
+        null;
+      return;
+    }
+
+    if (
+      ultimaClavePrecioRef.current ===
+      clave
+    ) {
+      return;
+    }
+
+    ultimaClavePrecioRef.current =
+      clave;
+
+    const solicitud =
+      ++solicitudPrecioRef.current;
+
+    setConsultandoPrecio(true);
+    setPrecioReferencia(null);
+    setSinPrecioHistorico(false);
+
+    setDetalleModal(
+      (actual) => {
+        if (
+          !actual ||
+          crearClavePrecio(
+            actual
+          ) !== clave
+        ) {
+          return actual;
+        }
+
+        return {
+          ...actual,
+          precio_unitario: '',
+          moneda_codigo: 'PEN'
+        };
+      }
+    );
+
+    const params =
+      new URLSearchParams({
+        cliente_id:
+          String(clienteId),
+        tipo_producto_id:
+          detalleModal
+            .tipo_producto_id,
+        medida_id:
+          detalleModal.medida_id,
+        color_id:
+          detalleModal.color_id,
+        material_id:
+          detalleModal.material_id
+      });
+
+    apiFetch(
+      `/clientes/precios/ultimo?${params.toString()}`
+    )
+      .then((data) => {
+        if (
+          solicitud !==
+          solicitudPrecioRef.current
+        ) {
+          return;
+        }
+
+        const precio =
+          data.precio;
+
+        if (!precio) {
+          setPrecioReferencia(null);
+          setSinPrecioHistorico(true);
+          return;
+        }
+
+        const referencia:
+          PrecioReferencia = {
+          precio_unitario:
+            Number(
+              precio.precio_unitario
+            ),
+          moneda_codigo:
+            String(
+              precio.moneda_codigo
+            ).toUpperCase(),
+          fecha_precio:
+            String(
+              precio.fecha_precio
+            )
+        };
+
+        setDetalleModal(
+          (actual) => {
+            if (
+              !actual ||
+              crearClavePrecio(
+                actual
+              ) !== clave
+            ) {
+              return actual;
+            }
+
+            return {
+              ...actual,
+              precio_unitario:
+                String(
+                  referencia
+                    .precio_unitario
+                ),
+              moneda_codigo:
+                referencia
+                  .moneda_codigo
+            };
+          }
+        );
+
+        setPrecioReferencia(
+          referencia
+        );
+        setSinPrecioHistorico(false);
+      })
+      .catch((error) => {
+        if (
+          solicitud !==
+          solicitudPrecioRef.current
+        ) {
+          return;
+        }
+
+        setPrecioReferencia(null);
+        setSinPrecioHistorico(false);
+
+        onFeedback?.(
+          'warning',
+          error instanceof Error
+            ? error.message
+            : 'No se pudo consultar el último precio del cliente'
+        );
+      })
+      .finally(() => {
+        if (
+          solicitud ===
+          solicitudPrecioRef.current
+        ) {
+          setConsultandoPrecio(false);
+        }
+      });
+  }, [
+    abierto,
+    clienteId,
+    detalleModal?.tipo_producto_id,
+    detalleModal?.medida_id,
+    detalleModal?.color_id,
+    detalleModal?.material_id
+  ]);
+
+
+  /*
+   * El aviso del precio histórico es informativo.
+   * El precio ya queda copiado en el formulario, por lo que
+   * podemos ocultar el mensaje después de unos segundos sin
+   * perder ningún dato ni alterar el valor autocompletado.
+   */
+  useEffect(() => {
+    if (
+      !abierto ||
+      consultandoPrecio ||
+      (
+        !precioReferencia &&
+        !sinPrecioHistorico
+      )
+    ) {
+      return;
+    }
+
+    const temporizador =
+      window.setTimeout(
+        () => {
+          setPrecioReferencia(null);
+          setSinPrecioHistorico(false);
+        },
+        4500
+      );
+
+    return () =>
+      window.clearTimeout(
+        temporizador
+      );
+  }, [
+    abierto,
+    consultandoPrecio,
+    precioReferencia,
+    sinPrecioHistorico
+  ]);
 
 
   const guardarModal = () => {
@@ -409,9 +833,17 @@ function PedidoItemsModalTable({
       );
     }
 
+    solicitudPrecioRef.current +=
+      1;
+
     setAbierto(false);
     setDetalleModal(null);
     setIndiceEditando(null);
+    setConsultandoPrecio(false);
+    setPrecioReferencia(null);
+    setSinPrecioHistorico(false);
+    ultimaClavePrecioRef.current =
+      null;
   };
 
 
@@ -1097,6 +1529,50 @@ function PedidoItemsModalTable({
         }
         className="gd-pedido-product-modal"
       >
+
+        {
+          consultandoPrecio &&
+          (
+            <Alert
+              type="info"
+              showIcon
+              message="Buscando el último precio de este producto para el cliente"
+              className="gd-pedido-price-reference"
+            />
+          )
+        }
+
+        {
+          !consultandoPrecio &&
+          precioReferencia &&
+          (
+            <Alert
+              type="success"
+              showIcon
+              message={
+                `Precio más reciente: ${formatMonto(precioReferencia.precio_unitario)} ${precioReferencia.moneda_codigo}`
+              }
+              description={
+                `Se completó automáticamente con el precio del ${precioReferencia.fecha_precio.slice(0, 10)}. Puedes modificarlo si este pedido tendrá otro precio.`
+              }
+              className="gd-pedido-price-reference"
+            />
+          )
+        }
+
+        {
+          !consultandoPrecio &&
+          sinPrecioHistorico &&
+          (
+            <Alert
+              type="warning"
+              showIcon
+              message="Este cliente no tiene un precio anterior para este producto"
+              description="Ingresa el precio manualmente. Al registrar el pedido quedará guardado en el historial del cliente."
+              className="gd-pedido-price-reference"
+            />
+          )
+        }
 
         {
           detalleModal &&
