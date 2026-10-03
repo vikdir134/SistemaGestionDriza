@@ -37,10 +37,12 @@ import {
   useBloqueoAccion
 } from '../../hooks/useBloqueoAccion';
 
-import PedidoItemsEditor, {
-  detallePedidoVacio,
+import {
   type DetallePedidoForm
 } from '../../components/pedidos/PedidoItemsEditor';
+
+import PedidoItemsModalTable
+  from '../../components/pedidos/PedidoItemsModalTable';
 
 import BackButton
   from '../../components/ui/BackButton';
@@ -135,11 +137,7 @@ function RegistrarPedido() {
     setDetalles
   ] = useState<
     DetallePedidoForm[]
-  >([
-    {
-      ...detallePedidoVacio
-    }
-  ]);
+  >([]);
 
   const {
     procesando,
@@ -746,7 +744,7 @@ function RegistrarPedido() {
       </Card>
 
 
-      <PedidoItemsEditor
+      <PedidoItemsModalTable
         detalles={
           detalles
         }
