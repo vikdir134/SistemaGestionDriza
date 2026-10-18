@@ -97,6 +97,8 @@ const obtenerSelectedKey = (
     '/gestion/compras',
     '/gestion/catalogos',
     '/gestion/clientes',
+    '/gestion/prestamos',
+    '/gestion/inversiones',
     '/gestion/mermas',
     '/gestion/gastos',
     '/gestion/usuarios'
@@ -478,6 +480,18 @@ function Sidebar({
       label: 'Mermas'
     },
 
+
+    {
+      key: '/gestion/prestamos',
+      icon: <BankOutlined />,
+      label: 'Préstamos'
+    },
+
+    {
+      key: '/gestion/inversiones',
+      icon: <DollarOutlined />,
+      label: 'Inversiones'
+    },
 
     {
       key:

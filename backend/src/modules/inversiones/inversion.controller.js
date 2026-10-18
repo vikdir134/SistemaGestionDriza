@@ -1,0 +1,13 @@
+'use strict';
+const M=require('./inversion.model');
+const {fecha,texto,importe,moneda,clave,id,pagination,responderError,fallo}=require('../../utils/finanzas.helpers');
+const ejecutar=(f)=>async(req,res)=>{try{await f(req,res)}catch(e){responderError(res,e,'Inversiones')}};
+const parseInversion=b=>({fecha:fecha(b.fecha),aportante:texto(b.aportante,180,true),motivo:texto(b.motivo,200,true),descripcion:texto(b.descripcion,1000),monto:importe(b.monto),moneda_codigo:moneda(b.moneda_codigo),idempotency_key:clave(b.idempotency_key)});
+const parseRetiro=b=>({fecha:fecha(b.fecha),monto:importe(b.monto),observacion:texto(b.observacion,500),idempotency_key:clave(b.idempotency_key)});
+exports.listar=ejecutar(async(req,res)=>{const p=pagination(req.query);const monedaCodigo=req.query.moneda_codigo?moneda(req.query.moneda_codigo):null;res.json(await M.listar({...p,moneda_codigo:monedaCodigo,q:texto(req.query.q,200)}));});
+exports.detalle=ejecutar(async(req,res)=>res.json(await M.detalle(id(req.params.id),pagination(req.query))));
+exports.crear=ejecutar(async(req,res)=>{const inversion_id=await M.crear(parseInversion(req.body||{}),id(req.usuario.usuario_id));res.status(201).json({mensaje:'Inversión registrada',inversion_id});});
+exports.editar=ejecutar(async(req,res)=>{const b=req.body||{};const v={fecha:fecha(b.fecha),aportante:texto(b.aportante,180,true),motivo:texto(b.motivo,200,true),descripcion:texto(b.descripcion,1000)};await M.editar(id(req.params.id),v,id(req.usuario.usuario_id));res.json({mensaje:'Inversión actualizada. El monto original no se modifica.'});});
+exports.eliminar=ejecutar(async(req,res)=>{await M.baja(id(req.params.id),id(req.usuario.usuario_id));res.json({mensaje:'Inversión dada de baja'});});
+exports.retirar=ejecutar(async(req,res)=>{const retiro_id=await M.retiro(id(req.params.id),parseRetiro(req.body||{}),id(req.usuario.usuario_id));res.status(201).json({mensaje:'Devolución de capital registrada',retiro_id});});
+exports.anularRetiro=ejecutar(async(req,res)=>{await M.anularRetiro(id(req.params.id),id(req.params.retiro_id),id(req.usuario.usuario_id));res.json({mensaje:'Devolución anulada conservando el historial'});});

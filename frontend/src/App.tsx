@@ -1,5 +1,3 @@
-
-
 import {
   BrowserRouter,
   Navigate,
@@ -126,6 +124,9 @@ import ProtectedRoute
 import GestionLayout
   from './layouts/GestionLayout';
 
+
+import Prestamos from './pages/prestamos/Prestamos';
+import Inversiones from './pages/inversiones/Inversiones';
 
 function App() {
   return (
@@ -435,6 +436,9 @@ function App() {
           />
 
 
+          <Route path="prestamos" element={<Prestamos />} />
+          <Route path="inversiones" element={<Inversiones />} />
+
           {/* =========================
               GASTOS
               ========================= */}
@@ -496,5 +500,3 @@ function App() {
 
 
 export default App;
-
-

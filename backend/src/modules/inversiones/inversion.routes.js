@@ -1,0 +1,14 @@
+'use strict';
+const router=require('express').Router();
+const C=require('./inversion.controller');
+const {verificarToken}=require('../../middlewares/auth.middleware');
+const {permitirRoles}=require('../../middlewares/role.middleware');
+router.use(verificarToken);
+router.get('/',C.listar);
+router.post('/',C.crear);
+router.get('/:id',C.detalle);
+router.put('/:id',C.editar);
+router.delete('/:id',permitirRoles('ADMIN'),C.eliminar);
+router.post('/:id/retiros',C.retirar);
+router.delete('/:id/retiros/:retiro_id',permitirRoles('ADMIN'),C.anularRetiro);
+module.exports=router;

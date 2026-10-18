@@ -1,0 +1,15 @@
+'use strict';
+const router=require('express').Router();
+const C=require('./prestamo.controller');
+const {verificarToken}=require('../../middlewares/auth.middleware');
+const {permitirRoles}=require('../../middlewares/role.middleware');
+router.use(verificarToken);
+router.get('/',C.listar);
+router.post('/preview',C.preview);
+router.post('/',C.crear);
+router.get('/:id',C.detalle);
+router.put('/:id',C.editar);
+router.delete('/:id',permitirRoles('ADMIN'),C.eliminar);
+router.post('/:id/pagos',C.pagar);
+router.delete('/:id/pagos/:pago_id',permitirRoles('ADMIN'),C.anularPago);
+module.exports=router;
