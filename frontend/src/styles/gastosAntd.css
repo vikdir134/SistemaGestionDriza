@@ -3,6 +3,23 @@
   min-width: 0;
 }
 
+.gd-gasto-month-header { margin-bottom: 18px; }
+.gd-gasto-month-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+.gd-gasto-month-actions .ant-space-item { display: flex; align-items: center; }
+.gd-gasto-month-actions .ant-btn,
+.gd-gasto-month-actions .ant-picker { height: 42px; }
+.gd-gasto-month-actions .ant-picker { width: 148px; }
+.gd-gasto-month-actions .ant-picker-input > input { margin: 0; text-align: center; }
+@media (max-width: 767px) {
+  .gd-gasto-month-actions { width: 100%; justify-content: center; }
+}
+.gd-gasto-month-title.ant-typography { margin: 8px 0; text-transform: capitalize; }
+.gd-gasto-category-list { margin-top: 16px; max-height: 320px; overflow-y: auto; padding-right: 10px; }
+.gd-gasto-category + .gd-gasto-category { margin-top: 18px; }
+.gd-gasto-category-label { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.gd-gasto-detail { margin-top: 24px; }
+.gd-gastos-mensuales .ant-statistic-content { font-size: clamp(24px, 2.5vw, 32px); }
+
 .gd-gasto-config-row {
   margin-bottom: 20px;
 }

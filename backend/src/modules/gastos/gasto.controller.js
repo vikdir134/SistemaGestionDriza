@@ -10,6 +10,7 @@ const {
   actualizarGasto,
   eliminarGasto
 } = require('./gasto.model');
+const { limitesMes } = require('./gasto.consulta');
 
 
 const fechaActual = () => {
@@ -263,9 +264,30 @@ const obtenerGastos = async (
       proveedor_id,
       moneda_codigo,
       q,
+      mes,
       page = 1,
       limit = 10
     } = req.query;
+
+    try {
+      limitesMes(mes);
+    } catch (error) {
+      return res.status(400).json({ mensaje: error.message });
+    }
+    for (const id of [tipo_gasto_id, proveedor_id]) {
+      if (id !== undefined && (!/^\d+$/.test(String(id)) || !Number.isSafeInteger(Number(id)) || Number(id) < 1 || Number(id) > 2147483647)) {
+        return res.status(400).json({ mensaje: 'El filtro de tipo o proveedor no es válido.' });
+      }
+    }
+    if (moneda_codigo && !['PEN', 'USD'].includes(String(moneda_codigo).toUpperCase())) {
+      return res.status(400).json({ mensaje: 'La moneda debe ser PEN o USD.' });
+    }
+    if (q !== undefined && (typeof q !== 'string' || q.length > 400)) {
+      return res.status(400).json({ mensaje: 'La búsqueda no puede superar 400 caracteres.' });
+    }
+    if (![page, limit].every(value => Number.isSafeInteger(Number(value)) && Number(value) > 0) || Number(page) > 21474836) {
+      return res.status(400).json({ mensaje: 'La paginación no es válida.' });
+    }
 
 
     const pagina = Math.max(
@@ -284,6 +306,7 @@ const obtenerGastos = async (
 
     const resultado =
       await listarGastos({
+        mes,
         tipo_gasto_id:
           tipo_gasto_id
             ? Number(tipo_gasto_id)
@@ -316,6 +339,9 @@ const obtenerGastos = async (
 
       gastos:
         resultado.gastos,
+
+      resumen: resultado.resumen,
+      categorias: resultado.categorias,
 
       paginacion:
         resultado.paginacion

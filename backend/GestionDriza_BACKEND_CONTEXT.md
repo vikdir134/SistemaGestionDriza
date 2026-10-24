@@ -7,9 +7,9 @@
 
 - **Proyecto:** GestionDriza
 - **Componente:** Backend
-- **Fecha de generación:** 2026-09-20 14:42:03
-- **Branch Git:** feature/inventario-produccion-completo
-- **Commit Git:** 0428b419bf986f3b7d1ecc3f5530ea7723a67d82
+- **Fecha de generación:** 2026-10-18 14:11:45
+- **Branch Git:** main
+- **Commit Git:** ae9c1bbbcf8c79c2720d65efa1e157aee9ba57b2
 - **Cantidad de archivos incluidos:** 58
 
 ---
@@ -4089,6 +4089,7 @@ const {
   actualizarCliente,
   eliminarCliente,
   listarPreciosCliente,
+  obtenerUltimoPrecioClienteProducto,
   crearPrecioCliente
 } = require('./cliente.model');
 
@@ -4367,6 +4368,58 @@ const obtenerPreciosCliente = async (req, res) => {
   }
 };
 
+const obtenerUltimoPrecioProductoCliente = async (req, res) => {
+  try {
+    const {
+      cliente_id,
+      tipo_producto_id,
+      medida_id,
+      color_id,
+      material_id
+    } = req.query;
+
+    const ids = {
+      cliente_id: Number(cliente_id),
+      tipo_producto_id: Number(tipo_producto_id),
+      medida_id: Number(medida_id),
+      color_id: Number(color_id),
+      material_id: Number(material_id)
+    };
+
+    const idsValidos = Object.values(ids).every(
+      (valor) => Number.isInteger(valor) && valor > 0
+    );
+
+    if (!idsValidos) {
+      return res.status(400).json({
+        mensaje:
+          'Cliente, tipo, medida, color y material son obligatorios para consultar el último precio'
+      });
+    }
+
+    const precio =
+      await obtenerUltimoPrecioClienteProducto(ids);
+
+    res.json({
+      mensaje: precio
+        ? 'Último precio del cliente obtenido correctamente'
+        : 'El cliente no tiene un precio anterior para este producto',
+      precio
+    });
+
+  } catch (error) {
+    console.error(
+      'Error obtener último precio de cliente:',
+      error.message
+    );
+
+    res.status(500).json({
+      mensaje:
+        'Error interno al obtener el último precio del cliente'
+    });
+  }
+};
+
 const registrarPrecioCliente = async (req, res) => {
   try {
     let {
@@ -4454,6 +4507,7 @@ module.exports = {
   editarCliente,
   darBajaCliente,
   obtenerPreciosCliente,
+  obtenerUltimoPrecioProductoCliente,
   registrarPrecioCliente
 };
 ~~~
@@ -4803,6 +4857,50 @@ const listarPreciosCliente = async ({
   };
 };
 
+const obtenerUltimoPrecioClienteProducto = async ({
+  cliente_id,
+  tipo_producto_id,
+  medida_id,
+  color_id,
+  material_id
+}) => {
+  const pool = await getConnection();
+
+  const result = await pool.request()
+    .input('cliente_id', sql.Int, cliente_id)
+    .input('tipo_producto_id', sql.Int, tipo_producto_id)
+    .input('medida_id', sql.Int, medida_id)
+    .input('color_id', sql.Int, color_id)
+    .input('material_id', sql.Int, material_id)
+    .query(`
+      SELECT TOP 1
+        ph.precio_cliente_id,
+        ph.cliente_id,
+        ph.tipo_producto_id,
+        ph.medida_id,
+        ph.color_id,
+        ph.material_id,
+        ph.fecha_precio,
+        ph.precio_unitario,
+        ph.moneda_codigo,
+        ph.observacion,
+        ph.created_at
+      FROM crm.ClientePrecioHistorial ph
+      WHERE ph.activo = 1
+        AND ph.cliente_id = @cliente_id
+        AND ph.tipo_producto_id = @tipo_producto_id
+        AND ph.medida_id = @medida_id
+        AND ph.color_id = @color_id
+        AND ph.material_id = @material_id
+      ORDER BY
+        ph.fecha_precio DESC,
+        ph.created_at DESC,
+        ph.precio_cliente_id DESC;
+    `);
+
+  return result.recordset[0] || null;
+};
+
 const crearPrecioCliente = async ({
   cliente_id,
   tipo_producto_id,
@@ -4879,6 +4977,7 @@ module.exports = {
   actualizarCliente,
   eliminarCliente,
   listarPreciosCliente,
+  obtenerUltimoPrecioClienteProducto,
   crearPrecioCliente
 };
 ~~~
@@ -4898,6 +4997,7 @@ const {
   editarCliente,
   darBajaCliente,
   obtenerPreciosCliente,
+  obtenerUltimoPrecioProductoCliente,
   registrarPrecioCliente
 } = require('./cliente.controller');
 
@@ -4923,6 +5023,12 @@ router.get(
   '/precios',
   verificarToken,
   obtenerPreciosCliente
+);
+
+router.get(
+  '/precios/ultimo',
+  verificarToken,
+  obtenerUltimoPrecioProductoCliente
 );
 
 router.post(

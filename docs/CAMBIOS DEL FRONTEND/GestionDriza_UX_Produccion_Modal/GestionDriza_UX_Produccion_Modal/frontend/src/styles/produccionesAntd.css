@@ -1,0 +1,318 @@
+.gd-produccion-page {
+  width: 100%;
+  min-width: 0;
+}
+
+.gd-produccion-table-card .ant-card-body {
+  padding-top: 8px;
+}
+
+.gd-produccion-section-card {
+  margin-bottom: 18px;
+}
+
+.gd-produccion-draft-card .ant-card-body {
+  min-width: 0;
+}
+
+.gd-produccion-draft-table .ant-table {
+  min-width: 0;
+}
+
+.gd-produccion-product-cell {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gd-produccion-product-cell .ant-typography {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gd-produccion-inline-alert {
+  margin-bottom: 14px;
+}
+
+.gd-produccion-recipe-card {
+  margin-bottom: 2px;
+}
+
+.gd-produccion-recipe-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 14px;
+  row-gap: 8px;
+  padding: 12px;
+  border-radius: 10px;
+  background: rgba(148, 163, 184, 0.07);
+}
+
+.gd-produccion-recipe-item > div:first-child {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gd-produccion-recipe-values {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.gd-produccion-recipe-item .ant-progress {
+  grid-column: 1 / -1;
+}
+
+.gd-produccion-mobile-list .ant-list-item {
+  padding: 0 0 12px;
+  border-block-end: 0;
+}
+
+.gd-produccion-mobile-product-card.ant-card {
+  width: 100%;
+}
+
+.gd-produccion-mobile-product-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.gd-produccion-mobile-product-head > div:first-child {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.gd-produccion-mobile-product-number {
+  font-size: 12px;
+}
+
+.gd-produccion-mobile-product-title.ant-typography {
+  margin: 2px 0 0 !important;
+}
+
+.gd-produccion-mobile-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.gd-produccion-mobile-metrics > div {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px;
+  border-radius: 10px;
+  background: rgba(148, 163, 184, 0.07);
+}
+
+.gd-produccion-mobile-note {
+  display: block;
+  margin-bottom: 14px;
+}
+
+.gd-produccion-mobile-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.gd-produccion-total-card {
+  margin-bottom: 18px;
+}
+
+.gd-produccion-total {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: center;
+}
+
+.gd-produccion-total-title.ant-typography {
+  margin: 0 0 2px !important;
+}
+
+.gd-produccion-total-value {
+  font-size: 26px;
+}
+
+.gd-produccion-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-bottom: 6px;
+}
+
+.gd-full-width {
+  width: 100%;
+}
+
+.gd-produccion-product-modal .ant-modal-body {
+  max-height: calc(100vh - 230px);
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.gd-produccion-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+
+/* =========================================================
+   DETALLE
+   ========================================================= */
+
+.gd-produccion-summary {
+  margin-bottom: 18px;
+}
+
+.gd-produccion-stat-card.ant-card {
+  height: 100%;
+}
+
+.gd-produccion-stat-card .ant-statistic-content {
+  font-size: 21px;
+}
+
+.gd-produccion-detail-alert {
+  margin-bottom: 18px;
+}
+
+.gd-produccion-detail-product.ant-card {
+  width: 100%;
+}
+
+.gd-produccion-product-note {
+  margin-top: 16px;
+}
+
+.gd-produccion-fifo-collapse {
+  margin-top: 16px;
+}
+
+
+/* =========================================================
+   LIGHT MODE
+   ========================================================= */
+
+[data-gd-theme='light'] .gd-produccion-page .ant-card {
+  border-color: #d7dee8;
+}
+
+[data-gd-theme='light'] .gd-produccion-page .ant-card-head {
+  border-bottom-color: #d7dee8;
+}
+
+[data-gd-theme='light'] .gd-produccion-page .ant-table {
+  border: 1px solid #e0e6ee;
+  border-radius: 10px;
+}
+
+[data-gd-theme='light'] .gd-produccion-recipe-item,
+[data-gd-theme='light'] .gd-produccion-mobile-metrics > div {
+  background: #f8fafc;
+  border: 1px solid #e0e6ee;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 767px) {
+  .gd-produccion-draft-card .ant-card-head {
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .gd-produccion-draft-card .ant-card-head-wrapper {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .gd-produccion-draft-card .ant-card-extra {
+    margin-inline-start: 0;
+  }
+
+  .gd-produccion-draft-card .ant-card-extra .ant-btn {
+    width: 100%;
+  }
+
+  .gd-produccion-total {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .gd-produccion-actions {
+    justify-content: stretch;
+  }
+
+  .gd-produccion-actions .ant-space {
+    width: 100%;
+  }
+
+  .gd-produccion-actions .ant-space-item {
+    flex: 1;
+  }
+
+  .gd-produccion-actions .ant-btn {
+    width: 100%;
+  }
+
+  .gd-produccion-recipe-item {
+    grid-template-columns: 1fr;
+  }
+
+  .gd-produccion-recipe-values {
+    align-items: flex-start;
+  }
+
+  .gd-produccion-recipe-item .ant-progress {
+    grid-column: 1;
+  }
+
+  .gd-produccion-product-modal .ant-modal {
+    width: calc(100vw - 20px) !important;
+    max-width: calc(100vw - 20px);
+    margin: 10px auto;
+    padding-bottom: 0;
+  }
+
+  .gd-produccion-product-modal .ant-modal-content {
+    padding: 16px;
+  }
+
+  .gd-produccion-product-modal .ant-modal-body {
+    max-height: calc(100dvh - 185px);
+  }
+
+  .gd-produccion-modal-footer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+  }
+
+  .gd-produccion-mobile-metrics {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 420px) {
+  .gd-produccion-modal-footer,
+  .gd-produccion-mobile-actions {
+    grid-template-columns: 1fr;
+  }
+}

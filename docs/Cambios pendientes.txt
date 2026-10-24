@@ -1,0 +1,5 @@
+AGREGAR SELECCION AUTOMATICA DE PRECIO MAS RECIENTE AL REGISTRAR PEDIDO
+
+Corregir los pedidos
+
+Agregar lo de caja chica

@@ -14,6 +14,7 @@ import {
   Select,
   Space,
   Table,
+  Tabs,
   Tag,
   Typography
 } from 'antd';
@@ -58,6 +59,7 @@ import {
 } from '../utils/formatters';
 
 import '../styles/gastosAntd.css';
+import GastosMensuales from '../components/gastos/GastosMensuales';
 
 
 const {
@@ -129,6 +131,7 @@ type Paginacion = {
 
 
 function Gastos() {
+  const [revision, setRevision] = useState(0);
   const navigate =
     useNavigate();
 
@@ -355,6 +358,7 @@ function Gastos() {
         setPaginacion(
           data.paginacion
         );
+        setRevision(value => value + 1);
       },
       []
     );
@@ -789,7 +793,7 @@ function Gastos() {
     },
 
     {
-      title: 'Fecha',
+      title: 'Fecha ↓',
       dataIndex:
         'fecha_gasto',
       key:
@@ -960,6 +964,9 @@ function Gastos() {
       />
 
 
+      <Tabs defaultActiveKey="mensual" items={[
+        { key: 'mensual', label: 'Gastos por mes', children: <GastosMensuales tipos={tiposGasto} proveedores={proveedores} revision={revision} /> },
+        { key: 'registro', label: 'Registro y listado general', children: <>
       <Row
         gutter={[
           20,
@@ -1338,6 +1345,8 @@ function Gastos() {
 
       </Card>
 
+      </> }
+      ]} />
     </div>
   );
 }

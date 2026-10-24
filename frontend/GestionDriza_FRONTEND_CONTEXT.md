@@ -7,10 +7,10 @@
 
 - Proyecto: GestionDriza
 - Componente: Frontend
-- Fecha de generación: 2026-09-20 14:41:06
-- Branch Git: feature/inventario-produccion-completo
-- Commit Git: 0428b419bf986f3b7d1ecc3f5530ea7723a67d82
-- Cantidad de archivos incluidos: 99
+- Fecha de generación: 2026-10-18 14:11:30
+- Branch Git: main
+- Commit Git: ae9c1bbbcf8c79c2720d65efa1e157aee9ba57b2
+- Cantidad de archivos incluidos: 100
 
 ---
 
@@ -31,6 +31,7 @@
 - src\components\common\FeedbackToast.tsx
 - src\components\gastos\GastoForm.tsx
 - src\components\pedidos\PedidoItemsEditor.tsx
+- src\components\pedidos\PedidoItemsModalTable.tsx
 - src\components\ProtectedRoute.tsx
 - src\components\Sidebar.tsx
 - src\components\ui\BackButton.tsx
@@ -3091,6 +3092,1639 @@ function PedidoItemsEditor({
 
 
 export default PedidoItemsEditor;
+
+
+<<<END OF FILE>>>
+
+
+---
+
+## FILE: src\components\pedidos\PedidoItemsModalTable.tsx
+
+<<<START OF FILE>>>
+
+import type {
+  TableColumnsType
+} from 'antd';
+
+import {
+  Alert,
+  App as AntdApp,
+  Button,
+  Card,
+  Empty,
+  Grid,
+  List,
+  Modal,
+  Space,
+  Table,
+  Tag,
+  Typography
+} from 'antd';
+
+import {
+  DeleteOutlined,
+  EditOutlined,
+  PlusOutlined
+} from '@ant-design/icons';
+
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
+
+import {
+  apiFetch
+} from '../../services/api';
+
+import PedidoItemsEditor, {
+  detallePedidoVacio,
+  type DetallePedidoForm
+} from './PedidoItemsEditor';
+
+import {
+  formatCantidad,
+  formatMonto
+} from '../../utils/formatters';
+
+import '../../styles/pedidosAntd.css';
+
+
+const {
+  Text
+} = Typography;
+
+
+type FeedbackTipo =
+  | 'success'
+  | 'error'
+  | 'info'
+  | 'warning';
+
+
+type Props = {
+  detalles:
+    DetallePedidoForm[];
+
+  setDetalles: (
+    detalles:
+      DetallePedidoForm[]
+  ) => void;
+
+  tipos: any[];
+  medidas: any[];
+  colores: any[];
+  materiales: any[];
+  unidades: any[];
+
+  clienteId:
+    number | null;
+
+  procesando?: boolean;
+
+  onFeedback?: (
+    tipo: FeedbackTipo,
+    mensaje: string
+  ) => void;
+};
+
+
+const clonarDetalle = (
+  detalle:
+    DetallePedidoForm
+): DetallePedidoForm => ({
+  ...detalle
+});
+
+
+type PrecioReferencia = {
+  precio_unitario: number;
+  moneda_codigo: string;
+  fecha_precio: string;
+};
+
+
+const normalizarTexto = (
+  valor: unknown
+) =>
+  String(valor || '')
+    .trim()
+    .toLocaleUpperCase('es-PE');
+
+
+function PedidoItemsModalTable({
+  detalles,
+  setDetalles,
+
+  tipos,
+  medidas,
+  colores,
+  materiales,
+  unidades,
+
+  clienteId,
+
+  procesando = false,
+  onFeedback
+}: Props) {
+  const screens =
+    Grid.useBreakpoint();
+
+  const {
+    modal
+  } = AntdApp.useApp();
+
+  const [
+    abierto,
+    setAbierto
+  ] = useState(false);
+
+  const [
+    detalleModal,
+    setDetalleModal
+  ] = useState<
+    DetallePedidoForm | null
+  >(null);
+
+  const [
+    indiceEditando,
+    setIndiceEditando
+  ] = useState<
+    number | null
+  >(null);
+
+
+  const [
+    consultandoPrecio,
+    setConsultandoPrecio
+  ] = useState(false);
+
+  const [
+    precioReferencia,
+    setPrecioReferencia
+  ] = useState<
+    PrecioReferencia | null
+  >(null);
+
+  const [
+    sinPrecioHistorico,
+    setSinPrecioHistorico
+  ] = useState(false);
+
+  const ultimaClavePrecioRef =
+    useRef<string | null>(null);
+
+  const solicitudPrecioRef =
+    useRef(0);
+
+
+  const buscarIdNombre = (
+    items: any[],
+    nombre: string
+  ) => {
+    const esperado =
+      normalizarTexto(nombre);
+
+    const exacto =
+      items.find(
+        (item) =>
+          normalizarTexto(
+            item.nombre
+          ) === esperado
+      );
+
+    const aproximado =
+      exacto ||
+      items.find(
+        (item) =>
+          normalizarTexto(
+            item.nombre
+          ).includes(
+            esperado
+          )
+      );
+
+    return aproximado
+      ? String(
+          aproximado.id
+        )
+      : '';
+  };
+
+
+  const buscarIdUnidad = (
+    codigo: string
+  ) => {
+    const esperada =
+      normalizarTexto(codigo);
+
+    const unidad =
+      unidades.find(
+        (item) =>
+          normalizarTexto(
+            item.codigo
+          ) === esperada
+      );
+
+    return unidad
+      ? String(
+          unidad
+            .unidad_medida_id
+        )
+      : '';
+  };
+
+
+  const crearDetallePredeterminado =
+    (): DetallePedidoForm => {
+      const unidadKg =
+        buscarIdUnidad('KG');
+
+      return {
+        ...detallePedidoVacio,
+
+        tipo_producto_id:
+          buscarIdNombre(
+            tipos,
+            'DRIZA'
+          ),
+
+        material_id:
+          buscarIdNombre(
+            materiales,
+            'POLIPROPILENO'
+          ),
+
+        color_id:
+          buscarIdNombre(
+            colores,
+            'BLANCO'
+          ),
+
+        unidad_medida_id:
+          unidadKg,
+
+        unidad_presentacion_id:
+          unidadKg
+      };
+    };
+
+
+  const crearClavePrecio = (
+    detalle:
+      DetallePedidoForm | null,
+    clienteActual =
+      clienteId
+  ) => {
+    if (
+      !clienteActual ||
+      !detalle ||
+      !detalle.tipo_producto_id ||
+      !detalle.medida_id ||
+      !detalle.color_id ||
+      !detalle.material_id
+    ) {
+      return null;
+    }
+
+    return [
+      clienteActual,
+      detalle.tipo_producto_id,
+      detalle.medida_id,
+      detalle.color_id,
+      detalle.material_id
+    ].join('|');
+  };
+
+
+  const buscarNombre = (
+    items: any[],
+    id: string
+  ) => {
+    if (!id) {
+      return '-';
+    }
+
+    return (
+      items.find(
+        (item) =>
+          String(item.id) ===
+          String(id)
+      )?.nombre ||
+      '-'
+    );
+  };
+
+
+  const buscarUnidad = (
+    id: string
+  ) => {
+    if (!id) {
+      return '-';
+    }
+
+    return (
+      unidades.find(
+        (item) =>
+          String(
+            item.unidad_medida_id
+          ) ===
+          String(id)
+      )?.codigo ||
+      '-'
+    );
+  };
+
+
+  const descripcionProducto = (
+    detalle:
+      DetallePedidoForm
+  ) => {
+    return [
+      buscarNombre(
+        tipos,
+        detalle.tipo_producto_id
+      ),
+      buscarNombre(
+        materiales,
+        detalle.material_id
+      ),
+      buscarNombre(
+        medidas,
+        detalle.medida_id
+      ),
+      buscarNombre(
+        colores,
+        detalle.color_id
+      )
+    ]
+      .filter(
+        (valor) =>
+          valor &&
+          valor !== '-'
+      )
+      .join(' · ') ||
+      'Producto pendiente';
+  };
+
+
+  const validarDetalle = (
+    item:
+      DetallePedidoForm
+  ) => {
+    if (
+      !item.tipo_producto_id ||
+      !item.medida_id ||
+      !item.color_id ||
+      !item.material_id
+    ) {
+      return (
+        'Selecciona tipo, medida, color y material'
+      );
+    }
+
+    const cantidad =
+      Number(
+        item.cantidad_pedida
+      );
+
+    if (
+      !Number.isFinite(
+        cantidad
+      ) ||
+      cantidad <= 0
+    ) {
+      return (
+        'La cantidad total debe ser mayor a 0'
+      );
+    }
+
+    if (
+      !item.unidad_medida_id
+    ) {
+      return (
+        'Selecciona la unidad del producto'
+      );
+    }
+
+    if (
+      item.cantidad_presentacion !==
+      ''
+    ) {
+      const presentacion =
+        Number(
+          item
+            .cantidad_presentacion
+        );
+
+      if (
+        !Number.isFinite(
+          presentacion
+        ) ||
+        presentacion <= 0
+      ) {
+        return (
+          'La presentación debe ser mayor a 0'
+        );
+      }
+
+      if (
+        !item
+          .unidad_presentacion_id
+      ) {
+        return (
+          'El producto debe tener una unidad de presentación'
+        );
+      }
+    }
+
+    const precio =
+      Number(
+        item.precio_unitario
+      );
+
+    if (
+      !Number.isFinite(
+        precio
+      ) ||
+      precio <= 0
+    ) {
+      return (
+        'El precio unitario debe ser mayor a 0'
+      );
+    }
+
+    if (
+      ![
+        'PEN',
+        'USD'
+      ].includes(
+        item.moneda_codigo
+      )
+    ) {
+      return (
+        'Selecciona una moneda válida'
+      );
+    }
+
+    return null;
+  };
+
+
+  const abrirNuevo = () => {
+    if (procesando) {
+      return;
+    }
+
+    if (!clienteId) {
+      onFeedback?.(
+        'warning',
+        'Selecciona primero un cliente para poder recuperar su último precio'
+      );
+      return;
+    }
+
+    ultimaClavePrecioRef.current =
+      null;
+
+    solicitudPrecioRef.current +=
+      1;
+
+    setConsultandoPrecio(false);
+    setPrecioReferencia(null);
+    setSinPrecioHistorico(false);
+
+    setIndiceEditando(
+      null
+    );
+
+    setDetalleModal(
+      crearDetallePredeterminado()
+    );
+
+    setAbierto(true);
+  };
+
+
+  const abrirEdicion = (
+    index: number
+  ) => {
+    if (procesando) {
+      return;
+    }
+
+    const detalle =
+      clonarDetalle(
+        detalles[index]
+      );
+
+    ultimaClavePrecioRef.current =
+      crearClavePrecio(
+        detalle
+      );
+
+    solicitudPrecioRef.current +=
+      1;
+
+    setConsultandoPrecio(false);
+    setPrecioReferencia(null);
+    setSinPrecioHistorico(false);
+
+    setIndiceEditando(
+      index
+    );
+
+    setDetalleModal(
+      detalle
+    );
+
+    setAbierto(true);
+  };
+
+
+  const cerrarModal = () => {
+    if (procesando) {
+      return;
+    }
+
+    solicitudPrecioRef.current +=
+      1;
+
+    setAbierto(false);
+    setDetalleModal(null);
+    setIndiceEditando(null);
+    setConsultandoPrecio(false);
+    setPrecioReferencia(null);
+    setSinPrecioHistorico(false);
+    ultimaClavePrecioRef.current =
+      null;
+  };
+
+
+  useEffect(() => {
+    if (
+      !abierto ||
+      !detalleModal ||
+      !clienteId
+    ) {
+      return;
+    }
+
+    const clave =
+      crearClavePrecio(
+        detalleModal
+      );
+
+    if (!clave) {
+      setConsultandoPrecio(false);
+      setPrecioReferencia(null);
+      setSinPrecioHistorico(false);
+      ultimaClavePrecioRef.current =
+        null;
+      return;
+    }
+
+    if (
+      ultimaClavePrecioRef.current ===
+      clave
+    ) {
+      return;
+    }
+
+    ultimaClavePrecioRef.current =
+      clave;
+
+    const solicitud =
+      ++solicitudPrecioRef.current;
+
+    setConsultandoPrecio(true);
+    setPrecioReferencia(null);
+    setSinPrecioHistorico(false);
+
+    setDetalleModal(
+      (actual) => {
+        if (
+          !actual ||
+          crearClavePrecio(
+            actual
+          ) !== clave
+        ) {
+          return actual;
+        }
+
+        return {
+          ...actual,
+          precio_unitario: '',
+          moneda_codigo: 'PEN'
+        };
+      }
+    );
+
+    const params =
+      new URLSearchParams({
+        cliente_id:
+          String(clienteId),
+        tipo_producto_id:
+          detalleModal
+            .tipo_producto_id,
+        medida_id:
+          detalleModal.medida_id,
+        color_id:
+          detalleModal.color_id,
+        material_id:
+          detalleModal.material_id
+      });
+
+    apiFetch(
+      `/clientes/precios/ultimo?${params.toString()}`
+    )
+      .then((data) => {
+        if (
+          solicitud !==
+          solicitudPrecioRef.current
+        ) {
+          return;
+        }
+
+        const precio =
+          data.precio;
+
+        if (!precio) {
+          setPrecioReferencia(null);
+          setSinPrecioHistorico(true);
+          return;
+        }
+
+        const referencia:
+          PrecioReferencia = {
+          precio_unitario:
+            Number(
+              precio.precio_unitario
+            ),
+          moneda_codigo:
+            String(
+              precio.moneda_codigo
+            ).toUpperCase(),
+          fecha_precio:
+            String(
+              precio.fecha_precio
+            )
+        };
+
+        setDetalleModal(
+          (actual) => {
+            if (
+              !actual ||
+              crearClavePrecio(
+                actual
+              ) !== clave
+            ) {
+              return actual;
+            }
+
+            return {
+              ...actual,
+              precio_unitario:
+                String(
+                  referencia
+                    .precio_unitario
+                ),
+              moneda_codigo:
+                referencia
+                  .moneda_codigo
+            };
+          }
+        );
+
+        setPrecioReferencia(
+          referencia
+        );
+        setSinPrecioHistorico(false);
+      })
+      .catch((error) => {
+        if (
+          solicitud !==
+          solicitudPrecioRef.current
+        ) {
+          return;
+        }
+
+        setPrecioReferencia(null);
+        setSinPrecioHistorico(false);
+
+        onFeedback?.(
+          'warning',
+          error instanceof Error
+            ? error.message
+            : 'No se pudo consultar el último precio del cliente'
+        );
+      })
+      .finally(() => {
+        if (
+          solicitud ===
+          solicitudPrecioRef.current
+        ) {
+          setConsultandoPrecio(false);
+        }
+      });
+  }, [
+    abierto,
+    clienteId,
+    detalleModal?.tipo_producto_id,
+    detalleModal?.medida_id,
+    detalleModal?.color_id,
+    detalleModal?.material_id
+  ]);
+
+
+  /*
+   * El aviso del precio histórico es informativo.
+   * El precio ya queda copiado en el formulario, por lo que
+   * podemos ocultar el mensaje después de unos segundos sin
+   * perder ningún dato ni alterar el valor autocompletado.
+   */
+  useEffect(() => {
+    if (
+      !abierto ||
+      consultandoPrecio ||
+      (
+        !precioReferencia &&
+        !sinPrecioHistorico
+      )
+    ) {
+      return;
+    }
+
+    const temporizador =
+      window.setTimeout(
+        () => {
+          setPrecioReferencia(null);
+          setSinPrecioHistorico(false);
+        },
+        4500
+      );
+
+    return () =>
+      window.clearTimeout(
+        temporizador
+      );
+  }, [
+    abierto,
+    consultandoPrecio,
+    precioReferencia,
+    sinPrecioHistorico
+  ]);
+
+
+  const guardarModal = () => {
+    if (
+      procesando ||
+      !detalleModal
+    ) {
+      return;
+    }
+
+    const error =
+      validarDetalle(
+        detalleModal
+      );
+
+    if (error) {
+      onFeedback?.(
+        'error',
+        error
+      );
+
+      return;
+    }
+
+    if (
+      indiceEditando ===
+      null
+    ) {
+      setDetalles([
+        ...detalles,
+        clonarDetalle(
+          detalleModal
+        )
+      ]);
+
+      onFeedback?.(
+        'success',
+        'Producto agregado al pedido'
+      );
+
+    } else {
+      setDetalles(
+        detalles.map(
+          (
+            item,
+            index
+          ) =>
+            index ===
+            indiceEditando
+              ? clonarDetalle(
+                  detalleModal
+                )
+              : item
+        )
+      );
+
+      onFeedback?.(
+        'success',
+        'Producto actualizado'
+      );
+    }
+
+    solicitudPrecioRef.current +=
+      1;
+
+    setAbierto(false);
+    setDetalleModal(null);
+    setIndiceEditando(null);
+    setConsultandoPrecio(false);
+    setPrecioReferencia(null);
+    setSinPrecioHistorico(false);
+    ultimaClavePrecioRef.current =
+      null;
+  };
+
+
+  const quitar = (
+    index: number
+  ) => {
+    if (procesando) {
+      return;
+    }
+
+    const detalle =
+      detalles[index];
+
+    modal.confirm({
+      title:
+        'Quitar producto',
+
+      content:
+        `¿Deseas quitar ${descripcionProducto(detalle)} del pedido?`,
+
+      okText:
+        'Quitar',
+
+      cancelText:
+        'Cancelar',
+
+      okButtonProps: {
+        danger: true,
+        icon:
+          <DeleteOutlined />
+      },
+
+      onOk: () => {
+        setDetalles(
+          detalles.filter(
+            (
+              _,
+              i
+            ) =>
+              i !== index
+          )
+        );
+
+        onFeedback?.(
+          'success',
+          'Producto quitado del pedido'
+        );
+      }
+    });
+  };
+
+
+  const totalesMoneda =
+    useMemo(
+      () => {
+        const totales:
+          Record<
+            string,
+            number
+          > = {};
+
+        for (
+          const detalle
+          of detalles
+        ) {
+          const moneda =
+            detalle
+              .moneda_codigo ||
+            'PEN';
+
+          const subtotal =
+            Number(
+              detalle
+                .cantidad_pedida ||
+              0
+            ) *
+            Number(
+              detalle
+                .precio_unitario ||
+              0
+            );
+
+          totales[moneda] =
+            (
+              totales[moneda] ||
+              0
+            ) +
+            subtotal;
+        }
+
+        return totales;
+      },
+      [
+        detalles
+      ]
+    );
+
+
+  const columns:
+    TableColumnsType<
+      DetallePedidoForm
+    > = [
+    {
+      title: 'Producto',
+      key: 'producto',
+      minWidth: 260,
+
+      render: (
+        _,
+        detalle,
+        index
+      ) => (
+        <div className="gd-pedido-draft-product-cell">
+          <Text strong>
+            {descripcionProducto(detalle)}
+          </Text>
+
+          <Text
+            type="secondary"
+          >
+            Producto {index + 1}
+          </Text>
+        </div>
+      )
+    },
+
+    {
+      title: 'Cantidad',
+      key: 'cantidad',
+      width: 145,
+
+      render: (
+        _,
+        detalle
+      ) => (
+        <Text>
+          {
+            formatCantidad(
+              Number(
+                detalle
+                  .cantidad_pedida ||
+                0
+              )
+            )
+          } {
+            buscarUnidad(
+              detalle
+                .unidad_medida_id
+            )
+          }
+        </Text>
+      )
+    },
+
+    {
+      title: 'Presentación',
+      key: 'presentacion',
+      width: 155,
+
+      render: (
+        _,
+        detalle
+      ) =>
+        detalle
+          .cantidad_presentacion
+          ? (
+              <Text>
+                {
+                  formatCantidad(
+                    Number(
+                      detalle
+                        .cantidad_presentacion
+                    )
+                  )
+                } {
+                  buscarUnidad(
+                    detalle
+                      .unidad_presentacion_id ||
+                    detalle
+                      .unidad_medida_id
+                  )
+                }
+              </Text>
+            )
+          : (
+              <Text
+                type="secondary"
+              >
+                Sin presentación
+              </Text>
+            )
+    },
+
+    {
+      title: 'Precio',
+      key: 'precio',
+      width: 140,
+
+      render: (
+        _,
+        detalle
+      ) => (
+        <Space
+          size={6}
+        >
+          <Text>
+            {
+              formatMonto(
+                Number(
+                  detalle
+                    .precio_unitario ||
+                  0
+                )
+              )
+            }
+          </Text>
+
+          <Tag>
+            {
+              detalle
+                .moneda_codigo
+            }
+          </Tag>
+        </Space>
+      )
+    },
+
+    {
+      title: 'Subtotal',
+      key: 'subtotal',
+      width: 150,
+
+      render: (
+        _,
+        detalle
+      ) => (
+        <Text strong>
+          {
+            formatMonto(
+              Number(
+                detalle
+                  .cantidad_pedida ||
+                0
+              ) *
+              Number(
+                detalle
+                  .precio_unitario ||
+                0
+              )
+            )
+          } {
+            detalle
+              .moneda_codigo
+          }
+        </Text>
+      )
+    },
+
+    {
+      title: 'Acciones',
+      key: 'acciones',
+      width: 160,
+      fixed: 'right',
+
+      render: (
+        _,
+        __,
+        index
+      ) => (
+        <Space
+          size={4}
+        >
+          <Button
+            type="text"
+            icon={
+              <EditOutlined />
+            }
+            disabled={
+              procesando
+            }
+            onClick={() =>
+              abrirEdicion(
+                index
+              )
+            }
+          >
+            Editar
+          </Button>
+
+          <Button
+            type="text"
+            danger
+            icon={
+              <DeleteOutlined />
+            }
+            disabled={
+              procesando
+            }
+            onClick={() =>
+              quitar(
+                index
+              )
+            }
+          />
+        </Space>
+      )
+    }
+  ];
+
+
+  const esMovil =
+    !screens.md;
+
+
+  return (
+    <>
+      <Card
+        title="Productos del pedido"
+        extra={
+          <Button
+            type="primary"
+            icon={
+              <PlusOutlined />
+            }
+            disabled={
+              procesando
+            }
+            onClick={
+              abrirNuevo
+            }
+          >
+            Agregar producto
+          </Button>
+        }
+        className="gd-pedido-products-card gd-pedido-draft-card"
+      >
+
+        {
+          detalles.length === 0
+            ? (
+                <Empty
+                  image={
+                    Empty
+                      .PRESENTED_IMAGE_SIMPLE
+                  }
+                  description="Aún no agregaste productos al pedido"
+                >
+                  <Button
+                    type="primary"
+                    ghost
+                    icon={
+                      <PlusOutlined />
+                    }
+                    disabled={
+                      procesando
+                    }
+                    onClick={
+                      abrirNuevo
+                    }
+                  >
+                    Agregar primer producto
+                  </Button>
+                </Empty>
+              )
+            : esMovil
+              ? (
+                  <List
+                    className="gd-pedido-mobile-list"
+                    dataSource={
+                      detalles
+                    }
+                    renderItem={(
+                      detalle,
+                      index
+                    ) => {
+                      const subtotal =
+                        Number(
+                          detalle
+                            .cantidad_pedida ||
+                          0
+                        ) *
+                        Number(
+                          detalle
+                            .precio_unitario ||
+                          0
+                        );
+
+                      return (
+                        <List.Item>
+                          <Card
+                            size="small"
+                            className="gd-pedido-mobile-item"
+                          >
+                            <div className="gd-pedido-mobile-item-head">
+                              <div className="gd-pedido-mobile-product">
+                                <Text strong>
+                                  Producto {index + 1}
+                                </Text>
+
+                                <Text>
+                                  {
+                                    descripcionProducto(
+                                      detalle
+                                    )
+                                  }
+                                </Text>
+                              </div>
+
+                              <Tag>
+                                {
+                                  detalle
+                                    .moneda_codigo
+                                }
+                              </Tag>
+                            </div>
+
+                            <div className="gd-pedido-mobile-grid">
+                              <div>
+                                <Text
+                                  type="secondary"
+                                >
+                                  Cantidad
+                                </Text>
+
+                                <Text strong>
+                                  {
+                                    formatCantidad(
+                                      Number(
+                                        detalle
+                                          .cantidad_pedida ||
+                                        0
+                                      )
+                                    )
+                                  } {
+                                    buscarUnidad(
+                                      detalle
+                                        .unidad_medida_id
+                                    )
+                                  }
+                                </Text>
+                              </div>
+
+                              <div>
+                                <Text
+                                  type="secondary"
+                                >
+                                  Presentación
+                                </Text>
+
+                                <Text strong>
+                                  {
+                                    detalle
+                                      .cantidad_presentacion
+                                      ? `${formatCantidad(Number(detalle.cantidad_presentacion))} ${buscarUnidad(detalle.unidad_presentacion_id || detalle.unidad_medida_id)}`
+                                      : '-'
+                                  }
+                                </Text>
+                              </div>
+
+                              <div>
+                                <Text
+                                  type="secondary"
+                                >
+                                  Precio
+                                </Text>
+
+                                <Text strong>
+                                  {
+                                    formatMonto(
+                                      Number(
+                                        detalle
+                                          .precio_unitario ||
+                                        0
+                                      )
+                                    )
+                                  } {
+                                    detalle
+                                      .moneda_codigo
+                                  }
+                                </Text>
+                              </div>
+
+                              <div>
+                                <Text
+                                  type="secondary"
+                                >
+                                  Subtotal
+                                </Text>
+
+                                <Text strong>
+                                  {
+                                    formatMonto(
+                                      subtotal
+                                    )
+                                  } {
+                                    detalle
+                                      .moneda_codigo
+                                  }
+                                </Text>
+                              </div>
+                            </div>
+
+                            <div className="gd-pedido-mobile-actions">
+                              <Button
+                                icon={
+                                  <EditOutlined />
+                                }
+                                disabled={
+                                  procesando
+                                }
+                                onClick={() =>
+                                  abrirEdicion(
+                                    index
+                                  )
+                                }
+                              >
+                                Editar
+                              </Button>
+
+                              <Button
+                                danger
+                                icon={
+                                  <DeleteOutlined />
+                                }
+                                disabled={
+                                  procesando
+                                }
+                                onClick={() =>
+                                  quitar(
+                                    index
+                                  )
+                                }
+                              >
+                                Quitar
+                              </Button>
+                            </div>
+                          </Card>
+                        </List.Item>
+                      );
+                    }}
+                  />
+                )
+              : (
+                  <Table<DetallePedidoForm>
+                    rowKey={(
+                      _,
+                      index
+                    ) =>
+                      String(
+                        index
+                      )
+                    }
+                    columns={
+                      columns
+                    }
+                    dataSource={
+                      detalles
+                    }
+                    pagination={false}
+                    scroll={{
+                      x: 1050
+                    }}
+                    className="gd-pedido-draft-table"
+                  />
+                )
+        }
+
+
+        {
+          detalles.length > 0 &&
+          (
+            <div className="gd-pedido-draft-summary">
+              <Text
+                type="secondary"
+              >
+                {
+                  detalles.length
+                } producto(s) preparado(s)
+              </Text>
+
+              <Space
+                wrap
+                size={8}
+              >
+                {
+                  Object.entries(
+                    totalesMoneda
+                  ).map(
+                    ([
+                      moneda,
+                      total
+                    ]) => (
+                      <Tag
+                        key={
+                          moneda
+                        }
+                      >
+                        Total {moneda}: {
+                          formatMonto(
+                            total
+                          )
+                        }
+                      </Tag>
+                    )
+                  )
+                }
+              </Space>
+            </div>
+          )
+        }
+
+      </Card>
+
+
+      <Modal
+        open={abierto}
+        title={
+          indiceEditando ===
+          null
+            ? 'Agregar producto al pedido'
+            : `Editar producto ${indiceEditando + 1}`
+        }
+        width={
+          screens.md
+            ? 980
+            : 'calc(100vw - 24px)'
+        }
+        centered
+        maskClosable={false}
+        keyboard={
+          !procesando
+        }
+        closable={
+          !procesando
+        }
+        onCancel={
+          cerrarModal
+        }
+        styles={{
+          body: {
+            maxHeight:
+              screens.md
+                ? '72vh'
+                : '76vh',
+            overflowY:
+              'auto',
+            paddingRight: 4
+          }
+        }}
+        footer={
+          <Space
+            className="gd-pedido-modal-footer"
+          >
+            <Button
+              disabled={
+                procesando
+              }
+              onClick={
+                cerrarModal
+              }
+            >
+              Cancelar
+            </Button>
+
+            <Button
+              type="primary"
+              disabled={
+                procesando ||
+                !detalleModal
+              }
+              onClick={
+                guardarModal
+              }
+            >
+              {
+                indiceEditando ===
+                null
+                  ? 'Agregar producto'
+                  : 'Guardar cambios'
+              }
+            </Button>
+          </Space>
+        }
+        className="gd-pedido-product-modal"
+      >
+
+        {
+          consultandoPrecio &&
+          (
+            <Alert
+              type="info"
+              showIcon
+              message="Buscando el último precio de este producto para el cliente"
+              className="gd-pedido-price-reference"
+            />
+          )
+        }
+
+        {
+          !consultandoPrecio &&
+          precioReferencia &&
+          (
+            <Alert
+              type="success"
+              showIcon
+              message={
+                `Precio más reciente: ${formatMonto(precioReferencia.precio_unitario)} ${precioReferencia.moneda_codigo}`
+              }
+              description={
+                `Se completó automáticamente con el precio del ${precioReferencia.fecha_precio.slice(0, 10)}. Puedes modificarlo si este pedido tendrá otro precio.`
+              }
+              className="gd-pedido-price-reference"
+            />
+          )
+        }
+
+        {
+          !consultandoPrecio &&
+          sinPrecioHistorico &&
+          (
+            <Alert
+              type="warning"
+              showIcon
+              message="Este cliente no tiene un precio anterior para este producto"
+              description="Ingresa el precio manualmente. Al registrar el pedido quedará guardado en el historial del cliente."
+              className="gd-pedido-price-reference"
+            />
+          )
+        }
+
+        {
+          detalleModal &&
+          (
+            <PedidoItemsEditor
+              detalles={[
+                detalleModal
+              ]}
+              setDetalles={(
+                nuevos
+              ) => {
+                if (
+                  nuevos[0]
+                ) {
+                  setDetalleModal(
+                    clonarDetalle(
+                      nuevos[0]
+                    )
+                  );
+                }
+              }}
+              tipos={tipos}
+              medidas={medidas}
+              colores={colores}
+              materiales={
+                materiales
+              }
+              unidades={
+                unidades
+              }
+              titulo="Datos del producto"
+              permitirAgregar={false}
+              permitirQuitar={false}
+              procesando={
+                procesando
+              }
+            />
+          )
+        }
+
+      </Modal>
+    </>
+  );
+}
+
+
+export default PedidoItemsModalTable;
 
 
 <<<END OF FILE>>>
@@ -6964,7 +8598,6 @@ import {
   Result,
   Select,
   Skeleton,
-  Space,
   Statistic,
   Table,
   Tag,
@@ -8209,7 +9842,6 @@ import {
   Empty,
   Form,
   Input,
-  Progress,
   Row,
   Select,
   Space,
@@ -8246,8 +9878,7 @@ import PageHeader
   from '../../components/ui/PageHeader';
 
 import {
-  formatCantidad,
-  formatPeso
+  formatCantidad
 } from '../../utils/formatters';
 
 import '../../styles/almacenProductoTerminadoAntd.css';
@@ -8379,7 +10010,7 @@ function AlmacenProductoTerminado() {
   const [
     formResumen
   ] = Form.useForm<
-    FiltrosBase
+    FiltrosPresentaciones
   >();
 
   const [
@@ -15125,9 +16756,7 @@ import PageHeader
   from '../components/ui/PageHeader';
 
 import {
-  formatCantidad,
   formatMonto,
-  formatPrecio
 } from '../utils/formatters';
 
 import '../styles/comprasGeneralesAntd.css';
@@ -18485,9 +20114,7 @@ import {
   Select,
   Skeleton,
   Space,
-  Statistic,
-  Tag,
-  Typography
+  Statistic
 } from 'antd';
 
 import {
@@ -18531,10 +20158,6 @@ import {
 
 import '../../styles/comprasMateriaPrimaAntd.css';
 
-
-const {
-  Text
-} = Typography;
 
 const {
   TextArea
@@ -20548,7 +22171,6 @@ import {
   Row,
   Select,
   Skeleton,
-  Space,
   Statistic,
   Table,
   Tag,
@@ -29131,8 +30753,7 @@ import {
   Select,
   Skeleton,
   Space,
-  Statistic,
-  Typography
+  Statistic
 } from 'antd';
 
 import {
@@ -29175,10 +30796,6 @@ import {
 
 import '../../styles/mermasAntd.css';
 
-
-const {
-  Text
-} = Typography;
 
 const {
   TextArea
@@ -34263,7 +35880,7 @@ import {
   SaveOutlined
 } from '@ant-design/icons';
 
-import dayjs, {
+import type {
   Dayjs
 } from 'dayjs';
 
@@ -34284,10 +35901,12 @@ import {
   useBloqueoAccion
 } from '../../hooks/useBloqueoAccion';
 
-import PedidoItemsEditor, {
-  detallePedidoVacio,
+import {
   type DetallePedidoForm
 } from '../../components/pedidos/PedidoItemsEditor';
+
+import PedidoItemsModalTable
+  from '../../components/pedidos/PedidoItemsModalTable';
 
 import BackButton
   from '../../components/ui/BackButton';
@@ -34382,11 +36001,7 @@ function RegistrarPedido() {
     setDetalles
   ] = useState<
     DetallePedidoForm[]
-  >([
-    {
-      ...detallePedidoVacio
-    }
-  ]);
+  >([]);
 
   const {
     procesando,
@@ -34993,7 +36608,7 @@ function RegistrarPedido() {
       </Card>
 
 
-      <PedidoItemsEditor
+      <PedidoItemsModalTable
         detalles={
           detalles
         }
@@ -35008,6 +36623,9 @@ function RegistrarPedido() {
         }
         unidades={
           unidades
+        }
+        clienteId={
+          clienteId
         }
         procesando={
           procesando
@@ -36275,6 +37893,8 @@ export default ProduccionesLista;
 
 <<<START OF FILE>>>
 
+import type { TableColumnsType } from 'antd';
+
 import {
   App as AntdApp,
   Alert,
@@ -36283,68 +37903,44 @@ import {
   Col,
   DatePicker,
   Divider,
+  Empty,
   Form,
+  Grid,
   Input,
   InputNumber,
+  List,
+  Modal,
   Progress,
   Row,
   Select,
   Skeleton,
   Space,
+  Table,
   Tag,
   Typography
 } from 'antd';
 
 import {
   DeleteOutlined,
+  EditOutlined,
   PlusOutlined,
   SaveOutlined
 } from '@ant-design/icons';
 
-import dayjs, {
-  Dayjs
-} from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import {
-  useEffect,
-  useMemo,
-  useState
-} from 'react';
-
-import {
-  useNavigate
-} from 'react-router-dom';
-
-import {
-  apiFetch
-} from '../../services/api';
-
-import {
-  useBloqueoAccion
-} from '../../hooks/useBloqueoAccion';
-
-import BackButton
-  from '../../components/ui/BackButton';
-
-import PageHeader
-  from '../../components/ui/PageHeader';
-
-import {
-  formatCantidad,
-  formatPeso
-} from '../../utils/formatters';
+import { apiFetch } from '../../services/api';
+import { useBloqueoAccion } from '../../hooks/useBloqueoAccion';
+import BackButton from '../../components/ui/BackButton';
+import PageHeader from '../../components/ui/PageHeader';
+import { formatCantidad, formatPeso } from '../../utils/formatters';
 
 import '../../styles/produccionesAntd.css';
 
-
-const {
-  Text,
-  Title
-} = Typography;
-
-const {
-  TextArea
-} = Input;
+const { Text, Title } = Typography;
+const { TextArea } = Input;
 
 
 type Opcion = {
@@ -36362,29 +37958,17 @@ type OpcionesProducto = {
 
 
 type Componente = {
-  producto_composicion_detalle_id:
-    number;
-
-  material:
-    string;
-
-  color:
-    string;
-
-  porcentaje:
-    number;
+  producto_composicion_detalle_id: number;
+  material: string;
+  color: string;
+  porcentaje: number;
 };
 
 
 type Composicion = {
-  producto_composicion_id:
-    number;
-
-  version_numero:
-    number;
-
-  detalles:
-    Componente[];
+  producto_composicion_id: number;
+  version_numero: number;
+  detalles: Componente[];
 };
 
 
@@ -36394,53 +37978,29 @@ type Producto = {
   material: string;
   medida: string;
   color: string;
-
-  composicion_vigente:
-    Composicion | null;
+  composicion_vigente: Composicion | null;
 };
 
 
 type DetalleProduccionForm = {
   local_id: string;
-
-  tipo_producto_id:
-    number | null;
-
-  material_id:
-    number | null;
-
-  medida_id:
-    number | null;
-
-  color_id:
-    number | null;
-
-  opciones:
-    OpcionesProducto;
-
-  producto:
-    Producto | null;
-
-  buscandoProducto:
-    boolean;
-
-  cantidad_producida:
-    number | null;
-
-  cantidad_presentacion:
-    number | null;
-
-  observacion:
-    string;
+  tipo_producto_id: number | null;
+  material_id: number | null;
+  medida_id: number | null;
+  color_id: number | null;
+  opciones: OpcionesProducto;
+  producto: Producto | null;
+  buscandoProducto: boolean;
+  cantidad_producida: number | null;
+  cantidad_presentacion: number | null;
+  observacion: string;
 };
 
 
 const nuevaKey = () => {
   if (
-    typeof crypto !==
-      'undefined' &&
-    typeof crypto.randomUUID ===
-      'function'
+    typeof crypto !== 'undefined' &&
+    typeof crypto.randomUUID === 'function'
   ) {
     return crypto.randomUUID();
   }
@@ -36448,125 +38008,100 @@ const nuevaKey = () => {
   return [
     'produccion',
     Date.now(),
-    Math.random()
-      .toString(36)
-      .slice(2)
+    Math.random().toString(36).slice(2)
   ].join('-');
 };
 
 
 const nuevoLocalId = () => {
   if (
-    typeof crypto !==
-      'undefined' &&
-    typeof crypto.randomUUID ===
-      'function'
+    typeof crypto !== 'undefined' &&
+    typeof crypto.randomUUID === 'function'
   ) {
     return crypto.randomUUID();
   }
 
   return [
     Date.now(),
-    Math.random()
-      .toString(36)
-      .slice(2)
+    Math.random().toString(36).slice(2)
   ].join('-');
 };
 
 
 const crearDetalle = (
-  tipos:
-    Opcion[]
+  tipos: Opcion[]
 ): DetalleProduccionForm => ({
-  local_id:
-    nuevoLocalId(),
-
-  tipo_producto_id:
-    null,
-
-  material_id:
-    null,
-
-  medida_id:
-    null,
-
-  color_id:
-    null,
-
+  local_id: nuevoLocalId(),
+  tipo_producto_id: null,
+  material_id: null,
+  medida_id: null,
+  color_id: null,
   opciones: {
     tipos,
     materiales: [],
     medidas: [],
     colores: []
   },
-
-  producto:
-    null,
-
-  buscandoProducto:
-    false,
-
-  cantidad_producida:
-    null,
-
-  cantidad_presentacion:
-    null,
-
-  observacion:
-    ''
+  producto: null,
+  buscandoProducto: false,
+  cantidad_producida: null,
+  cantidad_presentacion: null,
+  observacion: ''
 });
 
 
+const nombreProducto = (
+  detalle: DetalleProduccionForm
+) => {
+  if (!detalle.producto) {
+    return 'Producto pendiente';
+  }
+
+  return [
+    detalle.producto.tipo_producto,
+    detalle.producto.medida,
+    detalle.producto.color
+  ].filter(Boolean).join(' · ');
+};
+
+
 function RegistrarProduccion() {
-  const navigate =
-    useNavigate();
+  const navigate = useNavigate();
+  const screens = Grid.useBreakpoint();
 
   const {
     message,
     modal
   } = AntdApp.useApp();
 
-  const [
-    fechaProduccion,
-    setFechaProduccion
-  ] = useState<Dayjs | null>(
-    dayjs()
-  );
+  const [fechaProduccion, setFechaProduccion] =
+    useState<Dayjs | null>(dayjs());
 
-  const [
-    observacion,
-    setObservacion
-  ] = useState('');
+  const [observacion, setObservacion] =
+    useState('');
 
-  const [
-    tiposBase,
-    setTiposBase
-  ] = useState<Opcion[]>([]);
+  const [tiposBase, setTiposBase] =
+    useState<Opcion[]>([]);
 
-  const [
-    unidadKgId,
-    setUnidadKgId
-  ] = useState<
-    number | null
-  >(null);
+  const [unidadKgId, setUnidadKgId] =
+    useState<number | null>(null);
 
-  const [
-    detalles,
-    setDetalles
-  ] = useState<
-    DetalleProduccionForm[]
-  >([]);
+  const [detalles, setDetalles] =
+    useState<DetalleProduccionForm[]>([]);
 
-  const [
-    cargandoInicial,
-    setCargandoInicial
-  ] = useState(true);
+  const [cargandoInicial, setCargandoInicial] =
+    useState(true);
 
-  const [
-    idempotencyKey
-  ] = useState(
-    nuevaKey
-  );
+  const [modalProductoAbierto, setModalProductoAbierto] =
+    useState(false);
+
+  const [detalleModal, setDetalleModal] =
+    useState<DetalleProduccionForm | null>(null);
+
+  const [localIdEditando, setLocalIdEditando] =
+    useState<string | null>(null);
+
+  const [idempotencyKey] = useState(nuevaKey);
 
   const {
     procesando,
@@ -36576,540 +38111,357 @@ function RegistrarProduccion() {
 
 
   useEffect(() => {
-    const cargar =
-      async () => {
-        setCargandoInicial(
-          true
+    const cargar = async () => {
+      setCargandoInicial(true);
+
+      try {
+        const [opcionesData, unidadesData] = await Promise.all([
+          apiFetch('/productos-terminados/opciones'),
+          apiFetch('/catalogos/unidades-medida')
+        ]);
+
+        const tipos: Opcion[] =
+          opcionesData.tipos || [];
+
+        const unidadKg = (
+          unidadesData.unidades || []
+        ).find(
+          (item: any) =>
+            String(item.codigo).toUpperCase() === 'KG'
         );
 
-        try {
-          const [
-            opcionesData,
-            unidadesData
-          ] = await Promise.all([
-            apiFetch(
-              '/productos-terminados/opciones'
-            ),
-
-            apiFetch(
-              '/catalogos/unidades-medida'
-            )
-          ]);
-
-
-          const tipos:
-            Opcion[] =
-            opcionesData.tipos ||
-            [];
-
-
-          const unidadKg =
-            (
-              unidadesData.unidades ||
-              []
-            ).find(
-              (item: any) =>
-                String(
-                  item.codigo
-                ).toUpperCase() ===
-                'KG'
-            );
-
-
-          if (!unidadKg) {
-            throw new Error(
-              'No se encontró la unidad KG en el catálogo'
-            );
-          }
-
-
-          setTiposBase(
-            tipos
-          );
-
-          setUnidadKgId(
-            Number(
-              unidadKg
-                .unidad_medida_id
-            )
-          );
-
-          setDetalles([
-            crearDetalle(
-              tipos
-            )
-          ]);
-
-        } catch (error) {
-          message.error(
-            error instanceof Error
-              ? error.message
-              : 'No se pudieron cargar los datos para registrar producción'
-          );
-
-        } finally {
-          setCargandoInicial(
-            false
+        if (!unidadKg) {
+          throw new Error(
+            'No se encontró la unidad KG en el catálogo'
           );
         }
-      };
+
+        setTiposBase(tipos);
+        setUnidadKgId(
+          Number(unidadKg.unidad_medida_id)
+        );
+      } catch (error) {
+        message.error(
+          error instanceof Error
+            ? error.message
+            : 'No se pudieron cargar los datos para registrar producción'
+        );
+      } finally {
+        setCargandoInicial(false);
+      }
+    };
 
     cargar();
-  }, [
-    message
-  ]);
+  }, [message]);
 
 
-  const actualizarDetalle = (
-    index: number,
-    cambios:
-      Partial<
-        DetalleProduccionForm
-      >
+  const cargarOpciones = async (
+    params: Record<string, string>
   ) => {
-    setDetalles(
-      (actuales) =>
-        actuales.map(
-          (
-            detalle,
-            i
-          ) =>
-            i === index
-              ? {
-                  ...detalle,
-                  ...cambios
-                }
-              : detalle
-        )
+    const query = new URLSearchParams(params);
+
+    return apiFetch(
+      `/productos-terminados/opciones?${query.toString()}`
     );
   };
 
 
-  const cargarOpciones =
-    async (
-      params:
-        Record<
-          string,
-          string
-        >
-    ) => {
-      const query =
-        new URLSearchParams(
-          params
-        );
-
-      return apiFetch(
-        `/productos-terminados/opciones?${query.toString()}`
-      );
-    };
-
-
-  const cambiarTipo =
-    async (
-      index: number,
-      valor:
-        number | null
-    ) => {
-      actualizarDetalle(
-        index,
-        {
-          tipo_producto_id:
-            valor,
-
-          material_id:
-            null,
-
-          medida_id:
-            null,
-
-          color_id:
-            null,
-
-          producto:
-            null,
-
-          buscandoProducto:
-            Boolean(valor),
-
-          opciones: {
-            tipos:
-              tiposBase,
-            materiales: [],
-            medidas: [],
-            colores: []
+  const actualizarDetalleModal = (
+    cambios: Partial<DetalleProduccionForm>
+  ) => {
+    setDetalleModal((actual) =>
+      actual
+        ? {
+            ...actual,
+            ...cambios
           }
-        }
-      );
+        : actual
+    );
+  };
 
 
-      if (!valor) {
-        return;
+  const cambiarTipo = async (
+    valor: number | null
+  ) => {
+    actualizarDetalleModal({
+      tipo_producto_id: valor,
+      material_id: null,
+      medida_id: null,
+      color_id: null,
+      producto: null,
+      buscandoProducto: Boolean(valor),
+      opciones: {
+        tipos: tiposBase,
+        materiales: [],
+        medidas: [],
+        colores: []
       }
+    });
 
+    if (!valor) {
+      return;
+    }
 
-      try {
-        const data =
-          await cargarOpciones({
-            tipo_producto_id:
-              String(valor)
-          });
+    try {
+      const data = await cargarOpciones({
+        tipo_producto_id: String(valor)
+      });
 
-
-        actualizarDetalle(
-          index,
-          {
-            buscandoProducto:
-              false,
-
-            opciones: {
-              tipos:
-                tiposBase,
-
-              materiales:
-                data.materiales ||
-                [],
-
-              medidas: [],
-              colores: []
-            }
-          }
-        );
-
-      } catch (error) {
-        actualizarDetalle(
-          index,
-          {
-            buscandoProducto:
-              false
-          }
-        );
-
-        message.error(
-          error instanceof Error
-            ? error.message
-            : 'No se pudieron cargar los materiales'
-        );
-      }
-    };
-
-
-  const cambiarMaterial =
-    async (
-      index: number,
-      valor:
-        number | null
-    ) => {
-      const detalle =
-        detalles[index];
-
-
-      actualizarDetalle(
-        index,
-        {
-          material_id:
-            valor,
-
-          medida_id:
-            null,
-
-          color_id:
-            null,
-
-          producto:
-            null,
-
-          buscandoProducto:
-            Boolean(valor),
-
-          opciones: {
-            ...detalle.opciones,
-            medidas: [],
-            colores: []
-          }
-        }
-      );
-
-
-      if (
-        !valor ||
-        !detalle
-          .tipo_producto_id
-      ) {
-        return;
-      }
-
-
-      try {
-        const data =
-          await cargarOpciones({
-            tipo_producto_id:
-              String(
-                detalle
-                  .tipo_producto_id
-              ),
-
-            material_id:
-              String(valor)
-          });
-
-
-        actualizarDetalle(
-          index,
-          {
-            buscandoProducto:
-              false,
-
-            opciones: {
-              ...detalle.opciones,
-
-              medidas:
-                data.medidas ||
-                [],
-
-              colores: []
-            }
-          }
-        );
-
-      } catch (error) {
-        actualizarDetalle(
-          index,
-          {
-            buscandoProducto:
-              false
-          }
-        );
-
-        message.error(
-          error instanceof Error
-            ? error.message
-            : 'No se pudieron cargar las medidas'
-        );
-      }
-    };
-
-
-  const cambiarMedida =
-    async (
-      index: number,
-      valor:
-        number | null
-    ) => {
-      const detalle =
-        detalles[index];
-
-
-      actualizarDetalle(
-        index,
-        {
-          medida_id:
-            valor,
-
-          color_id:
-            null,
-
-          producto:
-            null,
-
-          buscandoProducto:
-            Boolean(valor),
-
-          opciones: {
-            ...detalle.opciones,
-            colores: []
-          }
-        }
-      );
-
-
-      if (
-        !valor ||
-        !detalle
-          .tipo_producto_id ||
-        !detalle.material_id
-      ) {
-        return;
-      }
-
-
-      try {
-        const data =
-          await cargarOpciones({
-            tipo_producto_id:
-              String(
-                detalle
-                  .tipo_producto_id
-              ),
-
-            material_id:
-              String(
-                detalle.material_id
-              ),
-
-            medida_id:
-              String(valor)
-          });
-
-
-        actualizarDetalle(
-          index,
-          {
-            buscandoProducto:
-              false,
-
-            opciones: {
-              ...detalle.opciones,
-
-              colores:
-                data.colores ||
-                []
-            }
-          }
-        );
-
-      } catch (error) {
-        actualizarDetalle(
-          index,
-          {
-            buscandoProducto:
-              false
-          }
-        );
-
-        message.error(
-          error instanceof Error
-            ? error.message
-            : 'No se pudieron cargar los colores'
-        );
-      }
-    };
-
-
-  const cambiarColor =
-    async (
-      index: number,
-      valor:
-        number | null
-    ) => {
-      const detalle =
-        detalles[index];
-
-
-      actualizarDetalle(
-        index,
-        {
-          color_id:
-            valor,
-
-          producto:
-            null,
-
-          buscandoProducto:
-            Boolean(valor)
-        }
-      );
-
-
-      if (
-        !valor ||
-        !detalle
-          .tipo_producto_id ||
-        !detalle
-          .material_id ||
-        !detalle
-          .medida_id
-      ) {
-        return;
-      }
-
-
-      try {
-        const opcionesData =
-          await cargarOpciones({
-            tipo_producto_id:
-              String(
-                detalle
-                  .tipo_producto_id
-              ),
-
-            material_id:
-              String(
-                detalle.material_id
-              ),
-
-            medida_id:
-              String(
-                detalle.medida_id
-              ),
-
-            color_id:
-              String(valor)
-          });
-
-
+      setDetalleModal((actual) => {
         if (
-          !opcionesData.producto
-            ?.producto_id
+          !actual ||
+          actual.tipo_producto_id !== valor
         ) {
-          actualizarDetalle(
-            index,
-            {
-              buscandoProducto:
-                false,
-
-              producto:
-                null
-            }
-          );
-
-          message.warning(
-            'No existe un producto terminado con esa selección'
-          );
-
-          return;
+          return actual;
         }
 
-
-        const productoData =
-          await apiFetch(
-            `/productos-terminados/${opcionesData.producto.producto_id}`
-          );
-
-
-        actualizarDetalle(
-          index,
-          {
-            buscandoProducto:
-              false,
-
-            producto:
-              productoData
-                .producto
+        return {
+          ...actual,
+          buscandoProducto: false,
+          opciones: {
+            tipos: tiposBase,
+            materiales: data.materiales || [],
+            medidas: [],
+            colores: []
           }
-        );
+        };
+      });
+    } catch (error) {
+      actualizarDetalleModal({
+        buscandoProducto: false
+      });
 
-      } catch (error) {
-        actualizarDetalle(
-          index,
-          {
-            buscandoProducto:
-              false,
+      message.error(
+        error instanceof Error
+          ? error.message
+          : 'No se pudieron cargar los materiales'
+      );
+    }
+  };
 
-            producto:
-              null
-          }
-        );
 
-        message.error(
-          error instanceof Error
-            ? error.message
-            : 'No se pudo cargar el producto'
-        );
+  const cambiarMaterial = async (
+    valor: number | null
+  ) => {
+    const actual = detalleModal;
+
+    if (!actual) {
+      return;
+    }
+
+    actualizarDetalleModal({
+      material_id: valor,
+      medida_id: null,
+      color_id: null,
+      producto: null,
+      buscandoProducto: Boolean(valor),
+      opciones: {
+        ...actual.opciones,
+        medidas: [],
+        colores: []
       }
-    };
+    });
+
+    if (
+      !valor ||
+      !actual.tipo_producto_id
+    ) {
+      return;
+    }
+
+    try {
+      const data = await cargarOpciones({
+        tipo_producto_id:
+          String(actual.tipo_producto_id),
+        material_id: String(valor)
+      });
+
+      setDetalleModal((detalle) => {
+        if (
+          !detalle ||
+          detalle.material_id !== valor
+        ) {
+          return detalle;
+        }
+
+        return {
+          ...detalle,
+          buscandoProducto: false,
+          opciones: {
+            ...detalle.opciones,
+            medidas: data.medidas || [],
+            colores: []
+          }
+        };
+      });
+    } catch (error) {
+      actualizarDetalleModal({
+        buscandoProducto: false
+      });
+
+      message.error(
+        error instanceof Error
+          ? error.message
+          : 'No se pudieron cargar las medidas'
+      );
+    }
+  };
 
 
-  const agregarProducto = () => {
+  const cambiarMedida = async (
+    valor: number | null
+  ) => {
+    const actual = detalleModal;
+
+    if (!actual) {
+      return;
+    }
+
+    actualizarDetalleModal({
+      medida_id: valor,
+      color_id: null,
+      producto: null,
+      buscandoProducto: Boolean(valor),
+      opciones: {
+        ...actual.opciones,
+        colores: []
+      }
+    });
+
+    if (
+      !valor ||
+      !actual.tipo_producto_id ||
+      !actual.material_id
+    ) {
+      return;
+    }
+
+    try {
+      const data = await cargarOpciones({
+        tipo_producto_id:
+          String(actual.tipo_producto_id),
+        material_id:
+          String(actual.material_id),
+        medida_id:
+          String(valor)
+      });
+
+      setDetalleModal((detalle) => {
+        if (
+          !detalle ||
+          detalle.medida_id !== valor
+        ) {
+          return detalle;
+        }
+
+        return {
+          ...detalle,
+          buscandoProducto: false,
+          opciones: {
+            ...detalle.opciones,
+            colores: data.colores || []
+          }
+        };
+      });
+    } catch (error) {
+      actualizarDetalleModal({
+        buscandoProducto: false
+      });
+
+      message.error(
+        error instanceof Error
+          ? error.message
+          : 'No se pudieron cargar los colores'
+      );
+    }
+  };
+
+
+  const cambiarColor = async (
+    valor: number | null
+  ) => {
+    const actual = detalleModal;
+
+    if (!actual) {
+      return;
+    }
+
+    actualizarDetalleModal({
+      color_id: valor,
+      producto: null,
+      buscandoProducto: Boolean(valor)
+    });
+
+    if (
+      !valor ||
+      !actual.tipo_producto_id ||
+      !actual.material_id ||
+      !actual.medida_id
+    ) {
+      return;
+    }
+
+    try {
+      const opcionesData = await cargarOpciones({
+        tipo_producto_id:
+          String(actual.tipo_producto_id),
+        material_id:
+          String(actual.material_id),
+        medida_id:
+          String(actual.medida_id),
+        color_id:
+          String(valor)
+      });
+
+      if (
+        !opcionesData.producto?.producto_id
+      ) {
+        actualizarDetalleModal({
+          buscandoProducto: false,
+          producto: null
+        });
+
+        message.warning(
+          'No existe un producto terminado con esa selección'
+        );
+
+        return;
+      }
+
+      const productoData = await apiFetch(
+        `/productos-terminados/${opcionesData.producto.producto_id}`
+      );
+
+      setDetalleModal((detalle) => {
+        if (
+          !detalle ||
+          detalle.color_id !== valor
+        ) {
+          return detalle;
+        }
+
+        return {
+          ...detalle,
+          buscandoProducto: false,
+          producto: productoData.producto
+        };
+      });
+    } catch (error) {
+      actualizarDetalleModal({
+        buscandoProducto: false,
+        producto: null
+      });
+
+      message.error(
+        error instanceof Error
+          ? error.message
+          : 'No se pudo cargar el producto'
+      );
+    }
+  };
+
+
+  const abrirNuevoProducto = () => {
     if (
       procesando ||
       detalles.length >= 50
@@ -37117,435 +38469,544 @@ function RegistrarProduccion() {
       return;
     }
 
-    setDetalles(
-      (actuales) => [
-        ...actuales,
-        crearDetalle(
-          tiposBase
-        )
-      ]
+    setLocalIdEditando(null);
+    setDetalleModal(
+      crearDetalle(tiposBase)
     );
+    setModalProductoAbierto(true);
+  };
+
+
+  const abrirEditarProducto = (
+    detalle: DetalleProduccionForm
+  ) => {
+    if (procesando) {
+      return;
+    }
+
+    setLocalIdEditando(
+      detalle.local_id
+    );
+
+    setDetalleModal({
+      ...detalle,
+      opciones: {
+        tipos: [...detalle.opciones.tipos],
+        materiales: [...detalle.opciones.materiales],
+        medidas: [...detalle.opciones.medidas],
+        colores: [...detalle.opciones.colores]
+      }
+    });
+
+    setModalProductoAbierto(true);
+  };
+
+
+  const cerrarModalProducto = () => {
+    if (
+      detalleModal?.buscandoProducto
+    ) {
+      return;
+    }
+
+    setModalProductoAbierto(false);
+    setDetalleModal(null);
+    setLocalIdEditando(null);
+  };
+
+
+  const validarDetalle = (
+    detalle: DetalleProduccionForm,
+    etiqueta = 'El producto'
+  ) => {
+    if (!detalle.producto) {
+      return `${etiqueta} debe estar completamente seleccionado`;
+    }
+
+    if (
+      !detalle.producto.composicion_vigente
+    ) {
+      return `${etiqueta} no tiene una composición vigente`;
+    }
+
+    const cantidad = Number(
+      detalle.cantidad_producida || 0
+    );
+
+    const presentacion = Number(
+      detalle.cantidad_presentacion || 0
+    );
+
+    if (cantidad <= 0) {
+      return `${etiqueta} debe tener una cantidad producida mayor a 0`;
+    }
+
+    if (presentacion <= 0) {
+      return `${etiqueta} debe tener una presentación mayor a 0`;
+    }
+
+    const cantidadCent = Math.round(
+      cantidad * 100
+    );
+
+    const presentacionCent = Math.round(
+      presentacion * 100
+    );
+
+    if (
+      presentacionCent <= 0 ||
+      cantidadCent % presentacionCent !== 0
+    ) {
+      return `${etiqueta}: la cantidad producida debe ser múltiplo de su presentación`;
+    }
+
+    return null;
+  };
+
+
+  const guardarProductoModal = () => {
+    if (!detalleModal) {
+      return;
+    }
+
+    const error = validarDetalle(
+      detalleModal
+    );
+
+    if (error) {
+      message.error(error);
+      return;
+    }
+
+    if (localIdEditando) {
+      setDetalles((actuales) =>
+        actuales.map((detalle) =>
+          detalle.local_id === localIdEditando
+            ? detalleModal
+            : detalle
+        )
+      );
+
+      message.success(
+        'Producto actualizado en la producción'
+      );
+    } else {
+      setDetalles((actuales) => [
+        ...actuales,
+        detalleModal
+      ]);
+    }
+
+    setModalProductoAbierto(false);
+    setDetalleModal(null);
+    setLocalIdEditando(null);
   };
 
 
   const quitarProducto = (
-    index: number
+    detalle: DetalleProduccionForm
   ) => {
-    if (
-      procesando
-    ) {
+    if (procesando) {
       return;
     }
 
-    if (
-      detalles.length ===
-      1
-    ) {
-      message.warning(
-        'La producción debe tener al menos un producto'
-      );
-
-      return;
-    }
-
-    setDetalles(
-      (actuales) =>
-        actuales.filter(
-          (
-            _,
-            i
-          ) =>
-            i !== index
-        )
-    );
+    modal.confirm({
+      title: 'Quitar producto',
+      content:
+        `Se quitará ${nombreProducto(detalle)} de esta producción.`,
+      okText: 'Quitar',
+      okButtonProps: {
+        danger: true
+      },
+      cancelText: 'Cancelar',
+      onOk: () => {
+        setDetalles((actuales) =>
+          actuales.filter(
+            (item) =>
+              item.local_id !==
+              detalle.local_id
+          )
+        );
+      }
+    });
   };
 
 
-  const totalProducido =
-    useMemo(
-      () =>
-        detalles.reduce(
-          (
-            total,
-            detalle
-          ) =>
-            total +
-            Number(
-              detalle
-                .cantidad_producida ||
-              0
-            ),
-          0
-        ),
-      [
-        detalles
-      ]
-    );
+  const totalProducido = useMemo(
+    () =>
+      detalles.reduce(
+        (total, detalle) =>
+          total +
+          Number(
+            detalle.cantidad_producida || 0
+          ),
+        0
+      ),
+    [detalles]
+  );
 
 
   const validar = () => {
-    if (
-      !fechaProduccion
-    ) {
-      return (
-        'La fecha de producción es obligatoria'
-      );
+    if (!fechaProduccion) {
+      return 'La fecha de producción es obligatoria';
     }
 
-
-    if (
-      !unidadKgId
-    ) {
-      return (
-        'No se pudo determinar la unidad KG'
-      );
+    if (!unidadKgId) {
+      return 'No se pudo determinar la unidad KG';
     }
 
-
-    if (
-      detalles.length === 0
-    ) {
-      return (
-        'La producción debe tener al menos un producto'
-      );
+    if (detalles.length === 0) {
+      return 'La producción debe tener al menos un producto';
     }
-
 
     for (
       let i = 0;
       i < detalles.length;
       i++
     ) {
-      const detalle =
-        detalles[i];
+      const error = validarDetalle(
+        detalles[i],
+        `El producto ${i + 1}`
+      );
 
-
-      if (
-        !detalle.producto
-      ) {
-        return (
-          `Completa la selección del producto ${i + 1}`
-        );
-      }
-
-
-      if (
-        !detalle.producto
-          .composicion_vigente
-      ) {
-        return (
-          `El producto ${i + 1} no tiene una composición vigente`
-        );
-      }
-
-
-      const cantidad =
-        Number(
-          detalle
-            .cantidad_producida ||
-          0
-        );
-
-
-      const presentacion =
-        Number(
-          detalle
-            .cantidad_presentacion ||
-          0
-        );
-
-
-      if (
-        cantidad <= 0
-      ) {
-        return (
-          `La cantidad producida del producto ${i + 1} debe ser mayor a 0`
-        );
-      }
-
-
-      if (
-        presentacion <= 0
-      ) {
-        return (
-          `La presentación del producto ${i + 1} debe ser mayor a 0`
-        );
-      }
-
-
-      /*
-       * La UI trabaja con 2 decimales.
-       * El backend conserva su validación definitiva.
-       */
-      const cantidadCent =
-        Math.round(
-          cantidad * 100
-        );
-
-      const presentacionCent =
-        Math.round(
-          presentacion * 100
-        );
-
-
-      if (
-        presentacionCent <= 0 ||
-        cantidadCent %
-          presentacionCent !==
-          0
-      ) {
-        return (
-          `La cantidad producida del producto ${i + 1} debe ser múltiplo de su presentación`
-        );
+      if (error) {
+        return error;
       }
     }
-
 
     return null;
   };
 
 
-  const registrar =
-    async () => {
-      if (
-        !intentarBloquear()
-      ) {
-        return;
-      }
-
-
-      try {
-        const data =
-          await apiFetch(
-            '/producciones',
-            {
-              method: 'POST',
-
-              headers: {
-                'Idempotency-Key':
-                  idempotencyKey
-              },
-
-              body:
-                JSON.stringify({
-                  fecha_produccion:
-                    fechaProduccion!
-                      .format(
-                        'YYYY-MM-DD'
-                      ),
-
-                  observacion:
-                    observacion
-                      .trim() ||
-                    null,
-
-                  detalles:
-                    detalles.map(
-                      (
-                        detalle
-                      ) => ({
-                        producto_id:
-                          Number(
-                            detalle
-                              .producto!
-                              .producto_id
-                          ),
-
-                        cantidad_producida:
-                          Number(
-                            detalle
-                              .cantidad_producida
-                          ),
-
-                        cantidad_presentacion:
-                          Number(
-                            detalle
-                              .cantidad_presentacion
-                          ),
-
-                        unidad_presentacion_id:
-                          unidadKgId,
-
-                        observacion:
-                          detalle
-                            .observacion
-                            .trim() ||
-                          null
-                      })
-                    )
-                })
-            }
-          );
-
-
-        if (
-          data.reutilizada
-        ) {
-          message.info(
-            'La producción ya había sido registrada. Se recuperó el registro existente sin duplicar stock.'
-          );
-
-        } else {
-          message.success(
-            'Producción registrada correctamente'
-          );
-        }
-
-
-        navigate(
-          `/gestion/producciones/${data.produccion.produccion_id}`,
-          {
-            replace: true
-          }
-        );
-
-      } catch (error) {
-        liberar();
-
-        message.error(
-          error instanceof Error
-            ? error.message
-            : 'No se pudo registrar la producción'
-        );
-      }
-    };
-
-
-  const solicitarRegistro = () => {
-    const error =
-      validar();
-
-
-    if (error) {
-      message.error(
-        error
-      );
-
+  const registrar = async () => {
+    if (!intentarBloquear()) {
       return;
     }
 
+    try {
+      const data = await apiFetch(
+        '/producciones',
+        {
+          method: 'POST',
+          headers: {
+            'Idempotency-Key':
+              idempotencyKey
+          },
+          body: JSON.stringify({
+            fecha_produccion:
+              fechaProduccion!.format(
+                'YYYY-MM-DD'
+              ),
+            observacion:
+              observacion.trim() || null,
+            detalles:
+              detalles.map(
+                (detalle) => ({
+                  producto_id:
+                    Number(
+                      detalle.producto!
+                        .producto_id
+                    ),
+                  cantidad_producida:
+                    Number(
+                      detalle.cantidad_producida
+                    ),
+                  cantidad_presentacion:
+                    Number(
+                      detalle.cantidad_presentacion
+                    ),
+                  unidad_presentacion_id:
+                    unidadKgId,
+                  observacion:
+                    detalle.observacion
+                      .trim() || null
+                })
+              )
+          })
+        }
+      );
+
+      if (data.reutilizada) {
+        message.info(
+          'La producción ya había sido registrada. Se recuperó el registro existente sin duplicar stock.'
+        );
+      } else {
+        message.success(
+          'Producción registrada correctamente'
+        );
+      }
+
+      navigate(
+        `/gestion/producciones/${data.produccion.produccion_id}`,
+        {
+          replace: true
+        }
+      );
+    } catch (error) {
+      liberar();
+
+      message.error(
+        error instanceof Error
+          ? error.message
+          : 'No se pudo registrar la producción'
+      );
+    }
+  };
+
+
+  const solicitarRegistro = () => {
+    const error = validar();
+
+    if (error) {
+      message.error(error);
+      return;
+    }
 
     modal.confirm({
-      title:
-        'Registrar producción',
-
+      title: 'Registrar producción',
       content:
         `Se registrarán ${detalles.length} producto(s) por un total de ${formatPeso(totalProducido)} KG. Esta operación descontará materia prima por FIFO e ingresará el producto terminado al almacén.`,
-
-      okText:
-        'Registrar producción',
-
-      cancelText:
-        'Cancelar',
-
+      okText: 'Registrar producción',
+      cancelText: 'Cancelar',
       okButtonProps: {
-        icon:
-          <SaveOutlined />
+        icon: <SaveOutlined />
       },
-
-      onOk:
-        registrar
+      onOk: registrar
     });
   };
 
 
-  if (
-    cargandoInicial
-  ) {
+  const columns:
+    TableColumnsType<
+      DetalleProduccionForm
+    > = [
+    {
+      title: '#',
+      key: 'numero',
+      width: 56,
+      align: 'center',
+      render: (_, __, index) =>
+        index + 1
+    },
+    {
+      title: 'Producto',
+      key: 'producto',
+      minWidth: 230,
+      render: (_, detalle) => (
+        <div className="gd-produccion-product-cell">
+          <Text strong>
+            {detalle.producto
+              ?.tipo_producto || '-'}
+          </Text>
+          <Text type="secondary">
+            {[
+              detalle.producto?.material,
+              detalle.producto?.medida,
+              detalle.producto?.color
+            ].filter(Boolean).join(' · ')}
+          </Text>
+        </div>
+      )
+    },
+    {
+      title: 'Composición',
+      key: 'composicion',
+      width: 130,
+      render: (_, detalle) =>
+        detalle.producto
+          ?.composicion_vigente
+          ? (
+              <Space size={6} wrap>
+                <Tag color="success">
+                  Lista
+                </Tag>
+                <Tag>
+                  V{
+                    detalle.producto
+                      .composicion_vigente
+                      .version_numero
+                  }
+                </Tag>
+              </Space>
+            )
+          : (
+              <Tag color="warning">
+                Pendiente
+              </Tag>
+            )
+    },
+    {
+      title: 'Cantidad',
+      key: 'cantidad',
+      width: 130,
+      align: 'right',
+      render: (_, detalle) => (
+        <Text strong>
+          {formatPeso(
+            detalle.cantidad_producida || 0
+          )} KG
+        </Text>
+      )
+    },
+    {
+      title: 'Presentación',
+      key: 'presentacion',
+      width: 145,
+      align: 'right',
+      render: (_, detalle) => (
+        <Text>
+          {formatPeso(
+            detalle.cantidad_presentacion || 0
+          )} KG
+        </Text>
+      )
+    },
+    {
+      title: 'N.° present.',
+      key: 'numero_presentaciones',
+      width: 125,
+      align: 'right',
+      render: (_, detalle) => {
+        const cantidad = Number(
+          detalle.cantidad_producida || 0
+        );
+
+        const presentacion = Number(
+          detalle.cantidad_presentacion || 0
+        );
+
+        return formatCantidad(
+          cantidad > 0 &&
+          presentacion > 0
+            ? cantidad / presentacion
+            : 0
+        );
+      }
+    },
+    {
+      title: 'Observación',
+      dataIndex: 'observacion',
+      key: 'observacion',
+      minWidth: 180,
+      ellipsis: true,
+      render: (value: string) =>
+        value || '-'
+    },
+    {
+      title: 'Acciones',
+      key: 'acciones',
+      width: 155,
+      fixed: 'right',
+      render: (_, detalle) => (
+        <Space size={4}>
+          <Button
+            type="text"
+            icon={<EditOutlined />}
+            disabled={procesando}
+            onClick={() =>
+              abrirEditarProducto(
+                detalle
+              )
+            }
+          >
+            Editar
+          </Button>
+
+          <Button
+            type="text"
+            danger
+            icon={<DeleteOutlined />}
+            disabled={procesando}
+            onClick={() =>
+              quitarProducto(
+                detalle
+              )
+            }
+          />
+        </Space>
+      )
+    }
+  ];
+
+
+  if (cargandoInicial) {
     return (
       <div className="gd-produccion-page">
-
         <Skeleton
           active
-          paragraph={{
-            rows: 12
-          }}
+          paragraph={{ rows: 12 }}
         />
-
       </div>
     );
   }
 
 
+  const composicionModal =
+    detalleModal?.producto
+      ?.composicion_vigente;
+
+  const cantidadModal = Number(
+    detalleModal?.cantidad_producida || 0
+  );
+
+  const presentacionModal = Number(
+    detalleModal?.cantidad_presentacion || 0
+  );
+
+  const numeroPresentacionesModal =
+    cantidadModal > 0 &&
+    presentacionModal > 0
+      ? cantidadModal /
+        presentacionModal
+      : 0;
+
+
   return (
     <div className="gd-produccion-page">
-
       <BackButton
         to="/gestion/producciones"
         label="Volver a producción"
       />
-
 
       <PageHeader
         title="Registrar producción"
         description="Registra los productos fabricados y el ingreso al almacén de producto terminado."
       />
 
-
       <Card
         title="Datos de producción"
         className="gd-produccion-section-card"
       >
-
         <Form
           layout="vertical"
           requiredMark={false}
         >
-
-          <Row
-            gutter={[
-              16,
-              0
-            ]}
-          >
-
-            <Col
-              xs={24}
-              md={8}
-            >
-
+          <Row gutter={[16, 0]}>
+            <Col xs={24} md={8}>
               <Form.Item
                 label="Fecha de producción"
                 required
               >
                 <DatePicker
                   size="large"
-                  value={
-                    fechaProduccion
-                  }
-                  onChange={
-                    setFechaProduccion
-                  }
+                  value={fechaProduccion}
+                  onChange={setFechaProduccion}
                   format="YYYY-MM-DD"
                   className="gd-full-width"
-                  disabled={
-                    procesando
-                  }
+                  disabled={procesando}
                 />
               </Form.Item>
-
             </Col>
 
-
-            <Col
-              xs={24}
-              md={16}
-            >
-
-              <Form.Item
-                label="Observación"
-              >
+            <Col xs={24} md={16}>
+              <Form.Item label="Observación">
                 <TextArea
                   rows={3}
-                  value={
-                    observacion
-                  }
+                  value={observacion}
                   maxLength={500}
                   showCount
                   placeholder="Observación general de la producción"
-                  disabled={
-                    procesando
-                  }
+                  disabled={procesando}
                   onChange={(e) =>
                     setObservacion(
                       e.target.value
@@ -37553,28 +39014,18 @@ function RegistrarProduccion() {
                   }
                 />
               </Form.Item>
-
             </Col>
-
           </Row>
-
         </Form>
-
       </Card>
-
 
       <Card
         title="Productos fabricados"
         extra={
           <Button
             type="primary"
-            ghost
-            icon={
-              <PlusOutlined />
-            }
-            onClick={
-              agregarProducto
-            }
+            icon={<PlusOutlined />}
+            onClick={abrirNuevoProducto}
             disabled={
               procesando ||
               detalles.length >= 50
@@ -37583,639 +39034,186 @@ function RegistrarProduccion() {
             Agregar producto
           </Button>
         }
-        className="gd-produccion-section-card"
+        className="gd-produccion-section-card gd-produccion-draft-card"
       >
+        {detalles.length === 0 ? (
+          <Empty
+            image={
+              Empty.PRESENTED_IMAGE_SIMPLE
+            }
+            description={
+              <Space
+                direction="vertical"
+                size={2}
+              >
+                <Text>
+                  Aún no agregaste productos
+                </Text>
+                <Text type="secondary">
+                  Usa “Agregar producto” para preparar la producción.
+                </Text>
+              </Space>
+            }
+          >
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={abrirNuevoProducto}
+            >
+              Agregar primer producto
+            </Button>
+          </Empty>
+        ) : screens.md ? (
+          <Table<DetalleProduccionForm>
+            rowKey="local_id"
+            columns={columns}
+            dataSource={detalles}
+            pagination={false}
+            scroll={{ x: 1120 }}
+            className="gd-produccion-draft-table"
+          />
+        ) : (
+          <List
+            dataSource={detalles}
+            split={false}
+            className="gd-produccion-mobile-list"
+            renderItem={(detalle, index) => {
+              const cantidad = Number(
+                detalle.cantidad_producida || 0
+              );
 
-        <Space
-          direction="vertical"
-          size={18}
-          className="gd-produccion-products-space"
-        >
+              const presentacion = Number(
+                detalle.cantidad_presentacion || 0
+              );
 
-          {
-            detalles.map(
-              (
-                detalle,
-                index
-              ) => {
-                const composicion =
-                  detalle.producto
-                    ?.composicion_vigente;
+              const numeroPresentaciones =
+                cantidad > 0 &&
+                presentacion > 0
+                  ? cantidad /
+                    presentacion
+                  : 0;
 
-                const cantidadProducida =
-                  Number(
-                    detalle
-                      .cantidad_producida ||
-                    0
-                  );
-
-                const presentacion =
-                  Number(
-                    detalle
-                      .cantidad_presentacion ||
-                    0
-                  );
-
-                const numeroPresentaciones =
-                  cantidadProducida > 0 &&
-                  presentacion > 0
-                    ? cantidadProducida /
-                      presentacion
-                    : 0;
-
-
-                return (
+              return (
+                <List.Item>
                   <Card
-                    key={
-                      detalle.local_id
-                    }
                     size="small"
-                    title={
-                      `Producto ${index + 1}`
-                    }
-                    extra={
+                    className="gd-produccion-mobile-product-card"
+                  >
+                    <div className="gd-produccion-mobile-product-head">
+                      <div>
+                        <Text
+                          type="secondary"
+                          className="gd-produccion-mobile-product-number"
+                        >
+                          Producto {index + 1}
+                        </Text>
+                        <Title
+                          level={5}
+                          className="gd-produccion-mobile-product-title"
+                        >
+                          {detalle.producto
+                            ?.tipo_producto || '-'}
+                        </Title>
+                        <Text type="secondary">
+                          {[
+                            detalle.producto?.material,
+                            detalle.producto?.medida,
+                            detalle.producto?.color
+                          ].filter(Boolean).join(' · ')}
+                        </Text>
+                      </div>
+
+                      {detalle.producto
+                        ?.composicion_vigente && (
+                        <Tag color="success">
+                          V{
+                            detalle.producto
+                              .composicion_vigente
+                              .version_numero
+                          }
+                        </Tag>
+                      )}
+                    </div>
+
+                    <div className="gd-produccion-mobile-metrics">
+                      <div>
+                        <Text type="secondary">
+                          Cantidad
+                        </Text>
+                        <Text strong>
+                          {formatPeso(cantidad)} KG
+                        </Text>
+                      </div>
+
+                      <div>
+                        <Text type="secondary">
+                          Presentación
+                        </Text>
+                        <Text strong>
+                          {formatPeso(
+                            presentacion
+                          )} KG
+                        </Text>
+                      </div>
+
+                      <div>
+                        <Text type="secondary">
+                          Presentaciones
+                        </Text>
+                        <Text strong>
+                          {formatCantidad(
+                            numeroPresentaciones
+                          )}
+                        </Text>
+                      </div>
+                    </div>
+
+                    {detalle.observacion && (
+                      <Text
+                        type="secondary"
+                        className="gd-produccion-mobile-note"
+                      >
+                        {detalle.observacion}
+                      </Text>
+                    )}
+
+                    <div className="gd-produccion-mobile-actions">
                       <Button
-                        type="text"
+                        icon={<EditOutlined />}
+                        disabled={procesando}
+                        onClick={() =>
+                          abrirEditarProducto(
+                            detalle
+                          )
+                        }
+                      >
+                        Editar
+                      </Button>
+
+                      <Button
                         danger
-                        icon={
-                          <DeleteOutlined />
-                        }
-                        disabled={
-                          procesando ||
-                          detalles.length ===
-                            1
-                        }
+                        icon={<DeleteOutlined />}
+                        disabled={procesando}
                         onClick={() =>
                           quitarProducto(
-                            index
+                            detalle
                           )
                         }
                       >
                         Quitar
                       </Button>
-                    }
-                    className="gd-produccion-product-card"
-                  >
-
-                    <Form
-                      layout="vertical"
-                      requiredMark={false}
-                    >
-
-                      <Row
-                        gutter={[
-                          14,
-                          0
-                        ]}
-                      >
-
-                        <Col
-                          xs={24}
-                          sm={12}
-                          xl={6}
-                        >
-
-                          <Form.Item
-                            label="Tipo"
-                            required
-                          >
-                            <Select
-                              value={
-                                detalle
-                                  .tipo_producto_id
-                              }
-                              placeholder="Selecciona el tipo"
-                              showSearch
-                              optionFilterProp="label"
-                              loading={
-                                detalle
-                                  .buscandoProducto
-                              }
-                              disabled={
-                                procesando
-                              }
-                              options={
-                                detalle
-                                  .opciones
-                                  .tipos
-                                  .map(
-                                    (
-                                      item
-                                    ) => ({
-                                      value:
-                                        item.id,
-                                      label:
-                                        item.nombre
-                                    })
-                                  )
-                              }
-                              onChange={(
-                                value
-                              ) =>
-                                cambiarTipo(
-                                  index,
-                                  value
-                                )
-                              }
-                              allowClear
-                            />
-                          </Form.Item>
-
-                        </Col>
-
-
-                        <Col
-                          xs={24}
-                          sm={12}
-                          xl={6}
-                        >
-
-                          <Form.Item
-                            label="Material"
-                            required
-                          >
-                            <Select
-                              value={
-                                detalle
-                                  .material_id
-                              }
-                              placeholder="Selecciona el material"
-                              showSearch
-                              optionFilterProp="label"
-                              disabled={
-                                procesando ||
-                                !detalle
-                                  .tipo_producto_id ||
-                                detalle
-                                  .buscandoProducto
-                              }
-                              options={
-                                detalle
-                                  .opciones
-                                  .materiales
-                                  .map(
-                                    (
-                                      item
-                                    ) => ({
-                                      value:
-                                        item.id,
-                                      label:
-                                        item.nombre
-                                    })
-                                  )
-                              }
-                              onChange={(
-                                value
-                              ) =>
-                                cambiarMaterial(
-                                  index,
-                                  value
-                                )
-                              }
-                              allowClear
-                            />
-                          </Form.Item>
-
-                        </Col>
-
-
-                        <Col
-                          xs={24}
-                          sm={12}
-                          xl={6}
-                        >
-
-                          <Form.Item
-                            label="Medida"
-                            required
-                          >
-                            <Select
-                              value={
-                                detalle
-                                  .medida_id
-                              }
-                              placeholder="Selecciona la medida"
-                              showSearch
-                              optionFilterProp="label"
-                              disabled={
-                                procesando ||
-                                !detalle
-                                  .material_id ||
-                                detalle
-                                  .buscandoProducto
-                              }
-                              options={
-                                detalle
-                                  .opciones
-                                  .medidas
-                                  .map(
-                                    (
-                                      item
-                                    ) => ({
-                                      value:
-                                        item.id,
-                                      label:
-                                        item.nombre
-                                    })
-                                  )
-                              }
-                              onChange={(
-                                value
-                              ) =>
-                                cambiarMedida(
-                                  index,
-                                  value
-                                )
-                              }
-                              allowClear
-                            />
-                          </Form.Item>
-
-                        </Col>
-
-
-                        <Col
-                          xs={24}
-                          sm={12}
-                          xl={6}
-                        >
-
-                          <Form.Item
-                            label="Color"
-                            required
-                          >
-                            <Select
-                              value={
-                                detalle
-                                  .color_id
-                              }
-                              placeholder="Selecciona el color"
-                              showSearch
-                              optionFilterProp="label"
-                              disabled={
-                                procesando ||
-                                !detalle
-                                  .medida_id ||
-                                detalle
-                                  .buscandoProducto
-                              }
-                              options={
-                                detalle
-                                  .opciones
-                                  .colores
-                                  .map(
-                                    (
-                                      item
-                                    ) => ({
-                                      value:
-                                        item.id,
-                                      label:
-                                        item.nombre
-                                    })
-                                  )
-                              }
-                              onChange={(
-                                value
-                              ) =>
-                                cambiarColor(
-                                  index,
-                                  value
-                                )
-                              }
-                              allowClear
-                            />
-                          </Form.Item>
-
-                        </Col>
-
-                      </Row>
-
-
-                      {
-                        detalle
-                          .buscandoProducto &&
-                        (
-                          <Alert
-                            type="info"
-                            showIcon
-                            message="Consultando producto..."
-                            className="gd-produccion-inline-alert"
-                          />
-                        )
-                      }
-
-
-                      {
-                        detalle.producto &&
-                        !composicion &&
-                        (
-                          <Alert
-                            type="warning"
-                            showIcon
-                            message="Composición pendiente"
-                            description="Este producto existe, pero todavía no puede producirse porque no tiene una composición vigente."
-                            className="gd-produccion-inline-alert"
-                          />
-                        )
-                      }
-
-
-                      {
-                        composicion &&
-                        (
-                          <Card
-                            size="small"
-                            title="Composición vigente"
-                            extra={
-                              <Space
-                                size={6}
-                              >
-
-                                <Tag
-                                  color="success"
-                                >
-                                  Lista para producir
-                                </Tag>
-
-                                <Tag>
-                                  V{
-                                    composicion
-                                      .version_numero
-                                  }
-                                </Tag>
-
-                              </Space>
-                            }
-                            className="gd-produccion-recipe-card"
-                          >
-
-                            <Row
-                              gutter={[
-                                12,
-                                12
-                              ]}
-                            >
-
-                              {
-                                composicion
-                                  .detalles
-                                  .map(
-                                    (
-                                      componente
-                                    ) => {
-                                      const requerido =
-                                        cantidadProducida >
-                                        0
-                                          ? (
-                                              cantidadProducida *
-                                              Number(
-                                                componente
-                                                  .porcentaje
-                                              )
-                                            ) /
-                                            100
-                                          : 0;
-
-
-                                      return (
-                                        <Col
-                                          xs={24}
-                                          md={12}
-                                          key={
-                                            componente
-                                              .producto_composicion_detalle_id
-                                          }
-                                        >
-
-                                          <div className="gd-produccion-recipe-item">
-
-                                            <div>
-                                              <Text strong>
-                                                {
-                                                  componente
-                                                    .material
-                                                }
-                                              </Text>
-
-                                              <Text
-                                                type="secondary"
-                                              >
-                                                {
-                                                  componente
-                                                    .color
-                                                }
-                                              </Text>
-                                            </div>
-
-
-                                            <div className="gd-produccion-recipe-values">
-
-                                              <Text strong>
-                                                {
-                                                  formatCantidad(
-                                                    componente
-                                                      .porcentaje
-                                                  )
-                                                }%
-                                              </Text>
-
-                                              {
-                                                cantidadProducida >
-                                                  0 &&
-                                                (
-                                                  <Text
-                                                    type="secondary"
-                                                  >
-                                                    {
-                                                      formatPeso(
-                                                        requerido
-                                                      )
-                                                    } KG
-                                                  </Text>
-                                                )
-                                              }
-
-                                            </div>
-
-
-                                            <Progress
-                                              percent={
-                                                Number(
-                                                  componente
-                                                    .porcentaje
-                                                )
-                                              }
-                                              showInfo={
-                                                false
-                                              }
-                                            />
-
-                                          </div>
-
-                                        </Col>
-                                      );
-                                    }
-                                  )
-                              }
-
-                            </Row>
-
-                          </Card>
-                        )
-                      }
-
-
-                      <Divider />
-
-
-                      <Row
-                        gutter={[
-                          14,
-                          0
-                        ]}
-                      >
-
-                        <Col
-                          xs={24}
-                          md={8}
-                        >
-
-                          <Form.Item
-                            label="Cantidad producida"
-                            required
-                          >
-                            <InputNumber
-                              value={
-                                detalle
-                                  .cantidad_producida
-                              }
-                              min={0.01}
-                              precision={2}
-                              step={0.01}
-                              addonAfter="KG"
-                              className="gd-full-width"
-                              placeholder="0.00"
-                              disabled={
-                                procesando
-                              }
-                              onChange={(
-                                value
-                              ) =>
-                                actualizarDetalle(
-                                  index,
-                                  {
-                                    cantidad_producida:
-                                      value
-                                  }
-                                )
-                              }
-                            />
-                          </Form.Item>
-
-                        </Col>
-
-
-                        <Col
-                          xs={24}
-                          md={8}
-                        >
-
-                          <Form.Item
-                            label="Presentación"
-                            required
-                            extra={
-                              numeroPresentaciones >
-                              0
-                                ? `${formatCantidad(numeroPresentaciones)} presentación(es)`
-                                : undefined
-                            }
-                          >
-                            <InputNumber
-                              value={
-                                detalle
-                                  .cantidad_presentacion
-                              }
-                              min={0.01}
-                              precision={2}
-                              step={0.01}
-                              addonAfter="KG"
-                              className="gd-full-width"
-                              placeholder="0.00"
-                              disabled={
-                                procesando
-                              }
-                              onChange={(
-                                value
-                              ) =>
-                                actualizarDetalle(
-                                  index,
-                                  {
-                                    cantidad_presentacion:
-                                      value
-                                  }
-                                )
-                              }
-                            />
-                          </Form.Item>
-
-                        </Col>
-
-
-                        <Col
-                          xs={24}
-                          md={8}
-                        >
-
-                          <Form.Item
-                            label="Observación del producto"
-                          >
-                            <Input
-                              value={
-                                detalle
-                                  .observacion
-                              }
-                              maxLength={300}
-                              placeholder="Opcional"
-                              disabled={
-                                procesando
-                              }
-                              onChange={(e) =>
-                                actualizarDetalle(
-                                  index,
-                                  {
-                                    observacion:
-                                      e.target.value
-                                  }
-                                )
-                              }
-                            />
-                          </Form.Item>
-
-                        </Col>
-
-                      </Row>
-
-                    </Form>
-
+                    </div>
                   </Card>
-                );
-              }
-            )
-          }
-
-        </Space>
-
+                </List.Item>
+              );
+            }}
+          />
+        )}
       </Card>
 
-
-      <Card
-        className="gd-produccion-total-card"
-      >
-
+      <Card className="gd-produccion-total-card">
         <div className="gd-produccion-total">
-
           <div>
-
             <Title
               level={5}
               className="gd-produccion-total-title"
@@ -38223,79 +39221,445 @@ function RegistrarProduccion() {
               Total de producción
             </Title>
 
-            <Text
-              type="secondary"
-            >
-              {
-                detalles.length
-              } producto(s)
+            <Text type="secondary">
+              {detalles.length} producto(s)
             </Text>
-
           </div>
-
 
           <Text
             strong
             className="gd-produccion-total-value"
           >
-            {
-              formatPeso(
-                totalProducido
-              )
-            } KG
+            {formatPeso(totalProducido)} KG
           </Text>
-
         </div>
-
       </Card>
 
-
       <div className="gd-produccion-actions">
-
-        <Space
-          wrap
-        >
-
+        <Space wrap>
           <Button
             onClick={() =>
               navigate(
                 '/gestion/producciones'
               )
             }
-            disabled={
-              procesando
-            }
+            disabled={procesando}
           >
             Cancelar
           </Button>
 
-
           <Button
             type="primary"
-            icon={
-              <SaveOutlined />
-            }
-            loading={
-              procesando
-            }
-            disabled={
-              cargandoInicial
-            }
-            onClick={
-              solicitarRegistro
-            }
+            icon={<SaveOutlined />}
+            loading={procesando}
+            disabled={cargandoInicial}
+            onClick={solicitarRegistro}
           >
             Registrar producción
           </Button>
-
         </Space>
-
       </div>
 
+      <Modal
+        open={modalProductoAbierto}
+        title={
+          localIdEditando
+            ? 'Editar producto de la producción'
+            : 'Agregar producto a la producción'
+        }
+        width={920}
+        centered={screens.md}
+        rootClassName="gd-produccion-product-modal"
+        maskClosable={false}
+        keyboard={
+          !detalleModal?.buscandoProducto
+        }
+        closable={
+          !detalleModal?.buscandoProducto
+        }
+        onCancel={cerrarModalProducto}
+        footer={
+          <div className="gd-produccion-modal-footer">
+            <Button
+              onClick={cerrarModalProducto}
+              disabled={
+                detalleModal
+                  ?.buscandoProducto
+              }
+            >
+              Cancelar
+            </Button>
+
+            <Button
+              type="primary"
+              icon={<SaveOutlined />}
+              loading={
+                detalleModal
+                  ?.buscandoProducto
+              }
+              onClick={
+                guardarProductoModal
+              }
+            >
+              {localIdEditando
+                ? 'Guardar cambios'
+                : 'Agregar producto'}
+            </Button>
+          </div>
+        }
+      >
+        {detalleModal && (
+          <Form
+            layout="vertical"
+            requiredMark={false}
+          >
+            <Row gutter={[14, 0]}>
+              <Col xs={24} sm={12} lg={6}>
+                <Form.Item
+                  label="Tipo"
+                  required
+                >
+                  <Select
+                    value={
+                      detalleModal
+                        .tipo_producto_id
+                    }
+                    placeholder="Selecciona el tipo"
+                    showSearch
+                    optionFilterProp="label"
+                    loading={
+                      detalleModal
+                        .buscandoProducto
+                    }
+                    disabled={
+                      detalleModal
+                        .buscandoProducto
+                    }
+                    options={
+                      detalleModal
+                        .opciones
+                        .tipos
+                        .map((item) => ({
+                          value: item.id,
+                          label: item.nombre
+                        }))
+                    }
+                    onChange={cambiarTipo}
+                    allowClear
+                  />
+                </Form.Item>
+              </Col>
+
+              <Col xs={24} sm={12} lg={6}>
+                <Form.Item
+                  label="Material"
+                  required
+                >
+                  <Select
+                    value={
+                      detalleModal
+                        .material_id
+                    }
+                    placeholder="Selecciona el material"
+                    showSearch
+                    optionFilterProp="label"
+                    disabled={
+                      !detalleModal
+                        .tipo_producto_id ||
+                      detalleModal
+                        .buscandoProducto
+                    }
+                    options={
+                      detalleModal
+                        .opciones
+                        .materiales
+                        .map((item) => ({
+                          value: item.id,
+                          label: item.nombre
+                        }))
+                    }
+                    onChange={
+                      cambiarMaterial
+                    }
+                    allowClear
+                  />
+                </Form.Item>
+              </Col>
+
+              <Col xs={24} sm={12} lg={6}>
+                <Form.Item
+                  label="Medida"
+                  required
+                >
+                  <Select
+                    value={
+                      detalleModal
+                        .medida_id
+                    }
+                    placeholder="Selecciona la medida"
+                    showSearch
+                    optionFilterProp="label"
+                    disabled={
+                      !detalleModal
+                        .material_id ||
+                      detalleModal
+                        .buscandoProducto
+                    }
+                    options={
+                      detalleModal
+                        .opciones
+                        .medidas
+                        .map((item) => ({
+                          value: item.id,
+                          label: item.nombre
+                        }))
+                    }
+                    onChange={cambiarMedida}
+                    allowClear
+                  />
+                </Form.Item>
+              </Col>
+
+              <Col xs={24} sm={12} lg={6}>
+                <Form.Item
+                  label="Color"
+                  required
+                >
+                  <Select
+                    value={
+                      detalleModal
+                        .color_id
+                    }
+                    placeholder="Selecciona el color"
+                    showSearch
+                    optionFilterProp="label"
+                    disabled={
+                      !detalleModal
+                        .medida_id ||
+                      detalleModal
+                        .buscandoProducto
+                    }
+                    options={
+                      detalleModal
+                        .opciones
+                        .colores
+                        .map((item) => ({
+                          value: item.id,
+                          label: item.nombre
+                        }))
+                    }
+                    onChange={cambiarColor}
+                    allowClear
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+
+            {detalleModal.buscandoProducto && (
+              <Alert
+                type="info"
+                showIcon
+                message="Consultando producto..."
+                className="gd-produccion-inline-alert"
+              />
+            )}
+
+            {detalleModal.producto &&
+              !composicionModal && (
+                <Alert
+                  type="warning"
+                  showIcon
+                  message="Composición pendiente"
+                  description="Este producto existe, pero todavía no puede producirse porque no tiene una composición vigente."
+                  className="gd-produccion-inline-alert"
+                />
+              )}
+
+            {detalleModal.producto &&
+              composicionModal && (
+                <Alert
+                  type="success"
+                  showIcon
+                  message={
+                    nombreProducto(
+                      detalleModal
+                    )
+                  }
+                  description={
+                    `Composición vigente V${composicionModal.version_numero}. Lista para producir.`
+                  }
+                  className="gd-produccion-inline-alert"
+                />
+              )}
+
+            {composicionModal && (
+              <Card
+                size="small"
+                title="Composición vigente"
+                className="gd-produccion-recipe-card"
+              >
+                <Row gutter={[12, 12]}>
+                  {composicionModal.detalles.map(
+                    (componente) => {
+                      const requerido =
+                        cantidadModal > 0
+                          ? (
+                              cantidadModal *
+                              Number(
+                                componente.porcentaje
+                              )
+                            ) / 100
+                          : 0;
+
+                      return (
+                        <Col
+                          xs={24}
+                          md={12}
+                          key={
+                            componente
+                              .producto_composicion_detalle_id
+                          }
+                        >
+                          <div className="gd-produccion-recipe-item">
+                            <div>
+                              <Text strong>
+                                {componente.material}
+                              </Text>
+                              <Text type="secondary">
+                                {componente.color}
+                              </Text>
+                            </div>
+
+                            <div className="gd-produccion-recipe-values">
+                              <Text strong>
+                                {formatCantidad(
+                                  componente.porcentaje
+                                )}%
+                              </Text>
+
+                              {cantidadModal > 0 && (
+                                <Text type="secondary">
+                                  {formatPeso(
+                                    requerido
+                                  )} KG
+                                </Text>
+                              )}
+                            </div>
+
+                            <Progress
+                              percent={
+                                Number(
+                                  componente.porcentaje
+                                )
+                              }
+                              showInfo={false}
+                            />
+                          </div>
+                        </Col>
+                      );
+                    }
+                  )}
+                </Row>
+              </Card>
+            )}
+
+            <Divider />
+
+            <Row gutter={[14, 0]}>
+              <Col xs={24} md={8}>
+                <Form.Item
+                  label="Cantidad producida"
+                  required
+                >
+                  <InputNumber
+                    value={
+                      detalleModal
+                        .cantidad_producida
+                    }
+                    min={0.01}
+                    precision={2}
+                    step={0.01}
+                    addonAfter="KG"
+                    className="gd-full-width"
+                    placeholder="0.00"
+                    disabled={
+                      detalleModal
+                        .buscandoProducto
+                    }
+                    onChange={(value) =>
+                      actualizarDetalleModal({
+                        cantidad_producida:
+                          value
+                      })
+                    }
+                  />
+                </Form.Item>
+              </Col>
+
+              <Col xs={24} md={8}>
+                <Form.Item
+                  label="Presentación"
+                  required
+                  extra={
+                    numeroPresentacionesModal > 0
+                      ? `${formatCantidad(numeroPresentacionesModal)} presentación(es)`
+                      : undefined
+                  }
+                >
+                  <InputNumber
+                    value={
+                      detalleModal
+                        .cantidad_presentacion
+                    }
+                    min={0.01}
+                    precision={2}
+                    step={0.01}
+                    addonAfter="KG"
+                    className="gd-full-width"
+                    placeholder="0.00"
+                    disabled={
+                      detalleModal
+                        .buscandoProducto
+                    }
+                    onChange={(value) =>
+                      actualizarDetalleModal({
+                        cantidad_presentacion:
+                          value
+                      })
+                    }
+                  />
+                </Form.Item>
+              </Col>
+
+              <Col xs={24} md={8}>
+                <Form.Item label="Observación del producto">
+                  <Input
+                    value={
+                      detalleModal
+                        .observacion
+                    }
+                    maxLength={300}
+                    placeholder="Opcional"
+                    disabled={
+                      detalleModal
+                        .buscandoProducto
+                    }
+                    onChange={(e) =>
+                      actualizarDetalleModal({
+                        observacion:
+                          e.target.value
+                      })
+                    }
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+          </Form>
+        )}
+      </Modal>
     </div>
   );
 }
-
 
 export default RegistrarProduccion;
 
@@ -39563,8 +40927,7 @@ import '../../styles/productosTerminadosAntd.css';
 
 
 const {
-  Text,
-  Title
+  Text
 } = Typography;
 
 const {
@@ -41525,7 +42888,6 @@ import {
   Form,
   Input,
   Row,
-  Space,
   Table,
   Typography
 } from 'antd';
@@ -48164,6 +49526,12 @@ export default API_URL;
    RESPONSIVE
    ========================================================= */
 
+
+
+.gd-pedido-price-reference {
+  margin-bottom: 16px;
+}
+
 @media (max-width: 767px) {
   .gd-pedido-actions {
     justify-content: stretch;
@@ -48197,6 +49565,193 @@ export default API_URL;
   .gd-pedido-filter-actions
   .ant-btn {
     width: 100%;
+  }
+}
+
+
+/* =========================================================
+   BORRADOR DE PEDIDO CON MODAL
+   ========================================================= */
+
+.gd-pedido-draft-card
+.ant-card-body {
+  padding-top: 10px;
+}
+
+.gd-pedido-draft-product-cell {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gd-pedido-draft-summary {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top:
+    1px solid
+    rgba(148, 163, 184, 0.22);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.gd-pedido-mobile-list
+.ant-list-item {
+  padding:
+    0 0 12px;
+  border-block-end: 0;
+}
+
+.gd-pedido-mobile-item.ant-card {
+  width: 100%;
+}
+
+.gd-pedido-mobile-item-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.gd-pedido-mobile-product {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.gd-pedido-mobile-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  padding: 12px;
+  border-radius: 10px;
+  background:
+    rgba(148, 163, 184, 0.07);
+}
+
+.gd-pedido-mobile-grid
+> div {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gd-pedido-mobile-actions {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.gd-pedido-mobile-actions
+.ant-btn {
+  width: 100%;
+}
+
+.gd-pedido-product-modal
+.gd-pedido-products-card {
+  margin-bottom: 0;
+}
+
+.gd-pedido-product-modal
+.gd-pedido-products-card
+> .ant-card-head {
+  min-height: 46px;
+}
+
+.gd-pedido-product-modal
+.gd-pedido-products-card
+> .ant-card-body {
+  padding-bottom: 4px;
+}
+
+.gd-pedido-modal-footer {
+  width: 100%;
+  justify-content: flex-end;
+}
+
+
+[data-gd-theme='light']
+.gd-pedido-mobile-grid {
+  background: #f8fafc;
+  border:
+    1px solid
+    #e0e6ee;
+}
+
+[data-gd-theme='light']
+.gd-pedido-product-modal
+.ant-card {
+  border-color: #d7dee8;
+}
+
+
+@media (max-width: 767px) {
+  .gd-pedido-draft-card
+  > .ant-card-head {
+    align-items: flex-start;
+  }
+
+  .gd-pedido-draft-card
+  > .ant-card-head
+  .ant-card-head-wrapper {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px 0;
+  }
+
+  .gd-pedido-draft-card
+  > .ant-card-head
+  .ant-card-extra {
+    margin-inline-start: 0;
+  }
+
+  .gd-pedido-draft-card
+  > .ant-card-head
+  .ant-btn {
+    width: 100%;
+  }
+
+  .gd-pedido-draft-summary {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .gd-pedido-modal-footer {
+    display: grid !important;
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .gd-pedido-modal-footer
+  .ant-space-item,
+  .gd-pedido-modal-footer
+  .ant-btn {
+    width: 100%;
+  }
+}
+
+
+@media (max-width: 479px) {
+  .gd-pedido-mobile-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .gd-pedido-mobile-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .gd-pedido-modal-footer {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -48788,8 +50343,7 @@ export default API_URL;
   min-width: 0;
 }
 
-.gd-produccion-table-card
-.ant-card-body {
+.gd-produccion-table-card .ant-card-body {
   padding-top: 8px;
 }
 
@@ -48797,12 +50351,26 @@ export default API_URL;
   margin-bottom: 18px;
 }
 
-.gd-produccion-products-space {
-  width: 100%;
+.gd-produccion-draft-card .ant-card-body {
+  min-width: 0;
 }
 
-.gd-produccion-product-card.ant-card {
-  width: 100%;
+.gd-produccion-draft-table .ant-table {
+  min-width: 0;
+}
+
+.gd-produccion-product-cell {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gd-produccion-product-cell .ant-typography {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .gd-produccion-inline-alert {
@@ -48815,19 +50383,15 @@ export default API_URL;
 
 .gd-produccion-recipe-item {
   display: grid;
-  grid-template-columns:
-    minmax(0, 1fr)
-    auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   column-gap: 14px;
   row-gap: 8px;
   padding: 12px;
   border-radius: 10px;
-  background:
-    rgba(148, 163, 184, 0.07);
+  background: rgba(148, 163, 184, 0.07);
 }
 
-.gd-produccion-recipe-item
-> div:first-child {
+.gd-produccion-recipe-item > div:first-child {
   min-width: 0;
   display: flex;
   flex-direction: column;
@@ -48841,10 +50405,67 @@ export default API_URL;
   gap: 2px;
 }
 
-.gd-produccion-recipe-item
-.ant-progress {
-  grid-column:
-    1 / -1;
+.gd-produccion-recipe-item .ant-progress {
+  grid-column: 1 / -1;
+}
+
+.gd-produccion-mobile-list .ant-list-item {
+  padding: 0 0 12px;
+  border-block-end: 0;
+}
+
+.gd-produccion-mobile-product-card.ant-card {
+  width: 100%;
+}
+
+.gd-produccion-mobile-product-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.gd-produccion-mobile-product-head > div:first-child {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.gd-produccion-mobile-product-number {
+  font-size: 12px;
+}
+
+.gd-produccion-mobile-product-title.ant-typography {
+  margin: 2px 0 0 !important;
+}
+
+.gd-produccion-mobile-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.gd-produccion-mobile-metrics > div {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px;
+  border-radius: 10px;
+  background: rgba(148, 163, 184, 0.07);
+}
+
+.gd-produccion-mobile-note {
+  display: block;
+  margin-bottom: 14px;
+}
+
+.gd-produccion-mobile-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
 }
 
 .gd-produccion-total-card {
@@ -48859,8 +50480,7 @@ export default API_URL;
 }
 
 .gd-produccion-total-title.ant-typography {
-  margin:
-    0 0 2px !important;
+  margin: 0 0 2px !important;
 }
 
 .gd-produccion-total-value {
@@ -48877,6 +50497,18 @@ export default API_URL;
   width: 100%;
 }
 
+.gd-produccion-product-modal .ant-modal-body {
+  max-height: calc(100vh - 230px);
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.gd-produccion-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
 
 /* =========================================================
    DETALLE
@@ -48890,8 +50522,7 @@ export default API_URL;
   height: 100%;
 }
 
-.gd-produccion-stat-card
-.ant-statistic-content {
+.gd-produccion-stat-card .ant-statistic-content {
   font-size: 21px;
 }
 
@@ -48916,33 +50547,23 @@ export default API_URL;
    LIGHT MODE
    ========================================================= */
 
-[data-gd-theme='light']
-.gd-produccion-page
-.ant-card {
+[data-gd-theme='light'] .gd-produccion-page .ant-card {
   border-color: #d7dee8;
 }
 
-[data-gd-theme='light']
-.gd-produccion-page
-.ant-card-head {
+[data-gd-theme='light'] .gd-produccion-page .ant-card-head {
   border-bottom-color: #d7dee8;
 }
 
-[data-gd-theme='light']
-.gd-produccion-page
-.ant-table {
-  border:
-    1px solid
-    #e0e6ee;
+[data-gd-theme='light'] .gd-produccion-page .ant-table {
+  border: 1px solid #e0e6ee;
   border-radius: 10px;
 }
 
-[data-gd-theme='light']
-.gd-produccion-recipe-item {
+[data-gd-theme='light'] .gd-produccion-recipe-item,
+[data-gd-theme='light'] .gd-produccion-mobile-metrics > div {
   background: #f8fafc;
-  border:
-    1px solid
-    #e0e6ee;
+  border: 1px solid #e0e6ee;
 }
 
 
@@ -48951,47 +50572,88 @@ export default API_URL;
    ========================================================= */
 
 @media (max-width: 767px) {
-  .gd-produccion-total {
-    align-items:
-      flex-start;
-    flex-direction:
-      column;
+  .gd-produccion-draft-card .ant-card-head {
+    align-items: flex-start;
+    gap: 10px;
   }
 
-  .gd-produccion-actions {
-    justify-content:
-      stretch;
+  .gd-produccion-draft-card .ant-card-head-wrapper {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 10px;
   }
 
-  .gd-produccion-actions
-  .ant-space {
+  .gd-produccion-draft-card .ant-card-extra {
+    margin-inline-start: 0;
+  }
+
+  .gd-produccion-draft-card .ant-card-extra .ant-btn {
     width: 100%;
   }
 
-  .gd-produccion-actions
-  .ant-space-item {
+  .gd-produccion-total {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .gd-produccion-actions {
+    justify-content: stretch;
+  }
+
+  .gd-produccion-actions .ant-space {
+    width: 100%;
+  }
+
+  .gd-produccion-actions .ant-space-item {
     flex: 1;
   }
 
-  .gd-produccion-actions
-  .ant-btn {
+  .gd-produccion-actions .ant-btn {
     width: 100%;
   }
 
   .gd-produccion-recipe-item {
-    grid-template-columns:
-      1fr;
+    grid-template-columns: 1fr;
   }
 
   .gd-produccion-recipe-values {
-    align-items:
-      flex-start;
+    align-items: flex-start;
   }
 
-  .gd-produccion-recipe-item
-  .ant-progress {
-    grid-column:
-      1;
+  .gd-produccion-recipe-item .ant-progress {
+    grid-column: 1;
+  }
+
+  .gd-produccion-product-modal .ant-modal {
+    width: calc(100vw - 20px) !important;
+    max-width: calc(100vw - 20px);
+    margin: 10px auto;
+    padding-bottom: 0;
+  }
+
+  .gd-produccion-product-modal .ant-modal-content {
+    padding: 16px;
+  }
+
+  .gd-produccion-product-modal .ant-modal-body {
+    max-height: calc(100dvh - 185px);
+  }
+
+  .gd-produccion-modal-footer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+  }
+
+  .gd-produccion-mobile-metrics {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 420px) {
+  .gd-produccion-modal-footer,
+  .gd-produccion-mobile-actions {
+    grid-template-columns: 1fr;
   }
 }
 

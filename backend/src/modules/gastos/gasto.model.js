@@ -88,157 +88,29 @@ const crearTipoGasto = async ({
    LISTAR GASTOS
    ========================================================= */
 
-const listarGastos = async ({
-  tipo_gasto_id,
-  proveedor_id,
-  moneda_codigo,
-  q,
-  page = 1,
-  limit = 10
-}) => {
+const { GASTOS_SQL, limitesMes } = require('./gasto.consulta');
+
+const listarGastos = async ({ tipo_gasto_id, proveedor_id, moneda_codigo, q, mes, page = 1, limit = 10 }) => {
+  const { inicio, fin } = limitesMes(mes);
   const pool = await getConnection();
-
-  const offset = (page - 1) * limit;
-
   const result = await pool.request()
-    .input(
-      'tipo_gasto_id',
-      sql.Int,
-      tipo_gasto_id || null
-    )
-    .input(
-      'proveedor_id',
-      sql.Int,
-      proveedor_id || null
-    )
-    .input(
-      'moneda_codigo',
-      sql.Char(3),
-      moneda_codigo || null
-    )
-    .input(
-      'q',
-      sql.NVarChar(150),
-      q ? `%${q}%` : null
-    )
-    .input(
-      'offset',
-      sql.Int,
-      offset
-    )
-    .input(
-      'limit',
-      sql.Int,
-      limit
-    )
-    .query(`
-      WITH GastosResumen AS (
-        SELECT
-          g.gasto_id,
-
-          g.tipo_gasto_id,
-          tg.nombre AS tipo_gasto,
-
-          g.proveedor_id,
-          p.razon_social AS proveedor,
-          p.ruc AS proveedor_ruc,
-
-          g.fecha_gasto,
-          g.monto,
-          g.moneda_codigo,
-          g.descripcion,
-          g.comprobante,
-
-          g.activo,
-
-          g.created_at,
-          g.created_by_usuario_id,
-          creador.nombre_completo AS registrado_por,
-
-          g.updated_at,
-          g.updated_by_usuario_id,
-          actualizador.nombre_completo AS actualizado_por
-
-        FROM finance.Gasto g
-
-        INNER JOIN finance.TipoGasto tg
-          ON g.tipo_gasto_id = tg.tipo_gasto_id
-
-        LEFT JOIN compras.Proveedor p
-          ON g.proveedor_id = p.proveedor_id
-
-        INNER JOIN auth.Usuario creador
-          ON g.created_by_usuario_id =
-             creador.usuario_id
-
-        LEFT JOIN auth.Usuario actualizador
-          ON g.updated_by_usuario_id =
-             actualizador.usuario_id
-
-        WHERE g.activo = 1
-
-          AND (
-            @tipo_gasto_id IS NULL
-            OR g.tipo_gasto_id = @tipo_gasto_id
-          )
-
-          AND (
-            @proveedor_id IS NULL
-            OR g.proveedor_id = @proveedor_id
-          )
-
-          AND (
-            @moneda_codigo IS NULL
-            OR g.moneda_codigo = @moneda_codigo
-          )
-
-          AND (
-            @q IS NULL
-
-            OR tg.nombre LIKE @q
-
-            OR p.razon_social LIKE @q
-
-            OR p.ruc LIKE @q
-
-            OR g.descripcion LIKE @q
-
-            OR g.comprobante LIKE @q
-          )
-      )
-
-      SELECT
-        *,
-        COUNT(*) OVER() AS total_registros
-      FROM GastosResumen
-      ORDER BY created_at DESC
-      OFFSET @offset ROWS
-      FETCH NEXT @limit ROWS ONLY;
-    `);
-
-  const gastos = result.recordset;
-
-  const total =
-    gastos.length > 0
-      ? Number(gastos[0].total_registros)
-      : 0;
-
+    .input('tipo_gasto_id', sql.Int, tipo_gasto_id || null)
+    .input('proveedor_id', sql.Int, proveedor_id || null)
+    .input('moneda_codigo', sql.Char(3), moneda_codigo || null)
+    .input('q', sql.NVarChar(402), q ? '%' + q + '%' : null)
+    .input('inicio', sql.Date, inicio)
+    .input('fin', sql.Date, fin)
+    .input('offset', sql.Int, (page - 1) * limit)
+    .input('limit', sql.Int, limit)
+    .query(GASTOS_SQL);
+  const data = result.recordset[0];
   return {
-    gastos,
-
-    paginacion: {
-      page,
-      limit,
-      total,
-      totalPaginas: Math.ceil(total / limit)
-    }
+    gastos: JSON.parse(data.gastos_json),
+    resumen: JSON.parse(data.resumen_json),
+    categorias: JSON.parse(data.categorias_json),
+    paginacion: { page, limit, total: data.total, totalPaginas: Math.ceil(data.total / limit) }
   };
 };
-
-
-/* =========================================================
-   OBTENER GASTO POR ID
-   ========================================================= */
 
 const obtenerGastoPorId = async (gasto_id) => {
   const pool = await getConnection();
