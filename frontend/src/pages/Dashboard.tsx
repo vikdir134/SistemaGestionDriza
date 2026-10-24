@@ -47,6 +47,8 @@ import MetricCard
   from '../components/ui/MetricCard';
 
 import '../styles/dashboard.css';
+import SaldoCuentaCard from '../components/SaldoCuentaCard';
+import type { SaldoCuenta } from '../components/SaldoCuentaCard';
 
 
 const {
@@ -73,6 +75,7 @@ const dashboardInicial:
 
 
 function Dashboard() {
+  const [saldos, setSaldos] = useState<SaldoCuenta[] | null>(null);
   const navigate =
     useNavigate();
 
@@ -119,6 +122,9 @@ function Dashboard() {
 
             apiFetch(
               '/entregas/pedidos?page=1&limit=1'
+            ),
+            apiFetch(
+              '/dashboard/saldo'
             )
           ]);
 
@@ -126,7 +132,8 @@ function Dashboard() {
         const [
           mpResult,
           ptResult,
-          pedidosResult
+          pedidosResult,
+          saldoResult
         ] = resultados;
 
 
@@ -137,6 +144,13 @@ function Dashboard() {
 
 
         let fallos = 0;
+
+        if (saldoResult.status === 'fulfilled' && Array.isArray(saldoResult.value?.saldos)) {
+          setSaldos(saldoResult.value.saldos);
+        } else {
+          setSaldos(null);
+          fallos++;
+        }
 
 
         if (
@@ -219,7 +233,7 @@ function Dashboard() {
         ) {
           setAdvertencia(
             fallos === resultados.length
-              ? 'No fue posible cargar los indicadores operativos.'
+              ? 'No fue posible cargar los indicadores del dashboard.'
               : 'Algunos indicadores no pudieron actualizarse. Los demás datos se muestran normalmente.'
           );
         }
@@ -375,6 +389,8 @@ function Dashboard() {
         />
       )}
 
+
+      <SaldoCuentaCard saldos={saldos} loading={cargando} />
 
       <Row
         gutter={[

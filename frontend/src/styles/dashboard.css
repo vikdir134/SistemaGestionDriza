@@ -81,6 +81,15 @@
   margin-bottom: 18px;
 }
 
+.gd-saldo-card.ant-card {
+  margin-bottom: 18px;
+}
+
+.gd-saldo-description {
+  display: block;
+  margin-top: 16px;
+}
+
 .gd-dashboard-secondary {
   margin-top: 18px;
 }

@@ -34,6 +34,7 @@ const mermaRoutes = require(
 
 const prestamoRoutes = require('./modules/prestamos/prestamo.routes');
 const inversionRoutes = require('./modules/inversiones/inversion.routes');
+const dashboardRoutes = require('./modules/dashboard/dashboard.routes');
 
 const app = express();
 
@@ -97,6 +98,7 @@ app.use('/api/gastos', gastoRoutes);
 
 app.use('/api/prestamos', prestamoRoutes);
 app.use('/api/inversiones', inversionRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 app.use((req, res) => {
   res.status(404).json({
