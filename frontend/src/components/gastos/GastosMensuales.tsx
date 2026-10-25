@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { obtenerMesActual } from '../../utils/mesActual';
 import { Alert, Button, Card, Col, DatePicker, Descriptions, Drawer, Empty, Form, Input, Progress, Row, Select, Skeleton, Space, Statistic, Table, Tag, Typography, theme } from 'antd';
 import type { TableColumnsType } from 'antd';
 import { CalendarOutlined, EyeOutlined, FilterOutlined, LeftOutlined, ReloadOutlined, RightOutlined } from '@ant-design/icons';
@@ -26,9 +28,14 @@ type Props = {
 const fecha = (value?: string) => value ? value.slice(0, 10).split('-').reverse().join('/') : '—';
 
 export default function GastosMensuales({ tipos, proveedores, revision }: Props) {
+  const [searchParams] = useSearchParams();
   const { token } = theme.useToken();
   const [form] = Form.useForm<Filtros>();
-  const [mes, setMes] = useState(() => dayjs().startOf('month'));
+  const [mes, setMes] = useState(() => {
+    const solicitado = searchParams.get('mes') ?? '';
+    const inicial = /^[1-9]\d{3}-(0[1-9]|1[0-2])$/.test(solicitado) && solicitado <= '9998-12' ? solicitado : obtenerMesActual();
+    return dayjs(`${inicial}-01`).startOf('month');
+  });
   const [filtros, setFiltros] = useState<Filtros>({});
   const [page, setPage] = useState(1);
   const [recarga, setRecarga] = useState(0);

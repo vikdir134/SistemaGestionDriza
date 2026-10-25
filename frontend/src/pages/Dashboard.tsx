@@ -49,6 +49,9 @@ import MetricCard
 import '../styles/dashboard.css';
 import SaldoCuentaCard from '../components/SaldoCuentaCard';
 import type { SaldoCuenta } from '../components/SaldoCuentaCard';
+import GastosMesCard from '../components/GastosMesCard';
+import type { ResumenGastosMes } from '../components/GastosMesCard';
+import { obtenerMesActual } from '../utils/mesActual';
 
 
 const {
@@ -75,6 +78,7 @@ const dashboardInicial:
 
 
 function Dashboard() {
+  const [gastosMes, setGastosMes] = useState<{ mes: string; resumen: ResumenGastosMes[] | null }>(() => ({ mes: obtenerMesActual(), resumen: null }));
   const [saldos, setSaldos] = useState<SaldoCuenta[] | null>(null);
   const navigate =
     useNavigate();
@@ -109,6 +113,7 @@ function Dashboard() {
       async () => {
         setCargando(true);
         setAdvertencia('');
+        const mesActual = obtenerMesActual();
 
         const resultados =
           await Promise.allSettled([
@@ -125,6 +130,9 @@ function Dashboard() {
             ),
             apiFetch(
               '/dashboard/saldo'
+            ),
+            apiFetch(
+              `/gastos?mes=${mesActual}&page=1&limit=1`
             )
           ]);
 
@@ -133,7 +141,8 @@ function Dashboard() {
           mpResult,
           ptResult,
           pedidosResult,
-          saldoResult
+          saldoResult,
+          gastosMesResult
         ] = resultados;
 
 
@@ -144,6 +153,13 @@ function Dashboard() {
 
 
         let fallos = 0;
+
+        if (gastosMesResult.status === 'fulfilled' && Array.isArray(gastosMesResult.value?.resumen)) {
+          setGastosMes({ mes: mesActual, resumen: gastosMesResult.value.resumen });
+        } else {
+          setGastosMes({ mes: mesActual, resumen: null });
+          fallos++;
+        }
 
         if (saldoResult.status === 'fulfilled' && Array.isArray(saldoResult.value?.saldos)) {
           setSaldos(saldoResult.value.saldos);
@@ -390,7 +406,10 @@ function Dashboard() {
       )}
 
 
-      <SaldoCuentaCard saldos={saldos} loading={cargando} />
+      <Row gutter={[16, 16]} className="gd-dashboard-finanzas">
+        <Col xs={24} lg={12}><SaldoCuentaCard saldos={saldos} loading={cargando} /></Col>
+        <Col xs={24} lg={12}><GastosMesCard mes={gastosMes.mes} resumen={gastosMes.resumen} loading={cargando} /></Col>
+      </Row>
 
       <Row
         gutter={[

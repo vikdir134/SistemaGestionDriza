@@ -81,9 +81,15 @@
   margin-bottom: 18px;
 }
 
-.gd-saldo-card.ant-card {
+.gd-dashboard-finanzas {
   margin-bottom: 18px;
 }
+
+.gd-dashboard-finanzas .ant-col > .ant-card,
+.gd-gastos-mes-card.ant-card { height: 100%; }
+.gd-gastos-mes-link { display: inline-flex; align-items: center; gap: 6px; border-radius: 4px; }
+.gd-gastos-mes-link:focus-visible { outline: 2px solid var(--ant-color-primary, #2563eb); outline-offset: 3px; }
+.gd-gastos-mes-totales { margin-top: 12px; }
 
 .gd-saldo-description {
   display: block;

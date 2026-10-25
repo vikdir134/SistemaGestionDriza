@@ -28,7 +28,7 @@ export default function SaldoCuentaCard({ saldos, loading }: Props) {
         <>
           <Row gutter={[24, 20]}>
             {(saldos.length ? saldos : [{ moneda_codigo: 'PEN', entradas: 0, salidas: 0, saldo: 0 }]).map((item) => (
-              <Col key={item.moneda_codigo} xs={24} md={12} xl={8}>
+              <Col key={item.moneda_codigo} xs={24} sm={saldos.length > 1 ? 12 : 24}>
                 <Statistic
                   title={item.moneda_codigo === 'PEN' ? 'Soles (PEN)' : item.moneda_codigo}
                   value={item.saldo}
