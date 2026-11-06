@@ -87,6 +87,7 @@ type PedidoDeposito = {
 type Filtros = {
   cliente_id?: number;
   q?: string;
+  estado_pago?: EstadoPago | 'PENDIENTE';
 };
 
 
@@ -242,6 +243,10 @@ function Depositos() {
           );
         }
 
+        if (filtros.estado_pago) {
+          params.set('estado_pago', filtros.estado_pago);
+        }
+
         const data =
           await apiFetch(
             `/depositos/pedidos?${params.toString()}`
@@ -312,6 +317,8 @@ function Depositos() {
       setFiltrosAplicados({
         cliente_id:
           values.cliente_id,
+
+        estado_pago: values.estado_pago,
 
         q:
           values.q?.trim() ||
@@ -573,7 +580,7 @@ function Depositos() {
 
             <Col
               xs={24}
-              lg={9}
+              lg={6}
             >
 
               <Form.Item
@@ -605,7 +612,7 @@ function Depositos() {
 
             <Col
               xs={24}
-              lg={9}
+              lg={6}
             >
 
               <Form.Item
@@ -621,6 +628,26 @@ function Depositos() {
                 />
               </Form.Item>
 
+            </Col>
+
+
+            <Col xs={24} lg={6}>
+              <Form.Item
+                label="Estado de pago"
+                name="estado_pago"
+                tooltip="Pendientes de pago incluye pedidos sin pago y con pago parcial."
+              >
+                <Select
+                  allowClear
+                  placeholder="Todos los estados"
+                  options={[
+                    { value: 'PENDIENTE', label: 'Pendientes de pago' },
+                    { value: 'SIN_PAGO', label: 'Sin pago' },
+                    { value: 'PARCIAL', label: 'Pago parcial' },
+                    { value: 'PAGADO', label: 'Pagado' }
+                  ]}
+                />
+              </Form.Item>
             </Col>
 
 

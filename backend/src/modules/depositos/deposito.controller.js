@@ -33,13 +33,21 @@ const obtenerPedidosParaDeposito = async (req, res) => {
     const {
       cliente_id,
       q,
+      estado_pago,
       page = 1,
       limit = 10
     } = req.query;
 
+    if (estado_pago !== undefined && !['PENDIENTE', 'PAGADO', 'PARCIAL', 'SIN_PAGO'].includes(estado_pago)) {
+      return res.status(400).json({
+        mensaje: 'El estado de pago debe ser PENDIENTE, PAGADO, PARCIAL o SIN_PAGO'
+      });
+    }
+
     const resultado = await listarPedidosParaDeposito({
       cliente_id: cliente_id ? Number(cliente_id) : null,
       q: q || null,
+      estado_pago: estado_pago || null,
       page: Number(page),
       limit: Number(limit)
     });

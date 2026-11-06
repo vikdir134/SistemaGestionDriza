@@ -19,6 +19,7 @@ const listarTiposDeposito = async () => {
 const listarPedidosParaDeposito = async ({
   cliente_id,
   q,
+  estado_pago,
   page = 1,
   limit = 10
 }) => {
@@ -29,6 +30,7 @@ const listarPedidosParaDeposito = async ({
   const result = await pool.request()
     .input('cliente_id', sql.Int, cliente_id || null)
     .input('q', sql.NVarChar(150), q ? `%${q}%` : null)
+    .input('estado_pago', sql.VarChar(10), estado_pago || null)
     .input('offset', sql.Int, offset)
     .input('limit', sql.Int, limit)
     .query(`
@@ -125,17 +127,28 @@ const listarPedidosParaDeposito = async ({
           c.cliente_id,
           c.razon_social,
           c.ruc
+      ),
+      EstadoPagoPedido AS (
+        SELECT
+          *,
+          CASE
+            WHEN monedas_pagadas = cantidad_monedas THEN 'PAGADO'
+            WHEN monedas_parciales > 0 OR monedas_pagadas > 0 THEN 'PARCIAL'
+            ELSE 'SIN_PAGO'
+          END AS estado_pago_general
+        FROM ResumenPedido
       )
       SELECT
         *,
-        CASE
-          WHEN monedas_pagadas = cantidad_monedas THEN 'PAGADO'
-          WHEN monedas_parciales > 0 OR monedas_pagadas > 0 THEN 'PARCIAL'
-          ELSE 'SIN_PAGO'
-        END AS estado_pago_general,
         COUNT(*) OVER() AS total_registros
-      FROM ResumenPedido
-      ORDER BY created_at DESC
+      FROM EstadoPagoPedido
+      WHERE @estado_pago IS NULL
+        OR (@estado_pago = 'PENDIENTE' AND estado_pago_general IN ('SIN_PAGO', 'PARCIAL'))
+        OR estado_pago_general = @estado_pago
+      ORDER BY
+        CASE WHEN estado_pago_general = 'PAGADO' THEN 1 ELSE 0 END,
+        fecha_pedido DESC,
+        pedido_id DESC
       OFFSET @offset ROWS
       FETCH NEXT @limit ROWS ONLY;
     `);
