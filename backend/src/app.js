@@ -36,6 +36,7 @@ const prestamoRoutes = require('./modules/prestamos/prestamo.routes');
 const inversionRoutes = require('./modules/inversiones/inversion.routes');
 const dashboardRoutes = require('./modules/dashboard/dashboard.routes');
 const eerrRoutes = require('./modules/eerr/eerr.routes');
+const flujoCajaRoutes = require('./modules/flujoCaja/flujoCaja.routes');
 
 const app = express();
 
@@ -101,6 +102,7 @@ app.use('/api/prestamos', prestamoRoutes);
 app.use('/api/inversiones', inversionRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/eerr', eerrRoutes);
+app.use('/api/flujo-caja', flujoCajaRoutes);
 
 app.use((req, res) => {
   res.status(404).json({

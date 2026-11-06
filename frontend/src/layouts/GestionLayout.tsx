@@ -174,6 +174,10 @@ const obtenerBreadcrumbs = (
     {
       prefix: '/gestion/eerr',
       title: 'Estado de resultados'
+    },
+    {
+      prefix: '/gestion/flujo-caja',
+      title: 'Flujo de caja'
     }
   ];
 

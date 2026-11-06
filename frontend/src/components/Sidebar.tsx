@@ -102,6 +102,7 @@ const obtenerSelectedKey = (
     '/gestion/mermas',
     '/gestion/gastos',
     '/gestion/eerr',
+    '/gestion/flujo-caja',
     '/gestion/usuarios'
   ];
 
@@ -506,6 +507,12 @@ function Sidebar({
       key: '/gestion/eerr',
       icon: <BookOutlined />,
       label: 'Estado de resultados'
+    },
+
+    {
+      key: '/gestion/flujo-caja',
+      icon: <BankOutlined />,
+      label: 'Flujo de caja'
     },
 
 

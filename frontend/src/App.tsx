@@ -4,6 +4,7 @@ import {
   Route,
   Routes
 } from 'react-router-dom';
+import { lazy, Suspense } from 'react';
 
 import './styles/pedidos.css';
 
@@ -128,6 +129,7 @@ import GestionLayout
 import Prestamos from './pages/prestamos/Prestamos';
 import Inversiones from './pages/inversiones/Inversiones';
 import Eerr from './pages/Eerr';
+const FlujoCaja = lazy(() => import('./pages/FlujoCaja'));
 
 function App() {
   return (
@@ -440,6 +442,7 @@ function App() {
           <Route path="prestamos" element={<Prestamos />} />
           <Route path="inversiones" element={<Inversiones />} />
           <Route path="eerr" element={<Eerr />} />
+          <Route path="flujo-caja" element={<Suspense fallback={<p role="status">Cargando flujo de caja…</p>}><FlujoCaja /></Suspense>} />
 
           {/* =========================
               GASTOS
