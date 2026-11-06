@@ -50,6 +50,7 @@ import '../styles/dashboard.css';
 import SaldoCuentaCard from '../components/SaldoCuentaCard';
 import type { SaldoCuenta } from '../components/SaldoCuentaCard';
 import GastosMesCard from '../components/GastosMesCard';
+import EerrMesCard from '../components/EerrMesCard';
 import type { ResumenGastosMes } from '../components/GastosMesCard';
 import { obtenerMesActual } from '../utils/mesActual';
 
@@ -78,6 +79,7 @@ const dashboardInicial:
 
 
 function Dashboard() {
+  const [revisionEerr, setRevisionEerr] = useState(0);
   const [gastosMes, setGastosMes] = useState<{ mes: string; resumen: ResumenGastosMes[] | null }>(() => ({ mes: obtenerMesActual(), resumen: null }));
   const [saldos, setSaldos] = useState<SaldoCuenta[] | null>(null);
   const navigate =
@@ -111,8 +113,6 @@ function Dashboard() {
   const cargarDashboard =
     useCallback(
       async () => {
-        setCargando(true);
-        setAdvertencia('');
         const mesActual = obtenerMesActual();
 
         const resultados =
@@ -244,6 +244,7 @@ function Dashboard() {
         );
 
 
+        setAdvertencia('');
         if (
           fallos > 0
         ) {
@@ -262,6 +263,8 @@ function Dashboard() {
 
 
   useEffect(() => {
+    // La carga inicial actualiza los indicadores después de resolver las peticiones.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     cargarDashboard();
   }, [
     cargarDashboard
@@ -381,7 +384,12 @@ function Dashboard() {
               cargando
             }
             onClick={
-              cargarDashboard
+              () => {
+                setCargando(true);
+                setAdvertencia('');
+                setRevisionEerr(revision => revision + 1);
+                void cargarDashboard();
+              }
             }
           >
             Actualizar
@@ -407,8 +415,9 @@ function Dashboard() {
 
 
       <Row gutter={[16, 16]} className="gd-dashboard-finanzas">
-        <Col xs={24} lg={12}><SaldoCuentaCard saldos={saldos} loading={cargando} /></Col>
-        <Col xs={24} lg={12}><GastosMesCard mes={gastosMes.mes} resumen={gastosMes.resumen} loading={cargando} /></Col>
+        <Col xs={24} lg={8}><SaldoCuentaCard saldos={saldos} loading={cargando} /></Col>
+        <Col xs={24} lg={8}><GastosMesCard mes={gastosMes.mes} resumen={gastosMes.resumen} loading={cargando} /></Col>
+        <Col xs={24} lg={8}><EerrMesCard mes={obtenerMesActual()} revision={revisionEerr} /></Col>
       </Row>
 
       <Row

@@ -21,10 +21,10 @@ export default function GastosMesCard({ mes, resumen, loading }: Props) {
         {resumen === null ? <Alert type="warning" showIcon title="No se pudieron cargar los gastos del mes." /> : <>
           <Row gutter={[24, 16]} className="gd-gastos-mes-totales">
             {(monedas.length ? monedas : [{ moneda_codigo: 'PEN', cantidad: 0, total: 0 }]).map(item => (
-              <Col xs={24} sm={monedas.length > 1 ? 12 : 24} key={item.moneda_codigo}>
+              <Col xs={24} xxl={monedas.length > 1 ? 12 : 24} key={item.moneda_codigo}>
                 <Statistic title={item.moneda_codigo === 'PEN' ? 'Total en soles' : 'Total en dólares'} value={item.total} precision={2}
                   prefix={item.moneda_codigo === 'PEN' ? 'S/' : 'US$'}
-                  styles={{ content: { color: token.colorPrimary, fontWeight: 700 } }} />
+                  styles={{ content: { color: token.colorPrimaryText, fontWeight: 700 } }} />
                 <Typography.Text type="secondary">{item.cantidad} gasto(s)</Typography.Text>
               </Col>
             ))}

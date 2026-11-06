@@ -90,6 +90,8 @@
 .gd-gastos-mes-link { display: inline-flex; align-items: center; gap: 6px; border-radius: 4px; }
 .gd-gastos-mes-link:focus-visible { outline: 2px solid var(--ant-color-primary, #2563eb); outline-offset: 3px; }
 .gd-gastos-mes-totales { margin-top: 12px; }
+.gd-eerr-moneda-link { margin-top: 8px; }
+.gd-dashboard-finanzas .ant-statistic-content { font-size: clamp(22px, 1.8vw, 28px); overflow-wrap: anywhere; }
 
 .gd-saldo-description {
   display: block;
