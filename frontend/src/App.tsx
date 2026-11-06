@@ -127,6 +127,7 @@ import GestionLayout
 
 import Prestamos from './pages/prestamos/Prestamos';
 import Inversiones from './pages/inversiones/Inversiones';
+import Eerr from './pages/Eerr';
 
 function App() {
   return (
@@ -438,6 +439,7 @@ function App() {
 
           <Route path="prestamos" element={<Prestamos />} />
           <Route path="inversiones" element={<Inversiones />} />
+          <Route path="eerr" element={<Eerr />} />
 
           {/* =========================
               GASTOS

@@ -101,6 +101,7 @@ const obtenerSelectedKey = (
     '/gestion/inversiones',
     '/gestion/mermas',
     '/gestion/gastos',
+    '/gestion/eerr',
     '/gestion/usuarios'
   ];
 
@@ -499,6 +500,12 @@ function Sidebar({
       icon:
         <DollarOutlined />,
       label: 'Gastos'
+    },
+
+    {
+      key: '/gestion/eerr',
+      icon: <BookOutlined />,
+      label: 'Estado de resultados'
     },
 
 

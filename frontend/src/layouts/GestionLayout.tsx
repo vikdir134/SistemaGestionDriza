@@ -170,6 +170,10 @@ const obtenerBreadcrumbs = (
       prefix:
         '/gestion/gastos',
       title: 'Gastos'
+    },
+    {
+      prefix: '/gestion/eerr',
+      title: 'Estado de resultados'
     }
   ];
 
