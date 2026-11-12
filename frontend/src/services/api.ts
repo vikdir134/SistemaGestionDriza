@@ -44,3 +44,31 @@ export const apiFetch = async (
 };
 
 export default API_URL;
+
+export const descargarArchivo = async (endpoint: string, signal?: AbortSignal) => {
+  const token = getToken();
+  const response = await fetch(`${API_URL}${endpoint}`, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    signal
+  });
+  if (!response.ok) {
+    const data = await response.json().catch(() => null);
+    throw new Error(data?.mensaje || 'No se pudo descargar el reporte. Inténtalo nuevamente.');
+  }
+  if (!response.headers.get('Content-Type')?.includes('spreadsheetml.sheet')) {
+    throw new Error('El servidor no devolvió un archivo Excel válido.');
+  }
+  const archivo = await response.blob();
+  if (!archivo.size) throw new Error('El archivo descargado está vacío.');
+  const disposicion = response.headers.get('Content-Disposition') || '';
+  const nombre = disposicion.match(/filename="([\w.-]+\.xlsx)"/)?.[1] || 'ReportePedidos.xlsx';
+  const url = URL.createObjectURL(archivo);
+  const enlace = document.createElement('a');
+  enlace.href = url;
+  enlace.download = nombre;
+  document.body.appendChild(enlace);
+  enlace.click();
+  enlace.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  return nombre;
+};

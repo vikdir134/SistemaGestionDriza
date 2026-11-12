@@ -95,6 +95,14 @@
   width: 100%;
 }
 
+.gd-pedido-report-presets {
+  margin-bottom: 16px;
+}
+
+.gd-pedido-report-modal .ant-form-item {
+  margin-bottom: 16px;
+}
+
 
 /* =========================================================
    LIGHT MODE

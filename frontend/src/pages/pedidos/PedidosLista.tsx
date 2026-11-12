@@ -20,6 +20,7 @@ import {
 
 import {
   EditOutlined,
+  DownloadOutlined,
   EyeOutlined,
   PlusOutlined,
   ReloadOutlined,
@@ -42,6 +43,8 @@ import {
 
 import PageHeader
   from '../../components/ui/PageHeader';
+
+import PedidoReporteModal from '../../components/pedidos/PedidoReporteModal';
 
 import {
   formatCantidad,
@@ -185,6 +188,7 @@ const cantidadesPedido = (
 
 
 function PedidosLista() {
+  const [reporteAbierto, setReporteAbierto] = useState(false);
   const navigate =
     useNavigate();
 
@@ -666,19 +670,24 @@ function PedidosLista() {
         title="Pedidos"
         description="Consulta, filtra, revisa y edita los pedidos registrados."
         extra={
-          <Button
-            type="primary"
-            icon={
-              <PlusOutlined />
-            }
-            onClick={() =>
-              navigate(
-                '/gestion/pedidos/registrar'
-              )
-            }
-          >
-            Registrar pedido
-          </Button>
+          <Space wrap>
+            <Button icon={<DownloadOutlined />} onClick={() => setReporteAbierto(true)}>
+              Exportar Reporte
+            </Button>
+            <Button
+              type="primary"
+              icon={
+                <PlusOutlined />
+              }
+              onClick={() =>
+                navigate(
+                  '/gestion/pedidos/registrar'
+                )
+              }
+            >
+              Registrar pedido
+            </Button>
+          </Space>
         }
       />
 
@@ -918,6 +927,10 @@ function PedidosLista() {
         />
 
       </Card>
+
+      {reporteAbierto && (
+        <PedidoReporteModal filtrosIniciales={filtrosAplicados} onClose={() => setReporteAbierto(false)} />
+      )}
 
     </div>
   );
