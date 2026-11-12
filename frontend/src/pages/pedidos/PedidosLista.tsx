@@ -401,29 +401,9 @@ function PedidosLista() {
       Pedido
     > = [
     {
-      title: 'Código',
-      dataIndex:
-        'codigo_pedido',
-      key:
-        'codigo_pedido',
-      width: 130,
-
-      render: (
-        value?: string | null
-      ) =>
-        value
-          ? (
-              <Text code>
-                {value}
-              </Text>
-            )
-          : '-'
-    },
-
-    {
       title: 'Cliente',
       key: 'cliente',
-      minWidth: 210,
+      width: 280,
 
       render: (
         _,
@@ -546,7 +526,7 @@ function PedidosLista() {
         'resumen_cantidades',
       key:
         'resumen_cantidades',
-      minWidth: 180,
+      width: 180,
       responsive: [
         'lg'
       ],
@@ -608,6 +588,7 @@ function PedidosLista() {
         'registrado_por',
       key:
         'registrado_por',
+      width: 160,
       responsive: [
         'xl'
       ]
@@ -897,7 +878,7 @@ function PedidosLista() {
             cargando
           }
           scroll={{
-            x: 1100
+            x: 1420
           }}
           locale={{
             emptyText:

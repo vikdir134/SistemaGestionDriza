@@ -31,6 +31,16 @@
   width: 100%;
 }
 
+.gd-pedido-client-cell {
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+
+.gd-pedido-client-cell
+> .ant-typography-secondary {
+  white-space: nowrap;
+}
+
 .gd-pedido-product-item.ant-card {
   width: 100%;
 }
